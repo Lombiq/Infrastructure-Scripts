@@ -66,9 +66,9 @@ function Save-AzureWebAppStorageContentToRepository
             throw ("The folder `"$RepositoryPath`" can not be found!")
         }
 
-        if ((Get-ChildItem $RepositoryPath -Name ".hg" -Directory) -eq $null)
+        if ((Get-ChildItem $RepositoryPath -Name ".git" -Directory) -eq $null)
         {
-            throw ("The folder `"$RepositoryPath`" is not a repository!")
+            throw ("The folder `"$RepositoryPath`" is not a Git repository!")
         }
                 
         $destination = $RepositoryPath
@@ -87,18 +87,26 @@ function Save-AzureWebAppStorageContentToRepository
 
         try
         {
-            hg pull -R "$RepositoryPath"
-            hg update tip -R "$RepositoryPath" -C
+            cd "$RepositoryPath"
+            git fetch origin
+            git checkout master
         }
         catch [Exception]
         {
             throw ("Could not pull/update the repository at $RepositoryPath!")
         }
 
-
-
-        Save-AzureWebAppStorageContent -ResourceGroupName $ResourceGroupName -WebAppName $WebAppName -ConnectionStringName $ConnectionStringName -Destination $destination `
-            -ContainerWhiteList $ContainerWhiteList -ContainerBlackList $ContainerBlackList -FolderWhiteList $FolderWhiteList -FolderBlackList $FolderBlackList
+        
+        
+        Save-AzureWebAppStorageContent `
+            -ResourceGroupName $ResourceGroupName `
+            -WebAppName $WebAppName `
+            -ConnectionStringName $ConnectionStringName `
+            -Destination $destination `
+            -ContainerWhiteList $ContainerWhiteList `
+            -ContainerBlackList $ContainerBlackList `
+            -FolderWhiteList $FolderWhiteList `
+            -FolderBlackList $FolderBlackList
 
 
 
@@ -111,10 +119,12 @@ function Save-AzureWebAppStorageContentToRepository
                 $CommitMessage = "Storage backup for $WebAppName"
             }
 
-            hg commit -A -R "$RepositoryPath" -m "$CommitMessage"
-            hg push -R "$RepositoryPath"
+            cd "$RepositoryPath"
+            git add .
+            git commit --all -R --message="$CommitMessage"
+            git push origin master
 
-            if ((hg phase -R "$RepositoryPath").Split(':')[1].Trim() -ne "public")
+            if (-not [string]::IsNullOrEmpty((git log origin/master..master)))
             {
                 throw
             }

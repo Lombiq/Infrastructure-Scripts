@@ -51,9 +51,9 @@ function Save-AzureWebAppSqlDatabaseToRepository
             throw ("The folder `"$RepositoryPath`" can not be found!")
         }
 
-        if ((Get-ChildItem $RepositoryPath -Name ".hg" -Directory) -eq $null)
+        if ((Get-ChildItem $RepositoryPath -Name ".git" -Directory) -eq $null)
         {
-            throw ("The folder `"$RepositoryPath`" is not a repository!")
+            throw ("The folder `"$RepositoryPath`" is not a Git repository!")
         }
                 
         $destination = $RepositoryPath
@@ -72,8 +72,9 @@ function Save-AzureWebAppSqlDatabaseToRepository
 
         try
         {
-            hg pull -R "$RepositoryPath"
-            hg update tip -R "$RepositoryPath" -C
+            cd "$RepositoryPath"
+            git fetch origin
+            git checkout master
         }
         catch [Exception]
         {
@@ -94,10 +95,12 @@ function Save-AzureWebAppSqlDatabaseToRepository
                 $CommitMessage = "Database backup for $WebAppName"
             }
 
-            hg commit -A -R "$RepositoryPath" -m "$CommitMessage"
-            hg push -R "$RepositoryPath"
+            cd "$RepositoryPath"
+            git add .
+            git commit --all -R --message="$CommitMessage"
+            git push origin master
 
-            if ((hg phase -R "$RepositoryPath").Split(':')[1].Trim() -ne "public")
+            if (-not [string]::IsNullOrEmpty((git log origin/master..master)))
             {
                 throw
             }
