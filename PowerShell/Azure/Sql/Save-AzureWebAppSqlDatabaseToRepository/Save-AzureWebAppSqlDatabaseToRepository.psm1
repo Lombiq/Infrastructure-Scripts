@@ -92,7 +92,7 @@ function Save-AzureWebAppSqlDatabaseToRepository
 
             cd "$RepositoryPath"
             git add .
-            git commit --all -R --message="$CommitMessage"
+            git commit --all --message="$CommitMessage"
             git push origin master
 
             if (-not [string]::IsNullOrEmpty((git log origin/master..master)))
