@@ -50,11 +50,6 @@ function Save-AzureWebAppSqlDatabaseToRepository
         {
             throw ("The folder `"$RepositoryPath`" can not be found!")
         }
-
-        if ((Get-ChildItem $RepositoryPath -Name ".git" -Directory) -eq $null)
-        {
-            throw ("The folder `"$RepositoryPath`" is not a Git repository!")
-        }
                 
         $destination = $RepositoryPath
 
