@@ -84,7 +84,7 @@ function Save-AzureWebAppStorageContentToRepository
         {
             cd "$RepositoryPath"
             git fetch origin
-            git checkout master
+            git checkout origin/master
         }
         catch [Exception]
         {
