@@ -68,8 +68,7 @@ function Save-AzureWebAppSqlDatabaseToRepository
         try
         {
             cd "$RepositoryPath"
-            git fetch origin
-            git checkout origin/master
+            git pull
         }
         catch [Exception]
         {
