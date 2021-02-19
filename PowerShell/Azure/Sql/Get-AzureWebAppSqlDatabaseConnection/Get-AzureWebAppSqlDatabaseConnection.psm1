@@ -49,10 +49,10 @@ function Get-AzureWebAppSqlDatabaseConnection
         
 
 
-        $databaseElement = $connectionStringElements | Where-Object { $PSItem.StartsWith("Database=") }
+        $databaseElement = $connectionStringElements | Where-Object { $PSItem.StartsWith("Database=") -or $PSItem.StartsWith("Initial Catalog=") }
         if ($databaseElement -eq $null)
         {
-            throw ("The connection string is invalid: Database declaration not found!")
+            throw ("The connection string is invalid: Database / Initial Catalog declaration not found!")
         }
 
         $databaseName = $databaseElement.Split("=", [System.StringSplitOptions]::RemoveEmptyEntries)[1]
