@@ -23,13 +23,16 @@ function Get-AzureWebAppStorageConnection
         [Parameter(Mandatory = $true, HelpMessage = "You need to provide the name of the Web App.")]
         [string] $WebAppName,
 
-        [Parameter(HelpMessage = "The name of a connection string. The script will exit with error if there is no connection string defined with the name provided for the Production slot of the given Web App.")]
-        [string] $ConnectionStringName = $(throw "You need to provide a connection string name")
+        [Parameter(HelpMessage = "The name of the Web App slot.")]
+        [string] $SlotName,
+
+        [Parameter(Mandatory = $true, HelpMessage = "You need to provide the name of the connection string.")]
+        [string] $ConnectionStringName
     )
 
     Process
     {
-        $connectionString = Get-AzureWebAppConnectionString -ResourceGroupName $ResourceGroupName -WebAppName $WebAppName -ConnectionStringName $ConnectionStringName
+        $connectionString = Get-AzureWebAppConnectionString -ResourceGroupName $ResourceGroupName -WebAppName $WebAppName -SlotName $SlotName -ConnectionStringName $ConnectionStringName
 
         $connectionStringElements = $connectionString.Split(";", [System.StringSplitOptions]::RemoveEmptyEntries)
 
