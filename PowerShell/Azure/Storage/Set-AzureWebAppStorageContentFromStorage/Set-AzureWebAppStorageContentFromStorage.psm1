@@ -29,17 +29,33 @@ function Set-AzureWebAppStorageContentFromStorage
     [Alias("sascs")]
     Param
     (
-        [Parameter(Mandatory = $true, HelpMessage = "You need to provide the name of the Resource Group the Web App is in.")]
-        [string] $ResourceGroupName,
+        [Alias("ResourceGroupName")]
+        [Parameter(Mandatory = $true, HelpMessage = "You need to provide the name of the Resource Group the Source Web App is in.")]
+        [string] $SourceResourceGroupName,
 
+        [Alias("WebAppName")]
         [Parameter(Mandatory = $true, HelpMessage = "You need to provide the name of the Web App.")]
-        [string] $WebAppName,
+        [string] $SourceWebAppName,
+        
+        [Alias("SlotName")]
+        [Parameter(HelpMessage = "The name of the Source Web App slot.")]
+        [string] $SourceSlotName,
 
+        [Alias("ConnectionStringName")]
         [Parameter(Mandatory = $true, HelpMessage = "You need to provide a connection string name for the source Storage Account.")]
         [string] $SourceConnectionStringName,
 
-        [Parameter(Mandatory = $true, HelpMessage = "You need to provide a connection string name for the destination Storage Account.")]
-        [string] $DestinationConnectionStringName,
+        [Parameter(HelpMessage = "The name of the Destination Resource Group if it differs from the Source.")]
+        [string] $DestinationResourceGroupName = $SourceResourceGroupName,
+
+        [Parameter(HelpMessage = "The name of the Destination Web App if it differs from the Source.")]
+        [string] $DestinationWebAppName = $SourceWebAppName,
+        
+        [Parameter(HelpMessage = "The name of the Destination Web App Slot if it differs from the Source.")]
+        [string] $DestinationSlotName = $SourceSlotName,
+
+        [Parameter(HelpMessage = "The name of the Destination Connection String if it differs from the Source.")]
+        [string] $DestinationConnectionStringName = $SourceConnectionStringName,
 
         [Parameter(HelpMessage = "A list of names of Blob Containers to include. When valid values are provided, it cancels out `"ContainerBlackList`".")]
         [string[]] $ContainerWhiteList = @(),
@@ -68,8 +84,16 @@ function Set-AzureWebAppStorageContentFromStorage
 
     Process
     {
-        $sourceStorageConnection = Get-AzureWebAppStorageConnection -ResourceGroupName $ResourceGroupName -WebAppName $WebAppName -ConnectionStringName $SourceConnectionStringName
-        $destinationStorageConnection = Get-AzureWebAppStorageConnection -ResourceGroupName $ResourceGroupName -WebAppName $WebAppName -ConnectionStringName $DestinationConnectionStringName
+        $sourceStorageConnection = Get-AzureWebAppStorageConnection `
+            -ResourceGroupName $SourceResourceGroupName `
+            -WebAppName $SourceWebAppName `
+            -SlotName $SourceSlotName `
+            -ConnectionStringName $SourceConnectionStringName
+        $destinationStorageConnection = Get-AzureWebAppStorageConnection `
+            -ResourceGroupName $DestinationResourceGroupName `
+            -WebAppName $DestinationWebAppName `
+            -SlotName $DestinationSlotName `
+            -ConnectionStringName $DestinationConnectionStringName
 
         if ($sourceStorageConnection.AccountName -eq $destinationStorageConnection.AccountName)
         {
