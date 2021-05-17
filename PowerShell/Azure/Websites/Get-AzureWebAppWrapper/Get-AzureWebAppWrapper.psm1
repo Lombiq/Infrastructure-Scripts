@@ -31,8 +31,8 @@ function Get-AzureWebAppWrapper
         [Parameter(Mandatory = $true, HelpMessage = "You need to provide the name of the Web App.")]
         [string] $WebAppName,
 
-        [Parameter(HelpMessage = "The name of the Web App slot. The default value is `"Production`".")]
-        [string] $SlotName = "Production",
+        [Parameter(HelpMessage = "The name of the Web App slot.")]
+        [string] $SlotName,
 
         [Parameter(HelpMessage = "The number of attempts for retrieving the data of the website. The default value is 3.")]
         [int] $RetryCount = 3
@@ -47,7 +47,20 @@ function Get-AzureWebAppWrapper
         {
             try
             {
-                $slot = Get-AzWebAppSlot -ResourceGroupName $ResourceGroupName -Name $WebAppName -Slot $SlotName -ErrorAction Stop
+                $parameters = @{
+                    ResourceGroupName = $ResourceGroupName
+                    Name = $WebAppName
+                    ErrorAction = "Stop"
+                }
+
+                if ([string]::IsNullOrEmpty($SlotName))
+                {
+                    $webAppSlot = Get-AzWebApp @parameters
+                }
+                else
+                {
+                    $webAppSlot = Get-AzWebAppSlot @parameters -Slot $SlotName
+                }
             }
             catch
             {
