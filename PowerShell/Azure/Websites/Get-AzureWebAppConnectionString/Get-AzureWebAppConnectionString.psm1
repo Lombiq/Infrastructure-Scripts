@@ -22,11 +22,11 @@ function Get-AzureWebAppConnectionString
     [OutputType([string])]
     Param
     (
-        [Parameter(Mandatory = $true, HelpMessage = "The name of the Resource Group the Web App is in.")]
-        [string] $ResourceGroupName = $(throw "You need to provide the name of the Resource Group."),
+        [Parameter(Mandatory = $true, HelpMessage = "You need to provide the name of the Resource Group.")]
+        [string] $ResourceGroupName,
 
-        [Parameter(Mandatory = $true, HelpMessage = "The name of the Azure Web App. The script throws exception if the Web App doesn't exist on the given subscription.")]
-        [string] $WebAppName = $(throw "You need to provide the name of the Web App."),
+        [Parameter(Mandatory = $true, HelpMessage = "You need to provide the name of the Web App.")]
+        [string] $WebAppName,
 
         [Parameter(HelpMessage = "The name of the Web App slot. The default value is `"Production`".")]
         [string] $SlotName = "Production",

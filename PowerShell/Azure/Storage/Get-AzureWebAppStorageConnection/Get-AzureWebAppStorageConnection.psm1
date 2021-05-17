@@ -17,11 +17,11 @@ function Get-AzureWebAppStorageConnection
     [OutputType([Object])]
     Param
     (
-        [Parameter(Mandatory = $true, HelpMessage = "The name of the Resource Group the Web App is in.")]
-        [string] $ResourceGroupName = $(throw "You need to provide the name of the Resource Group."),
+        [Parameter(Mandatory = $true, HelpMessage = "You need to provide the name of the Resource Group.")]
+        [string] $ResourceGroupName,
 
-        [Parameter(Mandatory = $true, HelpMessage = "The name of the Azure Web App. The script throws exception if the Web App doesn't exist on the given subscription.")]
-        [string] $WebAppName = $(throw "You need to provide the name of the Web App."),
+        [Parameter(Mandatory = $true, HelpMessage = "You need to provide the name of the Web App.")]
+        [string] $WebAppName,
 
         [Parameter(HelpMessage = "The name of a connection string. The script will exit with error if there is no connection string defined with the name provided for the Production slot of the given Web App.")]
         [string] $ConnectionStringName = $(throw "You need to provide a connection string name")
@@ -34,10 +34,9 @@ function Get-AzureWebAppStorageConnection
         $connectionStringElements = $connectionString.Split(";", [System.StringSplitOptions]::RemoveEmptyEntries)
 
 
-
         $accountNameElementKey = "AccountName="
         $accountNameElement = $connectionStringElements | Where-Object { $PSItem.StartsWith($accountNameElementKey) }
-        if ($accountNameElement -eq $null)
+        if ($null -eq $accountNameElement)
         {
             throw ("The connection string is invalid: Account Name declaration not found!")
         }
@@ -49,10 +48,9 @@ function Get-AzureWebAppStorageConnection
         }
 
 
-
         $accountKeyElementKey = "AccountKey="
         $accountKeyElement = $connectionStringElements | Where-Object { $PSItem.StartsWith($accountKeyElementKey) }
-        if ($accountKeyElement -eq $null)
+        if ($null -eq $accountKeyElement)
         {
             throw ("The connection string is invalid: Account Key declaration not found!")
         }
@@ -62,7 +60,6 @@ function Get-AzureWebAppStorageConnection
         {
             throw ("The connection string is invalid: Account Key not found!")
         }
-
 
 
         return @{ AccountName = $accountName; AccountKey = $accountKey }

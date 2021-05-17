@@ -21,9 +21,7 @@
    Set-AzureWebAppStorageContentFromStorage -ResourceGroupName "CoolStuffHere" -WebAppName "NiceApp" -SourceConnectionStringName "SourceStorage" -DestinationConnectionStringName "DestinationStorage" -ContainerBlackList @("stuffidontneed") -FolderWhiteList @("usefulfolder") -FolderBlackList @("uselessfolderintheusefulfolder")
 #>
 
-
 Import-Module Az.Storage
-
 
 function Set-AzureWebAppStorageContentFromStorage
 {
@@ -85,11 +83,11 @@ function Set-AzureWebAppStorageContentFromStorage
         $containerBlackListValid = $ContainerBlackList -and $ContainerBlackList.Count -gt 0
         
         $sourceContainers = Get-AzStorageContainer -Context $sourceStorageContext `
-            | Where-Object `
-            { `
-                ((!$containerWhiteListValid -or ($containerWhiteListValid -and $ContainerWhiteList.Contains($PSItem.Name))) `
-                -and ($containerWhiteListValid -or (!$containerBlackListValid -or !$ContainerBlackList.Contains($PSItem.Name)))) `
-            }
+        | Where-Object `
+        { `
+            ((!$containerWhiteListValid -or ($containerWhiteListValid -and $ContainerWhiteList.Contains($PSItem.Name))) `
+                    -and ($containerWhiteListValid -or (!$containerBlackListValid -or !$ContainerBlackList.Contains($PSItem.Name)))) `
+        }
 
         # Removing containers on the destination, if necessary.
         if ($RemoveExtraFilesOnDestination)
@@ -124,7 +122,7 @@ function Set-AzureWebAppStorageContentFromStorage
 
                         $containerCreated = $true
                     }
-                    catch [System.Net.WebException],[System.Exception] # Catching [Microsoft.WindowsAzure.Storage.StorageException] is not sufficient for some reason...
+                    catch [System.Net.WebException], [System.Exception] # Catching [Microsoft.WindowsAzure.Storage.StorageException] is not sufficient for some reason...
                     {
                         Write-Warning ("Error during re-creating the container `"" + $sourceContainer.Name + "`". Retrying in a few seconds...`n" + $_.Exception.Message + "`n")
                         Start-Sleep 5
@@ -138,7 +136,7 @@ function Set-AzureWebAppStorageContentFromStorage
                 $blobNameElements = $sourceBlob.Name.Split("/", [StringSplitOptions]::RemoveEmptyEntries)
 
                 if ((!$folderWhiteListValid -or ($folderWhiteListValid -and (Compare-Object $blobNameElements $FolderWhiteList -PassThru -IncludeEqual -ExcludeDifferent))) `
-                    -and (!$folderBlackListValid -or ($folderBlackListValid -and (!(Compare-Object $blobNameElements $FolderBlackList -PassThru -IncludeEqual -ExcludeDifferent)))))
+                        -and (!$folderBlackListValid -or ($folderBlackListValid -and (!(Compare-Object $blobNameElements $FolderBlackList -PassThru -IncludeEqual -ExcludeDifferent)))))
                 {
                     Start-AzStorageBlobCopy -Context $sourceStorageContext -SrcContainer $sourceContainer.Name -SrcBlob $sourceBlob.Name `
                         -DestContext $destinationStorageContext -DestContainer $destinationContainerName -DestBlob $sourceBlob.Name -Force | Out-Null
