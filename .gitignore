@@ -12,3 +12,5 @@ artifacts
 robots.txt
 syntax: regexp
 (?i)src/.*bin/.*
+*.vs
+*.vscode
