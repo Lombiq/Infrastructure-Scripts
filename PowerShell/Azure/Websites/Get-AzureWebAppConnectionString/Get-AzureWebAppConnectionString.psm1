@@ -28,24 +28,29 @@ function Get-AzureWebAppConnectionString
         [Parameter(Mandatory = $true, HelpMessage = "You need to provide the name of the Web App.")]
         [string] $WebAppName,
 
-        [Parameter(HelpMessage = "The name of the Web App slot. The default value is `"Production`".")]
-        [string] $SlotName = "Production",
+        [Parameter(HelpMessage = "The name of the Web App slot.")]
+        [string] $SlotName,
 
-        [Parameter(HelpMessage = "The name of a connection string. The script will exit with error if there is no connection string defined with the name provided for the Production slot of the given Web App.")]
-        [string] $ConnectionStringName = $(throw "You need to provide a connection string name")
+        [Parameter(Mandatory = $true, HelpMessage = "You need to provide the name of the connection string.")]
+        [string] $ConnectionStringName
     )
 
     Process
     {
         $webApp = Get-AzureWebAppWrapper -ResourceGroupName $ResourceGroupName -WebAppName $WebAppName -SlotName $SlotName
 
-        $connectionString = $webApp.SiteConfig.ConnectionStrings | Where-Object { $PSItem.Name -eq $ConnectionStringName }
+        $connectionString = ($webApp.SiteConfig.ConnectionStrings | Where-Object { $PSItem.Name -eq $ConnectionStringName }).ConnectionString
 
         if ([string]::IsNullOrEmpty($connectionString))
         {
-            throw ("Connection string with the name `"$ConnectionStringName`" doesn't exist!")
+            $connectionString = ($webApp.SiteConfig.AppSettings | Where-Object { $PSItem.Name -eq $ConnectionStringName }).Value
         }
 
-        return $connectionString.ConnectionString
+        if ([string]::IsNullOrEmpty($connectionString))
+        {
+            throw ("Connection String or App Setting with the name `"$ConnectionStringName`" doesn't exist!")
+        }
+
+        return $connectionString
     }
 }
