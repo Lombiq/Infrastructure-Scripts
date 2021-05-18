@@ -1,24 +1,51 @@
 <#
 .Synopsis
-   Downloads every Container and their Blobs from an Azure Blob Storage.
+    Downloads every Container and their Blobs from an Azure Blob Storage.
 
 .DESCRIPTION
-   Downloads every Container and their Blobs from an Azure Blob Storage specified by a Connection String of a Web App.
+    Downloads every Container and their Blobs from an Azure Blob Storage specified by a Connection String of a Web App.
 
 .EXAMPLE
-   Set-AzureWebAppStorageContentFromStorage -ResourceGroupName "CoolStuffHere" -WebAppName "NiceApp" -SourceConnectionStringName "SourceStorage" -DestinationConnectionStringName "DestinationStorage"
+    Set-AzureWebAppStorageContentFromStorage `
+        -ResourceGroupName "CoolStuffHere" `
+        -WebAppName "NiceApp" `
+        -SourceConnectionStringName "SourceStorage" `
+        -DestinationConnectionStringName "DestinationStorage"
 
 .EXAMPLE
-   Set-AzureWebAppStorageContentFromStorage -ResourceGroupName "CoolStuffHere" -WebAppName "NiceApp" -SourceConnectionStringName "SourceStorage" -DestinationConnectionStringName "DestinationStorage" -ContainerWhiteList @("media", "stuff")
+    Set-AzureWebAppStorageContentFromStorage `
+        -ResourceGroupName "CoolStuffHere" `
+        -WebAppName "NiceApp" `
+        -SourceConnectionStringName "SourceStorage" `
+        -DestinationConnectionStringName "DestinationStorage" `
+        -ContainerWhiteList @("media", "stuff")
 
 .EXAMPLE
-   Set-AzureWebAppStorageContentFromStorage -ResourceGroupName "CoolStuffHere" -WebAppName "NiceApp" -SourceConnectionStringName "SourceStorage" -DestinationConnectionStringName "DestinationStorage" -ContainerBlackList @("stuffidontneed")
+    Set-AzureWebAppStorageContentFromStorage `
+        -ResourceGroupName "CoolStuffHere" `
+        -WebAppName "NiceApp" `
+        -SourceConnectionStringName "SourceStorage" `
+        -DestinationConnectionStringName "DestinationStorage" `
+        -ContainerBlackList @("stuffidontneed")
 
 .EXAMPLE
-   Set-AzureWebAppStorageContentFromStorage -ResourceGroupName "CoolStuffHere" -WebAppName "NiceApp" -SourceConnectionStringName "SourceStorage" -DestinationConnectionStringName "DestinationStorage" -ContainerBlackList @("stuffidontneed") -FolderWhiteList @("usefulfolder")
+    Set-AzureWebAppStorageContentFromStorage `
+        -ResourceGroupName "CoolStuffHere" `
+        -WebAppName "NiceApp" `
+        -SourceConnectionStringName "SourceStorage" `
+        -DestinationConnectionStringName "DestinationStorage" `
+        -ContainerBlackList @("stuffidontneed") `
+        -FolderWhiteList @("usefulfolder")
 
 .EXAMPLE
-   Set-AzureWebAppStorageContentFromStorage -ResourceGroupName "CoolStuffHere" -WebAppName "NiceApp" -SourceConnectionStringName "SourceStorage" -DestinationConnectionStringName "DestinationStorage" -ContainerBlackList @("stuffidontneed") -FolderWhiteList @("usefulfolder") -FolderBlackList @("uselessfolderintheusefulfolder")
+    Set-AzureWebAppStorageContentFromStorage `
+        -ResourceGroupName "CoolStuffHere" `
+        -WebAppName "NiceApp" `
+        -SourceConnectionStringName "SourceStorage" `
+        -DestinationConnectionStringName "DestinationStorage" `
+        -ContainerBlackList @("stuffidontneed") `
+        -FolderWhiteList @("usefulfolder") `
+        -FolderBlackList @("uselessfolderintheusefulfolder")
 #>
 
 Import-Module Az.Storage
@@ -30,7 +57,9 @@ function Set-AzureWebAppStorageContentFromStorage
     Param
     (
         [Alias("ResourceGroupName")]
-        [Parameter(Mandatory = $true, HelpMessage = "You need to provide the name of the Resource Group the Source Web App is in.")]
+        [Parameter(
+            Mandatory = $true,
+            HelpMessage = "You need to provide the name of the Resource Group the Source Web App is in.")]
         [string] $SourceResourceGroupName,
 
         [Alias("WebAppName")]
@@ -42,7 +71,9 @@ function Set-AzureWebAppStorageContentFromStorage
         [string] $SourceSlotName,
 
         [Alias("ConnectionStringName")]
-        [Parameter(Mandatory = $true, HelpMessage = "You need to provide a connection string name for the source Storage Account.")]
+        [Parameter(
+            Mandatory = $true,
+            HelpMessage = "You need to provide a connection string name for the source Storage Account.")]
         [string] $SourceConnectionStringName,
 
         [Parameter(HelpMessage = "The name of the Destination Resource Group if it differs from the Source.")]
@@ -100,8 +131,12 @@ function Set-AzureWebAppStorageContentFromStorage
             throw ("The destination Storage Account can not be the same as the source!")
         }
 
-        $sourceStorageContext = New-AzStorageContext -StorageAccountName $sourceStorageConnection.AccountName -StorageAccountKey $sourceStorageConnection.AccountKey
-        $destinationStorageContext = New-AzStorageContext -StorageAccountName $destinationStorageConnection.AccountName -StorageAccountKey $destinationStorageConnection.AccountKey
+        $sourceStorageContext = New-AzStorageContext `
+            -StorageAccountName $sourceStorageConnection.AccountName `
+            -StorageAccountKey $sourceStorageConnection.AccountKey
+        $destinationStorageContext = New-AzStorageContext `
+            -StorageAccountName $destinationStorageConnection.AccountName `
+            -StorageAccountKey $destinationStorageConnection.AccountKey
 
         $containerWhiteListValid = $ContainerWhiteList -and $ContainerWhiteList.Count -gt 0
         $containerBlackListValid = $ContainerBlackList -and $ContainerBlackList.Count -gt 0
@@ -116,7 +151,10 @@ function Set-AzureWebAppStorageContentFromStorage
         # Removing containers on the destination, if necessary.
         if ($RemoveExtraFilesOnDestination)
         {
-            Get-AzStorageContainer -Context $destinationStorageContext | Where-Object { ($sourceContainers | Select-Object -ExpandProperty "Name").Contains($PSItem.Name) } | Remove-AzStorageContainer -Force
+            Get-AzStorageContainer `
+                -Context $destinationStorageContext `
+            | Where-Object { ($sourceContainers | Select-Object -ExpandProperty "Name").Contains($PSItem.Name) } `
+            | Remove-AzStorageContainer -Force
         }
 
         $folderWhiteListValid = $FolderWhiteList -and $FolderWhiteList.Count -gt 0
@@ -127,7 +165,8 @@ function Set-AzureWebAppStorageContentFromStorage
             $destinationContainerName = $DestinationContainerNamePrefix + $sourceContainer.Name + $DestinationContainerNameSuffix
 
             # Creating the container on the destination if it was removed or it doesn't exist yet.
-            if ($RemoveExtraFilesOnDestination -or $null -eq (Get-AzStorageContainer -Context $destinationStorageContext | Where-Object { $_.Name -eq $destinationContainerName }))
+            if ($RemoveExtraFilesOnDestination -or $null -eq `
+                (Get-AzStorageContainer -Context $destinationStorageContext | Where-Object { $_.Name -eq $destinationContainerName }))
             {
                 $containerCreated = $false
 
@@ -136,19 +175,27 @@ function Set-AzureWebAppStorageContentFromStorage
                     try
                     {
                         $containerAccessType = $DestinationContainersAccessType
-                        if ($containerAccessType -eq $null)
+                        if ($null -eq $containerAccessType)
                         {
                             $containerAccessType = $sourceContainer.PublicAccess
                         }
 
                         
-                        New-AzStorageContainer -Context $destinationStorageContext -Permission $containerAccessType -Name $destinationContainerName -ErrorAction Stop
+                        New-AzStorageContainer `
+                            -Context $destinationStorageContext `
+                            -Permission $containerAccessType `
+                            -Name $destinationContainerName -ErrorAction Stop
 
                         $containerCreated = $true
                     }
-                    catch [System.Net.WebException], [System.Exception] # Catching [Microsoft.WindowsAzure.Storage.StorageException] is not sufficient for some reason...
+                    # Catching [Microsoft.WindowsAzure.Storage.StorageException] is not sufficient for some reason...
+                    catch [System.Net.WebException], [System.Exception]
                     {
-                        Write-Warning ("Error during re-creating the container `"" + $sourceContainer.Name + "`". Retrying in a few seconds...`n" + $_.Exception.Message + "`n")
+                        Write-Warning (
+                            "Error during re-creating the container `"" `
+                            + $sourceContainer.Name `
+                            + "`". Retrying in a few seconds...`n" `
+                            + $_.Exception.Message + "`n")
                         Start-Sleep 5
                     }
                 }
@@ -159,8 +206,10 @@ function Set-AzureWebAppStorageContentFromStorage
             {
                 $blobNameElements = $sourceBlob.Name.Split("/", [StringSplitOptions]::RemoveEmptyEntries)
 
-                if ((!$folderWhiteListValid -or ($folderWhiteListValid -and (Compare-Object $blobNameElements $FolderWhiteList -PassThru -IncludeEqual -ExcludeDifferent))) `
-                        -and (!$folderBlackListValid -or ($folderBlackListValid -and (!(Compare-Object $blobNameElements $FolderBlackList -PassThru -IncludeEqual -ExcludeDifferent)))))
+                if ((!$folderWhiteListValid `
+                        -or ($folderWhiteListValid -and (Compare-Object $blobNameElements $FolderWhiteList -PassThru -IncludeEqual -ExcludeDifferent))) `
+                    -and (!$folderBlackListValid `
+                        -or ($folderBlackListValid -and (!(Compare-Object $blobNameElements $FolderBlackList -PassThru -IncludeEqual -ExcludeDifferent)))))
                 {
                     Start-AzStorageBlobCopy -Context $sourceStorageContext -SrcContainer $sourceContainer.Name -SrcBlob $sourceBlob.Name `
                         -DestContext $destinationStorageContext -DestContainer $destinationContainerName -DestBlob $sourceBlob.Name -Force | Out-Null

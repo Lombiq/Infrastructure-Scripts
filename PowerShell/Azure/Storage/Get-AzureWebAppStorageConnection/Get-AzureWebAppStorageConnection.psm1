@@ -1,12 +1,16 @@
 <#
 .Synopsis
-   Returns the account name and key of an Azure Blob Storage based on a connection string stored at a specific Web App.
+    Returns the account name and key of an Azure Blob Storage based on a connection string stored at a specific Web App.
 
 .DESCRIPTION
-   Given an Azure subscription name, a Web App name and a connection string name, the script will retrieve the account name and key of an Azure Blob Storage.
+    Given an Azure subscription name, a Web App name and a connection string name, the script will retrieve the account
+    name and key of an Azure Blob Storage.
 
 .EXAMPLE
-   Get-AzureWebAppStorageConnection -ResourceGroupName "YeahSubscribe" -WebAppName "EverythingIsAnApp" -ConnectionStringName "Nokia"
+    Get-AzureWebAppStorageConnection `
+        -ResourceGroupName "YeahSubscribe" `
+        -WebAppName "EverythingIsAnApp" `
+        -ConnectionStringName "Nokia"
 #>
 
 
@@ -32,7 +36,11 @@ function Get-AzureWebAppStorageConnection
 
     Process
     {
-        $connectionString = Get-AzureWebAppConnectionString -ResourceGroupName $ResourceGroupName -WebAppName $WebAppName -SlotName $SlotName -ConnectionStringName $ConnectionStringName
+        $connectionString = Get-AzureWebAppConnectionString `
+            -ResourceGroupName $ResourceGroupName `
+            -WebAppName $WebAppName `
+            -SlotName $SlotName `
+            -ConnectionStringName $ConnectionStringName
 
         $connectionStringElements = $connectionString.Split(";", [System.StringSplitOptions]::RemoveEmptyEntries)
 

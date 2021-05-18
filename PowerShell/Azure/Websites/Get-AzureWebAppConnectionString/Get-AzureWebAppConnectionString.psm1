@@ -1,15 +1,16 @@
 <#
 .Synopsis
-   Retrieves a connection string from an Azure Web App.
+    Retrieves a connection string from an Azure Web App.
 
 .DESCRIPTION
-   Retrieves a connection string from an Azure Web App identified by the subscription, Web App name (and optional Slot name) and the name of the connection string.
+    Retrieves a connection string from an Azure Web App identified by the subscription, Web App name (and optional Slot
+    name) and the name of the connection string.
 
 .EXAMPLE
-   Get-AzureWebAppWrapper -ResourceGroupName "InsertNameHere" -WebAppName "YummyWebApp" -ConnectionStringName "DatDatabase"
+    Get-AzureWebAppWrapper -ResourceGroupName "InsertNameHere" -WebAppName "YummyWebApp" -ConnectionStringName "DatDatabase"
 
 .EXAMPLE
-   Get-AzureWebAppWrapper -ResourceGroupName "InsertNameHere" -WebAppName "YummyWebApp" -SlotName "Lucky" -ConnectionStringName "DatDatabase"
+    Get-AzureWebAppWrapper -ResourceGroupName "InsertNameHere" -WebAppName "YummyWebApp" -SlotName "Lucky" -ConnectionStringName "DatDatabase"
 #>
 
 

@@ -1,18 +1,19 @@
 <#
 .Synopsis
-   Returns all information of a given Azure Web App.
+    Returns all information of a given Azure Web App.
 
 .DESCRIPTION
-   Returns all information of a given Azure Web App defined by its subscription and name (and optionally the name of the slot).
+    Returns all information of a given Azure Web App defined by its subscription and name (and optionally the name of
+    the slot).
 
 .EXAMPLE
-   Get-AzureWebAppWrapper -SubscriptionName "InsertNameHere" -WebAppName "YummyWebApp"
+    Get-AzureWebAppWrapper -SubscriptionName "InsertNameHere" -WebAppName "YummyWebApp"
 
 .EXAMPLE
-   Get-AzureWebAppWrapper -SubscriptionName "InsertNameHere" -WebAppName "YummyWebApp" -SlotName "Fresh"
+    Get-AzureWebAppWrapper -SubscriptionName "InsertNameHere" -WebAppName "YummyWebApp" -SlotName "Fresh"
 
 .EXAMPLE
-   Get-AzureWebAppWrapper -SubscriptionName "InsertNameHere" -WebAppName "YummyWebApp" -RetryCount 7
+    Get-AzureWebAppWrapper -SubscriptionName "InsertNameHere" -WebAppName "YummyWebApp" -RetryCount 7
 #>
 
 
