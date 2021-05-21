@@ -117,8 +117,8 @@ function Get-AzureWebAppSqlDatabaseConnection
         
 
         return @{
-            DatabaseName = $databaseName
             ServerName = $serverName
+            DatabaseName = $databaseName
             UserId = $userId
             UserName = $userName
             Password = $password

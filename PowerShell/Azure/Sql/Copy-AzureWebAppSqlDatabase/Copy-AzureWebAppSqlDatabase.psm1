@@ -41,7 +41,7 @@ function Copy-AzureWebAppSqlDatabase
         [Alias("ConnectionStringName")]
         [Parameter(
             Mandatory = $true,
-            HelpMessage = "You need to provide a connection string name for the source Storage Account.")]
+            HelpMessage = "You need to provide a connection string name for the source database.")]
         [string] $SourceConnectionStringName,
 
         [Parameter(HelpMessage = "The name of the Destination Resource Group if it differs from the Source.")]

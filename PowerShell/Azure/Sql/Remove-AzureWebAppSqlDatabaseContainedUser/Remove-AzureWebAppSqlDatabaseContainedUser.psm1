@@ -1,12 +1,17 @@
 <#
 .Synopsis
-   Removes a contained user from a SQL Azure database.
+    Removes a contained user from a SQL Azure database.
 
 .DESCRIPTION
-   Removes a contained user from a SQL Azure database specified by a Subscription name, a Web App name, the database's Connection String name and a Connection String name that provides the user's name.
+    Removes a contained user from a SQL Azure database specified by a Subscription name, a Web App (and Slot) name and
+    the Connection String name of the database and the contained user.
 
 .EXAMPLE
-   Remove-AzureWebAppSqlDatabaseContainedUser -ResourceGroupName "LikeAndSubscribe" -WebAppName "AppsEverywhere" -ConnectionStringName "Lombiq.Hosting.ShellManagement.ShellSettings.RootConnectionString.Localhost-master" -UserConnectionStringName "Lombiq.Hosting.ShellManagement.ShellSettings.RootConnectionString"
+    Remove-AzureWebAppSqlDatabaseContainedUser `
+        -ResourceGroupName "LikeAndSubscribe" `
+        -WebAppName "AppsEverywhere" `
+        -ConnectionStringName "Lombiq.Hosting.ShellManagement.ShellSettings.RootConnectionString.Localhost-master" `
+        -UserConnectionStringName "Lombiq.Hosting.ShellManagement.ShellSettings.RootConnectionString"
 #>
 
 
@@ -16,30 +21,67 @@ function Remove-AzureWebAppSqlDatabaseContainedUser
     [Alias("rawasdcu")]
     Param
     (
-        [Parameter(Mandatory = $true, HelpMessage = "The name of the Resource Group the Web App is in.")]
-        [string] $ResourceGroupName = $(throw "You need to provide the name of the Resource Group."),
+        [Alias("ResourceGroupName")]
+        [Parameter(
+            Mandatory = $true,
+            HelpMessage = "You need to provide the name of the Resource Group the database's Web App is in.")]
+        [string] $DatabaseResourceGroupName,
 
-        [Parameter(Mandatory = $true, HelpMessage = "The name of the Azure Web App. The script throws exception if the Web App doesn't exist on the given subscription.")]
-        [string] $WebAppName = $(throw "You need to provide the name of the Web App."),
+        [Alias("WebAppName")]
+        [Parameter(Mandatory = $true, HelpMessage = "You need to provide the name of the Web App.")]
+        [string] $DatabaseWebAppName,
+        
+        [Alias("SlotName")]
+        [Parameter(HelpMessage = "The name of the Source Web App slot.")]
+        [string] $DatabaseSlotName,
 
-        [Parameter(HelpMessage = "The name of the connection string of the database. The script will exit with error if there is no connection string defined with the name provided for the Production slot of the given Web App.")]
-        [string] $ConnectionStringName = $(throw "You need to provide a connection string name for the database to run the query with."),
+        [Alias("ConnectionStringName")]
+        [Parameter(
+            Mandatory = $true,
+            HelpMessage = "You need to provide a connection string name for the executing user.")]
+        [string] $DatabaseConnectionStringName,
 
-        [Parameter(HelpMessage = "The name of the connection string that holds the user's name to remove from the database. The script will exit with error if there is no connection string defined with the name provided for the Production slot of the given Web App.")]
-        [string] $UserConnectionStringName = $(throw "You need to provide a connection string name for the user name.")
+        [Parameter(HelpMessage = "The name of the user connection string's Resource Group if it differs from the Source.")]
+        [string] $UserResourceGroupName = $DatabaseResourceGroupName,
+
+        [Parameter(HelpMessage = "The name of the user connection string's Web App if it differs from the Source.")]
+        [string] $UserWebAppName = $DatabaseWebAppName,
+        
+        [Parameter(HelpMessage = "The name of the user connection string's Web App Slot if it differs from the Source.")]
+        [string] $UserSlotName = $DatabaseSlotName,
+
+        [Parameter(HelpMessage = "The name of the user connection string if it differs from the one for executing.")]
+        [string] $UserConnectionStringName = $DatabaseConnectionStringName
     )
 
     Process
     {
-        if ($ConnectionStringName -eq $UserConnectionStringName)
-        {
-            throw ("The database and user connection string names can not be the same!")
-        }
+        $databaseConnection = Get-AzureWebAppSqlDatabaseConnection `
+            -ResourceGroupName $DatabaseResourceGroupName `
+            -WebAppName $DatabaseWebAppName `
+            -SlotName $DatabaseSlotName `
+            -ConnectionStringName $DatabaseConnectionStringName
+        
+        $userDatabaseConnection = Get-AzureWebAppSqlDatabaseConnection `
+            -ResourceGroupName $UserResourceGroupName `
+            -WebAppName $UserWebAppName `
+            -SlotName $UserSlotName `
+            -ConnectionStringName $UserConnectionStringName
 
-        $userDatabaseConnection = Get-AzureWebAppSqlDatabaseConnection -ResourceGroupName $ResourceGroupName -WebAppName $WebAppName -ConnectionStringName $UserConnectionStringName
+        if ($databaseConnection.ServerName -ne $userDatabaseConnection.ServerName `
+                -or $databaseConnection.DatabaseName -ne $userDatabaseConnection.DatabaseName)
+        {
+            throw ("The contained user's connection string must connect to the same server and database as the " +
+                "database connection that executes the query!")
+        }
 
         $query = "DROP USER IF EXISTS [$($userDatabaseConnection.UserName)];"
 
-        return Invoke-AzureWebAppSqlQuery -ResourceGroupName $ResourceGroupName -WebAppName $WebAppName -ConnectionStringName $ConnectionStringName -Query $query
+        return Invoke-AzureWebAppSqlQuery `
+            -ResourceGroupName $DatabaseResourceGroupName `
+            -WebAppName $DatabaseWebAppName `
+            -SlotName $DatabaseSlotName `
+            -ConnectionStringName $DatabaseConnectionStringName `
+            -Query $query
     }
 }
