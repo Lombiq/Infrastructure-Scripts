@@ -85,7 +85,7 @@ function Invoke-AzureWebAppSqlDatabaseExport
 
         Write-Host ("`n*****`nDatabase export started with the following Status Link:`n$($exportRequest.OperationStatusLink)`n*****")
 
-        $previousStatus = $null
+        $status = $previousStatus = $null
 
         do
         {
@@ -105,7 +105,12 @@ function Invoke-AzureWebAppSqlDatabaseExport
 
             $previousStatus = $status
         }
-        while ($status.Status -ne "Succeeded")
+        while ($status.Status -eq "InProgress")
+
+        if ($status.Status -ne "Succeeded")
+        {
+            throw ("Database export finished without success!")
+        }
 
         Write-Host ("*****`nDatabase export finished!`n*****`n")
 
