@@ -1,12 +1,21 @@
 <#
 .Synopsis
-   Exports a database of an Azure Web App to Blob Storage snychronously and downloads it to a specified destination in a repository.
+    Exports a database of an Azure Web App to Blob Storage snychronously and downloads it to a specified destination in
+    a repository.
 
 .DESCRIPTION
-   Exports a database of an Azure Web App to Blob Storage snychronously and downloads it to a specified destination in a repository.
+    Exports a database of an Azure Web App to Blob Storage snychronously and downloads it to a specified destination in
+    a repository.
 
 .EXAMPLE
-   Save-AzureWebAppSqlDatabaseToRepository -ResourceGroupName "CoolStuffHere" -WebAppName "NiceApp" -DatabaseConnectionStringName "Lombiq.Hosting.ShellManagement.ShellSettings.RootConnectionString" -StorageConnectionStringName "Orchard.Azure.Media.StorageConnectionString" -ContainerName "database" -RepositoryPath "C:\ItsARepo" -RepositorySubPath "Database"
+    Save-AzureWebAppSqlDatabaseToRepository `
+        -ResourceGroupName "CoolStuffHere" `
+        -WebAppName "NiceApp" `
+        -DatabaseConnectionStringName "Lombiq.Hosting.ShellManagement.ShellSettings.RootConnectionString" `
+        -StorageConnectionStringName "Orchard.Azure.Media.StorageConnectionString" `
+        -ContainerName "database" `
+        -RepositoryPath "C:\ItsARepo" `
+        -RepositorySubPath "Database"
 #>
 
 
@@ -16,26 +25,44 @@ function Save-AzureWebAppSqlDatabaseToRepository
     [Alias("iader")]
     Param
     (
-        [Parameter(Mandatory = $true, HelpMessage = "The name of the Resource Group the Web App is in.")]
-        [string] $ResourceGroupName = $(throw "You need to provide the name of the Resource Group."),
+        [Alias("ResourceGroupName")]
+        [Parameter(
+            Mandatory = $true,
+            HelpMessage = "You need to provide the name of the Resource Group the database's Web App is in.")]
+        [string] $DatabaseResourceGroupName,
 
-        [Parameter(Mandatory = $true, HelpMessage = "The name of the Azure Web App. The script throws exception if the Web App doesn't exist on the given subscription.")]
-        [string] $WebAppName = $(throw "You need to provide the name of the Web App."),
+        [Alias("WebAppName")]
+        [Parameter(Mandatory = $true, HelpMessage = "You need to provide the name of the Web App.")]
+        [string] $DatabaseWebAppName,
+        
+        [Parameter(HelpMessage = "The name of the Web App slot.")]
+        [string] $DatabaseSlotName,
 
-        [Parameter(Mandatory = $true, HelpMessage = "The name of a connection string that identifies the database. The script will exit with error if there is no connection string defined with the name provided for the Production slot of the given Web App.")]
-        [string] $DatabaseConnectionStringName = $(throw "You need to provide a connection string name for the database."),
+        [Parameter(
+            Mandatory = $true,
+            HelpMessage = "You need to provide a connection string name for the database.")]
+        [string] $DatabaseConnectionStringName,
 
-        [Parameter(Mandatory = $true, HelpMessage = "The name of a connection string that identifies the storage to export the database to. The script will exit with error if there is no connection string defined with the name provided for the Production slot of the given Web App.")]
-        [string] $StorageConnectionStringName = $(throw "You need to provide a connection string name for the storage."),
+        [Parameter(HelpMessage = "The name of the storage connection string's Resource Group if it differs from the database's.")]
+        [string] $StorageResourceGroupName = $DatabaseResourceGroupName,
 
-        [Parameter(Mandatory = $true, HelpMessage = "The name of a container in the storage to export the database to.")]
-        [string] $ContainerName = $(throw "You need to provide a name for the container."),
+        [Parameter(HelpMessage = "The name of the storage connection string's Web App if it differs from the database's.")]
+        [string] $StorageWebAppName = $DatabaseWebAppName,
+        
+        [Parameter(HelpMessage = "The name of the storage connection string's Web App Slot if it differs from the database's.")]
+        [string] $StorageSlotName = $DatabaseSlotName,
 
-        [Parameter(Mandatory = $true, HelpMessage = "The name of the blob in the container to create.")]
-        [string] $BlobName = $(throw "You need to provide a name for the blob."),
+        [Parameter(Mandatory = $true, HelpMessage = "You need to provide a connection string name for the storage.")]
+        [string] $StorageConnectionStringName,
 
-        [Parameter(Mandatory = $true, HelpMessage = "The path of the root of the repository where the database backup will be created.")]
-        [string] $RepositoryPath = $(throw "You need to provide a path to the repository."),
+        [Parameter(Mandatory = $true, HelpMessage = "You need to provide the name of the container in the storage to export the database to.")]
+        [string] $ContainerName,
+
+        [Parameter(Mandatory = $true, HelpMessage = "You need to provide a name for the blob in the container to create.")]
+        [string] $BlobName,
+
+        [Parameter(Mandatory = $true, HelpMessage = "You need to provide a path to the repository.")]
+        [string] $RepositoryPath,
 
         [Parameter(HelpMessage = "Optional: The relative path to the subfolder in the repository where the database backup will be created.")]
         [string] $RepositorySubPath,
@@ -64,10 +91,9 @@ function Save-AzureWebAppSqlDatabaseToRepository
         }
 
 
-
         try
         {
-            cd "$RepositoryPath"
+            Set-Location "$RepositoryPath"
             git pull
         }
         catch [Exception]
@@ -76,20 +102,28 @@ function Save-AzureWebAppSqlDatabaseToRepository
         }
 
 
-
-        Save-AzureWebAppSqlDatabase -ResourceGroupName $ResourceGroupName -WebAppName $WebAppName -DatabaseConnectionStringName $DatabaseConnectionStringName `
-            -StorageConnectionStringName $StorageConnectionStringName -ContainerName $ContainerName -BlobName $BlobName -Destination $destination
-
+        Save-AzureWebAppSqlDatabase `
+            -DatabaseResourceGroupName $DatabaseResourceGroupName `
+            -DatabaseWebAppName $DatabaseWebAppName `
+            -DatabaseSlotName $DatabaseSlotName `
+            -DatabaseConnectionStringName $DatabaseConnectionStringName `
+            -StorageResourceGroupName $StorageResourceGroupName `
+            -StorageWebAppName $StorageWebAppName `
+            -StorageSlotName $StorageSlotName `
+            -StorageConnectionStringName $StorageConnectionStringName `
+            -ContainerName $ContainerName `
+            -BlobName $BlobName `
+            -Destination $destination
 
 
         try
         {
             if ([string]::IsNullOrEmpty($CommitMessage))
             {
-                $CommitMessage = "Database backup for $WebAppName"
+                $CommitMessage = "Database backup for $DatabaseWebAppName"
             }
 
-            cd "$RepositoryPath"
+            Set-Location "$RepositoryPath"
             git add .
             git commit --all --message="$CommitMessage"
             git push origin master

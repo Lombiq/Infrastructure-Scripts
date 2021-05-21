@@ -41,16 +41,16 @@ function Add-AzureWebAppSqlDatabaseContainedUser
             HelpMessage = "You need to provide a connection string name for the executing user.")]
         [string] $DatabaseConnectionStringName,
 
-        [Parameter(HelpMessage = "The name of the user connection string's Resource Group if it differs from the Source.")]
+        [Parameter(HelpMessage = "The name of the user connection string's Resource Group if it differs from the database's.")]
         [string] $UserResourceGroupName = $DatabaseResourceGroupName,
 
-        [Parameter(HelpMessage = "The name of the user connection string's Web App if it differs from the Source.")]
+        [Parameter(HelpMessage = "The name of the user connection string's Web App if it differs from the database's.")]
         [string] $UserWebAppName = $DatabaseWebAppName,
         
-        [Parameter(HelpMessage = "The name of the user connection string's Web App Slot if it differs from the Source.")]
+        [Parameter(HelpMessage = "The name of the user connection string's Web App Slot if it differs from the database's.")]
         [string] $UserSlotName = $DatabaseSlotName,
 
-        [Parameter(HelpMessage = "The name of the user connection string if it differs from the one for executing.")]
+        [Parameter(HelpMessage = "The name of the user connection string if it differs from the database's.")]
         [string] $UserConnectionStringName = $DatabaseConnectionStringName,
 
         [Parameter(HelpMessage = "The role of the user to be added to the database. The default value is `"db_owner`".")]

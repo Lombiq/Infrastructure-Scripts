@@ -93,7 +93,8 @@ function Set-AzureWebAppSqlDatabaseServiceObjective
                 "the server `"$($database.ServerName)`" from `"$($database.Edition) $($database.CurrentServiceObjectiveName)`" " +
                 "to `"$($Edition) $($ServiceObjectiveName)`"...`n*****")
 
-            return Set-AzSqlDatabase -ResourceGroupName $ResourceGroupName `
+            return Set-AzSqlDatabase `
+                -ResourceGroupName $ResourceGroupName `
                 -ServerName $database.ServerName `
                 -DatabaseName $database.DatabaseName `
                 -RequestedServiceObjectiveName $ServiceObjectiveName `
