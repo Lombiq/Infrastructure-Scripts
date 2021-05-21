@@ -11,6 +11,9 @@ function Invoke-AzureWebAppSqlQuery
 
         [Parameter(Mandatory = $true, HelpMessage = "You need to provide the name of the Web App.")]
         [string] $WebAppName,
+        
+        [Parameter(HelpMessage = "The name of the Web App slot.")]
+        [string] $SlotName,
 
         [Parameter(Mandatory = $true, HelpMessage = "You need to provide a connection string name.")]
         [string] $ConnectionStringName,
@@ -24,6 +27,7 @@ function Invoke-AzureWebAppSqlQuery
         $databaseConnection = Get-AzureWebAppSqlDatabaseConnection `
             -ResourceGroupName $ResourceGroupName `
             -WebAppName $WebAppName `
+            -SlotName $SlotName `
             -ConnectionStringName $ConnectionStringName
 
         return Invoke-Sqlcmd `

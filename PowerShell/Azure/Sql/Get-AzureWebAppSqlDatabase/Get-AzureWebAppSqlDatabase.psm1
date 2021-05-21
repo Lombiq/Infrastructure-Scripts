@@ -3,11 +3,21 @@
     Returns information of an Azure SQL database based on a connection string stored at a specific Web App.
 
 .DESCRIPTION
-    Given an Azure subscription name, a Web App name and a connection string name, the script will retrieve information
-    about a specific Azure SQL database.
+    Given an Azure subscription name, a Web App name, an optional Web App Slot Name and a connection string name, the
+    script will retrieve information about a specific Azure SQL database.
 
 .EXAMPLE
-    Get-AzureWebAppSqlDatabase -ResourceGroupName "YeahSubscribe" -WebAppName "EverythingIsAnApp" -ConnectionStringName "Nokia"
+    Get-AzureWebAppSqlDatabase `
+        -ResourceGroupName "YeahSubscribe" `
+        -WebAppName "EverythingIsAnApp" `
+        -ConnectionStringName "Nokia"
+
+.EXAMPLE
+    Get-AzureWebAppSqlDatabase `
+        -ResourceGroupName "YeahSubscribe" `
+        -WebAppName "EverythingIsAnApp" `
+        -SlotName "Staging" `
+        -ConnectionStringName "Nokia"
 #>
 
 
@@ -25,6 +35,9 @@ function Get-AzureWebAppSqlDatabase
 
         [Parameter(Mandatory = $true, HelpMessage = "You need to provide the name of the Web App.")]
         [string] $WebAppName,
+        
+        [Parameter(HelpMessage = "The name of the Web App slot.")]
+        [string] $SlotName,
 
         [Parameter(Mandatory = $true, HelpMessage = "You need to provide a connection string name.")]
         [string] $ConnectionStringName
@@ -35,6 +48,7 @@ function Get-AzureWebAppSqlDatabase
         $databaseConnection = Get-AzureWebAppSqlDatabaseConnection `
             -ResourceGroupName $ResourceGroupName `
             -WebAppName $WebAppName `
+            -SlotName $SlotName `
             -ConnectionStringName $ConnectionStringName
         
         return Get-AzSqlDatabase `

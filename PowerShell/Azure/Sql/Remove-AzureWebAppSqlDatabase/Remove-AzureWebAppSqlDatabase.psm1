@@ -3,11 +3,21 @@
     Removes an Azure SQL database based on a connection string stored at a specific Web App.
 
 .DESCRIPTION
-    Given an Azure subscription name, a Web App name and a connection string name, the script will remove a specific
-    Azure SQL database.
+    Given an Azure subscription name, a Web App name, an optional Web App Slot Name and a connection string name, the
+    script will remove a specific Azure SQL database.
 
 .EXAMPLE
-    Remove-AzureWebAppSqlDatabase -ResourceGroupName "YeahSubscribe" -WebAppName "EverythingIsAnApp" -ConnectionStringName "Nokia"
+    Remove-AzureWebAppSqlDatabase `
+        -ResourceGroupName "YeahSubscribe" `
+        -WebAppName "EverythingIsAnApp" `
+        -ConnectionStringName "Nokia"
+
+.EXAMPLE
+    Remove-AzureWebAppSqlDatabase `
+        -ResourceGroupName "YeahSubscribe" `
+        -WebAppName "EverythingIsAnApp" `
+        -SlotName "Staging" `
+        -ConnectionStringName "Nokia"
 #>
 
 
@@ -25,6 +35,9 @@ function Remove-AzureWebAppSqlDatabase
 
         [Parameter(Mandatory = $true, HelpMessage = "You need to provide the name of the Web App.")]
         [string] $WebAppName,
+        
+        [Parameter(HelpMessage = "The name of the Web App slot.")]
+        [string] $SlotName,
 
         [Parameter(Mandatory = $true, HelpMessage = "You need to provide a connection string name.")]
         [string] $ConnectionStringName
@@ -32,6 +45,7 @@ function Remove-AzureWebAppSqlDatabase
 
     Process
     {
+        # Preventing deleting the Production root database accordint to Orchard 1 conventions.
         if ($ConnectionStringName -eq "Lombiq.Hosting.ShellManagement.ShellSettings.RootConnectionString" `
                 -or $ConnectionStringName.EndsWith(".Production"))
         {
@@ -41,6 +55,7 @@ function Remove-AzureWebAppSqlDatabase
         $database = Get-AzureWebAppSqlDatabase `
             -ResourceGroupName $ResourceGroupName `
             -WebAppName $WebAppName `
+            -SlotName $SlotName `
             -ConnectionStringName $ConnectionStringName
         
         if ($null -ne $database)
