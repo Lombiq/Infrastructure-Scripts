@@ -88,10 +88,12 @@ function Set-AzureWebAppStorageContentFromStorage
         [Parameter(HelpMessage = "The name of the Destination Connection String if it differs from the Source.")]
         [string] $DestinationConnectionStringName = $SourceConnectionStringName,
 
-        [Parameter(HelpMessage = "A list of names of Blob Containers to include. When valid values are provided, it cancels out `"ContainerBlackList`".")]
+        [Parameter(HelpMessage = "A list of names of Blob Containers to include. When valid values are provided, " +
+            "it cancels out `"ContainerBlackList`".")]
         [string[]] $ContainerWhiteList = @(),
 
-        [Parameter(HelpMessage = "A list of names of Blob Containers to exclude. When valid values are provided for `"ContainerWhiteList`", then `"ContainerBlackList`" is not taken into consideration.")]
+        [Parameter(HelpMessage = "A list of names of Blob Containers to exclude. When valid values are provided " +
+            "for `"ContainerWhiteList`", then `"ContainerBlackList`" is not taken into consideration.")]
         [string[]] $ContainerBlackList = @(),
 
         [Parameter(HelpMessage = "A list of folder names to include. Applied before `"FolderBlackList`".")]
@@ -100,7 +102,8 @@ function Set-AzureWebAppStorageContentFromStorage
         [Parameter(HelpMessage = "A list of folder names to exclude. Applied after `"FolderWhiteList`".")]
         [string[]] $FolderBlackList = @(),
 
-        [Parameter(HelpMessage = "Determines whether the destination containers should be deleted and re-created before copying the blobs from the source containers.")]
+        [Parameter(HelpMessage = "Determines whether the destination containers should be deleted and re-created " +
+            "before copying the blobs from the source containers.")]
         [bool] $RemoveExtraFilesOnDestination = $true,
         
         [Parameter(HelpMessage = "Overrides the access level of the containers, but only affects those that are (re-)created.")]
