@@ -68,11 +68,9 @@ function Remove-AzureWebAppSqlDatabaseContainedUser
             -SlotName $UserSlotName `
             -ConnectionStringName $UserConnectionStringName
 
-        if ($databaseConnection.ServerName -ne $userDatabaseConnection.ServerName `
-                -or $databaseConnection.DatabaseName -ne $userDatabaseConnection.DatabaseName)
+        if ($databaseConnection.UserName -eq $userDatabaseConnection.UserName)
         {
-            throw ("The contained user's connection string must connect to the same server and database as the " +
-                "database connection that executes the query!")
+            throw ("The database connection's user cannot delete itself!")
         }
 
         $query = "DROP USER IF EXISTS [$($userDatabaseConnection.UserName)];"
