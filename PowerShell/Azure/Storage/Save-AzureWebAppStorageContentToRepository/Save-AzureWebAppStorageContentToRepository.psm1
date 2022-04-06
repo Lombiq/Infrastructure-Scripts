@@ -29,13 +29,13 @@ function Save-AzureWebAppStorageContentToRepository
     Param
     (
         [Parameter(Mandatory = $true, HelpMessage = "The name of the Resource Group the Web App is in.")]
-        [string] $ResourceGroupName = $(throw "You need to provide the name of the Resource Group."),
+        [string] $ResourceGroupName,
 
         [Parameter(Mandatory = $true, HelpMessage = "The name of the Azure Web App. The script throws exception if the Web App doesn't exist on the given subscription.")]
-        [string] $WebAppName = $(throw "You need to provide the name of the Web App."),
+        [string] $WebAppName,
 
         [Parameter(Mandatory = $true, HelpMessage = "The name of a connection string that identifies the Storage Account. The script will exit with error if there is no connection string defined with the name provided for the Production slot of the given Web App.")]
-        [string] $ConnectionStringName = $(throw "You need to provide a connection string name for the Storage Account."),
+        [string] $ConnectionStringName,
 
         [Parameter(HelpMessage = "A list of names of Blob Containers to include. When valid values are provided, it cancels out `"ContainerBlackList`".")]
         [string[]] $ContainerWhiteList = @(),
@@ -82,7 +82,7 @@ function Save-AzureWebAppStorageContentToRepository
 
         try
         {
-            cd "$RepositoryPath"
+            Set-Location "$RepositoryPath"
             git pull
         }
         catch [Exception]
@@ -113,7 +113,7 @@ function Save-AzureWebAppStorageContentToRepository
                 $CommitMessage = "Storage backup for $WebAppName"
             }
 
-            cd "$RepositoryPath"
+            Set-Location "$RepositoryPath"
             git add .
             git commit --all --message="$CommitMessage"
             git push origin master
