@@ -21,6 +21,8 @@ function Connect-AzServicePrincipal
 
     Process
     {
+        Get-Rekt
+
         function AzLogin
         {
             Connect-AzAccount `
