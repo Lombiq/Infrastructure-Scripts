@@ -104,7 +104,7 @@ function Save-AzureWebAppStorageContentToRepository
 
 
 
-        RecursiveRenameToAscii -Path $destination
+        Rename-ChildItemsToAsciiRecursively -Path $destination
 
         try
         {
@@ -126,36 +126,6 @@ function Save-AzureWebAppStorageContentToRepository
         catch [Exception]
         {
             throw ("Could not commit/push to the repository at `"$RepositoryPath`"!")
-        }
-    }
-}
-
-
-
-function RecursiveRenameToAscii
-{
-    Param
-    (
-        [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 0)]
-        [string] $Path
-    )
-
-    Process
-    {
-        foreach ($item in Get-ChildItem $Path)
-        {
-            if ($item.PSIsContainer)
-            {
-                RecursiveRenameToAscii -Path $item.FullName
-            }
-
-            $asciiName = [System.Text.Encoding]::ASCII.GetString([System.Text.Encoding]::ASCII.GetBytes($item.Name)).Replace('?', '_')
-
-            if ($item.Name -ne $asciiName)
-            {
-                Write-Host ("Renaming `"" + $item.FullName + "`".")
-                $item | Rename-Item -NewName $asciiName
-            }
         }
     }
 }
