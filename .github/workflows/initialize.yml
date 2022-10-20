@@ -12,19 +12,9 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest]
+        os: [ubuntu-latest, windows-latest]
     steps:
       - uses: actions/checkout@v3
-      - name: Setup
-        run: |
-          (Resolve-Path "${{ github.workspace }}/../..").Path >> $Env:GITHUB_PATH
-      - name: Check GitHub Path
-        run: |
-          $Env:GITHUB_PATH -split [IO.Path]::PathSeparator
-      - name: Modify PSModulePath
-        run: |
-          Set-Location (Resolve-Path "${{ github.workspace }}/../..").Path
-          ./Utility/AddPathToPSModulePath.ps1
       - name: Check PSModulePath
         run: |
           [Environment]::GetEnvironmentVariable("PSModulePath", "Machine") -split [IO.Path]::PathSeparator
