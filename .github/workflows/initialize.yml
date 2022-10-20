@@ -18,6 +18,13 @@ jobs:
       - name: Setup
         run: |
           (Resolve-Path "${{ github.workspace }}/../..").Path >> $Env:GITHUB_PATH
-      - name: Test
+      - name: Check GitHub Path
         run: |
-          Get-Rekt
+          $Env:GITHUB_PATH -split [IO.Path]::PathSeparator
+      - name: Modify PSModulePath
+        run: |
+          Set-Location (Resolve-Path "${{ github.workspace }}/../..").Path
+          ./Utility/AddPathToPSModulePath.ps1
+      - name: Check PSModulePath
+        run: |
+          [Environment]::GetEnvironmentVariable("PSModulePath", "Machine") -split [IO.Path]::PathSeparator
