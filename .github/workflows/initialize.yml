@@ -17,7 +17,7 @@ jobs:
       - uses: actions/checkout@v3
       - name: Setup
         run: |
-          (Resolve-Path "${{ github.action_path }}/../..").Path >> $Env:GITHUB_PATH
+          (Resolve-Path "${{ github.workspace }}/../..").Path >> $Env:GITHUB_PATH
       - name: Test
         run: |
           Get-Rekt
