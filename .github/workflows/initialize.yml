@@ -12,12 +12,12 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-latest]
     steps:
       - uses: actions/checkout@v3
       - name: Setup
         run: |
-          "${{ github.action_path }}" >> $Env:GITHUB_PATH
+          (Resolve-Path "${{ github.action_path }}/../..").Path >> $Env:GITHUB_PATH
       - name: Test
         run: |
           Get-Rekt
