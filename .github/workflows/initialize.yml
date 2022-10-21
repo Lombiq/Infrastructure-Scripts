@@ -23,3 +23,6 @@ jobs:
             New-Item -ItemType Directory -Path $destinationPath -Name $modulePath.Directory.Name
             Copy-Item $modulePath -Destination (Join-Path -Path $destinationPath -ChildPath $modulePath.Directory.Name)
           }
+      - name: Test
+        run: |
+          Get-Help Get-AzureWebAppWrapper
