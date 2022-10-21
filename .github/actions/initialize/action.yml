@@ -1,0 +1,17 @@
+name: Initialize
+
+description: Copies the PowerShell modules to a location defined in PSModulePath (since GHA doesn't allow manipulating
+environment variables).
+
+runs:
+  using: "composite"
+  steps:
+    - name: Copy modules
+      shell: pwsh
+      run: |
+        $destinationPath = ($env:PSModulePath -split [IO.Path]::PathSeparator)[0]
+        foreach ($modulePath in (Get-ChildItem "${{ github.workspace }}" -Recurse -Include "*.psm1"))
+        {
+          New-Item -ItemType Directory -Path $destinationPath -Name $modulePath.Directory.Name
+          Copy-Item $modulePath -Destination (Join-Path -Path $destinationPath -ChildPath $modulePath.Directory.Name)
+        }
