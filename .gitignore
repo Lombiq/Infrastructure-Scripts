@@ -1,16 +1,17 @@
-desktop.ini
+.vs/
+.idea/
+.vscode/
 obj/
+bin/
+artifacts/
+wwwroot/
+node_modules/
+
 *.suo
 *.sln.cache
 *.orig
 *.user
 *Thumbs.db
-build
-buildazure
-buildtasks
-artifacts
-robots.txt
-syntax: regexp
-(?i)src/.*bin/.*
-*.vs
-*.vscode
+
+.pnpm-debug.log
+desktop.ini
