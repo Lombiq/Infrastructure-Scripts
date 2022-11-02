@@ -58,12 +58,12 @@ function Get-AzureWebAppWrapper
                 {
                     $webAppSlot = Get-AzWebApp @parameters
 
-                    echo @parameters
+                    echo $parameters
                 }
                 else
                 {
                     $webAppSlot = Get-AzWebAppSlot @parameters -Slot $SlotName
-                    echo @parameters
+                    echo $parameters
                     echo $SlotName
                 }
             }
