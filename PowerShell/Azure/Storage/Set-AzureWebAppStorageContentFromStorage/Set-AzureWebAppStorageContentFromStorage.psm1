@@ -129,7 +129,7 @@ function Set-AzureWebAppStorageContentFromStorage
             -WebAppName $DestinationWebAppName `
             -SlotName $DestinationSlotName `
             -ConnectionStringName $DestinationConnectionStringName
-
+        echo "2"
         if ($sourceStorageConnection.AccountName -eq $destinationStorageConnection.AccountName)
         {
             throw ("The destination Storage Account can not be the same as the source!")
@@ -141,7 +141,7 @@ function Set-AzureWebAppStorageContentFromStorage
         $destinationStorageContext = New-AzStorageContext `
             -StorageAccountName $destinationStorageConnection.AccountName `
             -StorageAccountKey $destinationStorageConnection.AccountKey
-        echo "2"
+        echo "2.1"
         $containerWhiteListValid = $ContainerWhiteList -and $ContainerWhiteList.Count -gt 0
         $containerBlackListValid = $ContainerBlackList -and $ContainerBlackList.Count -gt 0
         
