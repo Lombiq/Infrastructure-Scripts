@@ -57,10 +57,14 @@ function Get-AzureWebAppWrapper
                 if ([string]::IsNullOrEmpty($SlotName))
                 {
                     $webAppSlot = Get-AzWebApp @parameters
+
+                    echo @parameters
                 }
                 else
                 {
                     $webAppSlot = Get-AzWebAppSlot @parameters -Slot $SlotName
+                    echo @parameters
+                    echo $SlotName
                 }
             }
             catch
