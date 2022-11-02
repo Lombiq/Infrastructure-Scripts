@@ -71,8 +71,7 @@ function Get-AzureWebAppWrapper
                 }
 
                 $retryCounter++
-                Write-Warning $ResourceGroupName
-                Write-Warning $SlotName
+
                 Write-Warning "Attempt #$retryCounter to retrieve the Web App `"$WebAppName`" failed. Retrying..."
             }
         }
