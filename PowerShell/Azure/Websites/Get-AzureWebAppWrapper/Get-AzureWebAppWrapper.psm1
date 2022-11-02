@@ -53,7 +53,6 @@ function Get-AzureWebAppWrapper
                     Name = $WebAppName
                     ErrorAction = "Stop"
                 }
-                echo $parameters
 
                 if ([string]::IsNullOrEmpty($SlotName))
                 {
@@ -72,7 +71,8 @@ function Get-AzureWebAppWrapper
                 }
 
                 $retryCounter++
-
+                echo $ResourceGroupName
+                echo $SlotName
                 Write-Warning "Attempt #$retryCounter to retrieve the Web App `"$WebAppName`" failed. Retrying..."
             }
         }
