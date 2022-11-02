@@ -118,6 +118,7 @@ function Set-AzureWebAppStorageContentFromStorage
 
     Process
     {
+        echo "1"
         $sourceStorageConnection = Get-AzureWebAppStorageConnection `
             -ResourceGroupName $SourceResourceGroupName `
             -WebAppName $SourceWebAppName `
@@ -140,7 +141,7 @@ function Set-AzureWebAppStorageContentFromStorage
         $destinationStorageContext = New-AzStorageContext `
             -StorageAccountName $destinationStorageConnection.AccountName `
             -StorageAccountKey $destinationStorageConnection.AccountKey
-
+        echo "2"
         $containerWhiteListValid = $ContainerWhiteList -and $ContainerWhiteList.Count -gt 0
         $containerBlackListValid = $ContainerBlackList -and $ContainerBlackList.Count -gt 0
         
@@ -150,7 +151,7 @@ function Set-AzureWebAppStorageContentFromStorage
             ((!$containerWhiteListValid -or ($containerWhiteListValid -and $ContainerWhiteList.Contains($PSItem.Name))) `
                     -and ($containerWhiteListValid -or (!$containerBlackListValid -or !$ContainerBlackList.Contains($PSItem.Name)))) `
         }
-
+        echo "3"
         # Removing containers on the destination, if necessary.
         if ($RemoveExtraFilesOnDestination)
         {
@@ -162,7 +163,7 @@ function Set-AzureWebAppStorageContentFromStorage
 
         $folderWhiteListValid = $FolderWhiteList -and $FolderWhiteList.Count -gt 0
         $folderBlackListValid = $FolderBlackList -and $FolderBlackList.Count -gt 0
-
+        echo "4"
         foreach ($sourceContainer in $sourceContainers)
         {
             $destinationContainerName = $DestinationContainerNamePrefix + $sourceContainer.Name + $DestinationContainerNameSuffix
