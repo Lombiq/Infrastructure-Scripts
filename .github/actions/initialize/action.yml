@@ -17,3 +17,10 @@ runs:
           New-Item -ItemType Directory -Path $destinationPath -Name $modulePath.Directory.Name
           Copy-Item $modulePath -Destination (Join-Path -Path $destinationPath -ChildPath $modulePath.Directory.Name)
         }
+
+        Install-Module Az.Storage -AllowClobber -Force
+        Install-Module Az.Sql -AllowClobber -Force
+        Install-Module Az.Websites -AllowClobber -Force
+        Import-Module Get-AzureWebAppConnectionString
+        Import-Module Set-AzureWebAppStorageContentFromStorage
+        Import-Module Copy-AzureWebAppSqlDatabase
