@@ -29,3 +29,4 @@ runs:
         Import-Module Set-AzureWebAppStorageContentFromStorage
         Import-Module Copy-AzureWebAppSqlDatabase
         Import-Module Invoke-AzureWebAppSqlQuery
+        Import-Module Test-Url
