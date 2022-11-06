@@ -21,7 +21,8 @@ runs:
     - name: Install and Import Modules
       shell: pwsh
       run: |
-        Get-ChildItem | Write-Output
+        $a = Get-ChildItem
+        echo "a=$a" >> $GITHUB_ENV
         Install-Module Az.Storage -AllowClobber -Force
         Install-Module Az.Sql -AllowClobber -Force
         Install-Module Az.Websites -AllowClobber -Force
@@ -30,3 +31,4 @@ runs:
         Import-Module Set-AzureWebAppStorageContentFromStorage
         Import-Module Copy-AzureWebAppSqlDatabase
         Import-Module Invoke-AzureWebAppSqlQuery
+        ${{ env.a }}
