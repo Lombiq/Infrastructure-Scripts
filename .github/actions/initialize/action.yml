@@ -2,7 +2,7 @@ name: Initialize
 
 description: > 
   Copies the PowerShell modules to a location defined in PSModulePath (since GHA doesn't allow manipulating 
-  environment variables).
+  environment variables) and also installs and imports them. 
 
 runs:
   using: "composite"
