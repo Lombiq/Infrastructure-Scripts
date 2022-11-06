@@ -1,9 +1,6 @@
 # Hosting - Infrastructure Scripts readme
 
-
-
 Scripts - PowerShell, mostly - for automating processes within a continuous integration and deployment environment of a Hosting Suite-integrated Orchard application.
-
 
 ## Overview
 
@@ -15,7 +12,6 @@ Infrastructure Scripts is not tied to any specific CI system, but in terms of th
 
 The Infrastructure Scripts does not require the Orchard modules of the Hosting Suite to be able to function (and vice versa), although the two together work best for a seamless developer experience.
 
-
 ## Folder structure and components
 
 - `Utility` (subrepository): A few useful scripts/modules for everyday use (not closely related to hosting). [This component has its own readme](Utility/Readme.md).
@@ -23,3 +19,9 @@ The Infrastructure Scripts does not require the Orchard modules of the Hosting S
 	- `Azure`: These modules interact directly with Azure services, such as Blob Storages, Databases and Web Apps. [This component has its own readme](PowerShell/Azure/Readme.md)
 	- `Hosting Suite`: These modules interact directly with Orchard modules of the Hosting Suite through WebAPI, e.g. for starting/executing maintenances. [This component has its own readme](PowerShell/HostingSuite/Readme.md).
 	- `Utilities`: Modules and plain scripts for simple tasks, such as sending a ping request to a URL or extracting a .zip file.
+
+## Contributing and support
+
+Bug reports, feature requests, comments, questions, code contributions and love letters are warmly welcome. You can send them to us via GitHub issues and pull requests. Please adhere to our [open-source guidelines](https://lombiq.com/open-source-guidelines) while doing so.
+
+This project is developed by [Lombiq Technologies](https://lombiq.com/). Commercial-grade support is available through Lombiq.
