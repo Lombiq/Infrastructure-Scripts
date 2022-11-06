@@ -25,7 +25,6 @@ runs:
         Install-Module Az.Sql -AllowClobber -Force
         Install-Module Az.Websites -AllowClobber -Force
         Install-Module SqlServer -AllowClobber -Force
-        Import-Module SqlServer
         Import-Module Get-AzureWebAppConnectionString
         Import-Module Set-AzureWebAppStorageContentFromStorage
         Import-Module Copy-AzureWebAppSqlDatabase

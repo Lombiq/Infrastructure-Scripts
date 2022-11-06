@@ -1,4 +1,4 @@
-Import-Module SQLPS
+Import-Module SqlServer
 
 function Invoke-AzureWebAppSqlQuery
 {
