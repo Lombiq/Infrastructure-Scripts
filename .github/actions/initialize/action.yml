@@ -21,7 +21,7 @@ runs:
     - name: Install and Import Modules
       shell: pwsh
       run: |
-        $a = Get-ChildItem
+        $a = Get-Location
         echo "a=$a" >> $GITHUB_ENV
         Install-Module Az.Storage -AllowClobber -Force
         Install-Module Az.Sql -AllowClobber -Force
