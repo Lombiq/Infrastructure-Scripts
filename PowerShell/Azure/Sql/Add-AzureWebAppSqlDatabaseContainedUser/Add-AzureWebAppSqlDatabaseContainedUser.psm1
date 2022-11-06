@@ -59,7 +59,7 @@ function Add-AzureWebAppSqlDatabaseContainedUser
 
     Process
     {
-        Get-Location | echo
+        echo "asd"
 
         $databaseConnection = Get-AzureWebAppSqlDatabaseConnection `
             -ResourceGroupName $DatabaseResourceGroupName `
