@@ -21,7 +21,7 @@ runs:
     - name: Install and Import Modules
       shell: pwsh
       run: |
-        Get-ChildItem
+        Get-ChildItem | Write-Host
         Install-Module Az.Storage -AllowClobber -Force
         Install-Module Az.Sql -AllowClobber -Force
         Install-Module Az.Websites -AllowClobber -Force
