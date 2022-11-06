@@ -30,5 +30,5 @@ runs:
 
         foreach ($moduleName in (Get-ChildItem -Directory | select Name))
         {
-          Import-Module $moduleName.Name
+            Import-Module $moduleName.Name
         }
