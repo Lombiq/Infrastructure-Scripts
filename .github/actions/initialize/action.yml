@@ -25,8 +25,8 @@ runs:
         Install-Module Az.Sql -AllowClobber -Force
         Install-Module Az.Websites -AllowClobber -Force
         Install-Module SqlServer -AllowClobber -Force
-        Import-Module Get-AzureWebAppConnectionString
-        Import-Module Set-AzureWebAppStorageContentFromStorage
-        Import-Module Copy-AzureWebAppSqlDatabase
-        Import-Module Invoke-AzureWebAppSqlQuery
-        Import-Module Test-Url
+
+        foreach ($moduleName in (Get-ChildItem -Directory | select Name))
+        {
+          Import-Module $moduleName.Name
+        }
