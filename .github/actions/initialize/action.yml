@@ -2,7 +2,8 @@ name: Initialize
 
 description: > 
   Copies the PowerShell modules to a location defined in PSModulePath (since GHA doesn't allow manipulating 
-  environment variables) and also installs and imports them. 
+  environment variables) and also installs and imports them. If you are using the "azure/login" action with
+  "enable-AzPSSession: true" make sure to run this action before that otherwise it can cause the login to fail.
 
 runs:
   using: "composite"
