@@ -118,8 +118,7 @@ function Copy-AzureWebAppSqlDatabase
                 -DatabaseName $sourceDatabase.DatabaseName `
                 -CopyResourceGroupName $DestinationResourceGroupName `
                 -CopyServerName $destinationDatabaseConnection.ServerName `
-                -CopyDatabaseName $destinationDatabaseConnection.DatabaseName `
-        
+                -CopyDatabaseName $destinationDatabaseConnection.DatabaseName
         }
         catch
         {
