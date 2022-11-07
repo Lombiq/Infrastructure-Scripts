@@ -1,12 +1,15 @@
 name: Initialize
 
-description: Copies the PowerShell modules to a location defined in PSModulePath (since GHA doesn't allow manipulating
-environment variables).
+description: > 
+  Copies the PowerShell modules to a location defined in PSModulePath (since GHA doesn't allow manipulating 
+  environment variables) and also installs and imports them. If you are using this action and the "azure/login" action
+  with "enable-AzPSSession: true" in the same workflow, make sure to run this action before "azure/login" otherwise 
+  login can fail.
 
 runs:
   using: "composite"
   steps:
-    - name: Copy modules
+    - name: Copy Modules
       shell: pwsh
       run: |
         $sourcePath = (Resolve-Path "${{ github.action_path }}/../../..").Path
@@ -15,4 +18,17 @@ runs:
         {
           New-Item -ItemType Directory -Path $destinationPath -Name $modulePath.Directory.Name
           Copy-Item $modulePath -Destination (Join-Path -Path $destinationPath -ChildPath $modulePath.Directory.Name)
+        }
+
+    - name: Install and Import Modules
+      shell: pwsh
+      run: |
+        Install-Module Az.Storage -AllowClobber -Force
+        Install-Module Az.Sql -AllowClobber -Force
+        Install-Module Az.Websites -AllowClobber -Force
+        Install-Module SqlServer -AllowClobber -Force
+
+        foreach ($moduleName in (Get-ChildItem -Directory | select Name))
+        {
+            Import-Module $moduleName.Name
         }
