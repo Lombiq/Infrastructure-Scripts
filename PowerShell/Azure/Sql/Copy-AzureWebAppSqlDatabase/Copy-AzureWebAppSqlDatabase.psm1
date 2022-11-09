@@ -107,15 +107,24 @@ function Copy-AzureWebAppSqlDatabase
             }
         }
 
-        # Potential issue here: $DestinationResourceGroupName is the resource group of the web app (slot) that stores
-        # the connection string of the destination database. However, it is possible that the destination database's
-        # server is in a different resource group (but we don't know that from the connection string).
-        return New-AzSqlDatabaseCopy `
-            -ResourceGroupName $sourceDatabase.ResourceGroupName `
-            -ServerName $sourceDatabase.ServerName `
-            -DatabaseName $sourceDatabase.DatabaseName `
-            -CopyResourceGroupName $DestinationResourceGroupName `
-            -CopyServerName $destinationDatabaseConnection.ServerName `
-            -CopyDatabaseName $destinationDatabaseConnection.DatabaseName `
+        try
+        {
+            # Potential issue here: $DestinationResourceGroupName is the resource group of the web app (slot) that stores
+            # the connection string of the destination database. However, it is possible that the destination database's
+            # server is in a different resource group (but we don't know that from the connection string).
+            return New-AzSqlDatabaseCopy `
+                -ResourceGroupName $sourceDatabase.ResourceGroupName `
+                -ServerName $sourceDatabase.ServerName `
+                -DatabaseName $sourceDatabase.DatabaseName `
+                -CopyResourceGroupName $DestinationResourceGroupName `
+                -CopyServerName $destinationDatabaseConnection.ServerName `
+                -CopyDatabaseName $destinationDatabaseConnection.DatabaseName
+        }
+        catch
+        {
+            Write-Error ("Could not start copying the database!")
+
+            throw
+        }
     }
 }
