@@ -150,13 +150,27 @@ function Set-AzureWebAppStorageContentFromStorage
             ((!$containerWhiteListValid -or ($containerWhiteListValid -and $ContainerWhiteList.Contains($PSItem.Name))) `
                     -and ($containerWhiteListValid -or (!$containerBlackListValid -or !$ContainerBlackList.Contains($PSItem.Name)))) `
         }
+        $sourceContainerNames = $sourceContainers | Select-Object -ExpandProperty "Name"
+
+        if ($null -eq $sourceContainers)
+        {
+            throw ("Couldn't find any of the specified containers in the source Storage Account!")
+        }
+        elseif ($containerWhiteListValid)
+        {
+            $notFoundSourceContainerNames = $ContainerWhiteList | Where-Object { $sourceContainerNames -notcontains $_ }
+
+            if ($null -ne $notFoundSourceContainerNames)
+            {
+                throw "Some of the containers in the source Storage Account were not found: $($notFoundSourceContainerNames -join ", ")!"
+            }
+        }
 
         # Removing containers on the destination, if necessary.
         if ($RemoveExtraFilesOnDestination)
         {
-            Get-AzStorageContainer `
-                -Context $destinationStorageContext `
-            | Where-Object { ($sourceContainers | Select-Object -ExpandProperty "Name").Contains($PSItem.Name) } `
+            Get-AzStorageContainer -Context $destinationStorageContext `
+            | Where-Object { $sourceContainerNames.Contains($PSItem.Name) } `
             | Remove-AzStorageContainer -Force
         }
 
@@ -182,7 +196,6 @@ function Set-AzureWebAppStorageContentFromStorage
                         {
                             $containerAccessType = $sourceContainer.PublicAccess
                         }
-
                         
                         New-AzStorageContainer `
                             -Context $destinationStorageContext `
@@ -196,9 +209,9 @@ function Set-AzureWebAppStorageContentFromStorage
                     {
                         Write-Warning (
                             "Error during re-creating the container `"" `
-                            + $sourceContainer.Name `
-                            + "`". Retrying in a few seconds...`n" `
-                            + $_.Exception.Message + "`n")
+                                + $sourceContainer.Name `
+                                + "`". Retrying in a few seconds...`n" `
+                                + $_.Exception.Message + "`n")
                         Start-Sleep 5
                     }
                 }
@@ -210,9 +223,9 @@ function Set-AzureWebAppStorageContentFromStorage
                 $blobNameElements = $sourceBlob.Name.Split("/", [StringSplitOptions]::RemoveEmptyEntries)
 
                 if ((!$folderWhiteListValid `
-                        -or ($folderWhiteListValid -and (Compare-Object $blobNameElements $FolderWhiteList -PassThru -IncludeEqual -ExcludeDifferent))) `
-                    -and (!$folderBlackListValid `
-                        -or ($folderBlackListValid -and (!(Compare-Object $blobNameElements $FolderBlackList -PassThru -IncludeEqual -ExcludeDifferent)))))
+                            -or ($folderWhiteListValid -and (Compare-Object $blobNameElements $FolderWhiteList -PassThru -IncludeEqual -ExcludeDifferent))) `
+                        -and (!$folderBlackListValid `
+                            -or ($folderBlackListValid -and (!(Compare-Object $blobNameElements $FolderBlackList -PassThru -IncludeEqual -ExcludeDifferent)))))
                 {
                     Start-AzStorageBlobCopy -Context $sourceStorageContext -SrcContainer $sourceContainer.Name -SrcBlob $sourceBlob.Name `
                         -DestContext $destinationStorageContext -DestContainer $destinationContainerName -DestBlob $sourceBlob.Name -Force | Out-Null
