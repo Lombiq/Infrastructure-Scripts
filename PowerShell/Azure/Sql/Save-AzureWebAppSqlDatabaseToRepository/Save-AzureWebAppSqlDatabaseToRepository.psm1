@@ -1,4 +1,4 @@
-<#
+﻿<#
 .Synopsis
     Exports a database of an Azure Web App to Blob Storage snychronously and downloads it to a specified destination in
     a repository.
@@ -34,7 +34,7 @@ function Save-AzureWebAppSqlDatabaseToRepository
         [Alias("WebAppName")]
         [Parameter(Mandatory = $true, HelpMessage = "You need to provide the name of the Web App.")]
         [string] $DatabaseWebAppName,
-        
+
         [Parameter(HelpMessage = "The name of the Web App slot.")]
         [string] $DatabaseSlotName,
 
@@ -48,7 +48,7 @@ function Save-AzureWebAppSqlDatabaseToRepository
 
         [Parameter(HelpMessage = "The name of the storage connection string's Web App if it differs from the database's.")]
         [string] $StorageWebAppName = $DatabaseWebAppName,
-        
+
         [Parameter(HelpMessage = "The name of the storage connection string's Web App Slot if it differs from the database's.")]
         [string] $StorageSlotName = $DatabaseSlotName,
 
@@ -77,7 +77,7 @@ function Save-AzureWebAppSqlDatabaseToRepository
         {
             throw ("The folder `"$RepositoryPath`" can not be found!")
         }
-                
+
         $destination = $RepositoryPath
 
         if (!([string]::IsNullOrEmpty($RepositorySubPath)))

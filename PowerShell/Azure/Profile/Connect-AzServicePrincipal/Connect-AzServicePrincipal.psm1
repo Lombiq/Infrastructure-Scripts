@@ -30,33 +30,33 @@ function Connect-AzServicePrincipal
                 -CertificateThumbprint $CertificateThumbprint
         }
 
-        
-        
+
+
         $azContext = Get-AzContext
 
-        if ($azContext -eq $null)
+        if ($null -eq $azContext)
         {
             AzLogin
-            
+
             $azContext = Get-AzContext
         }
         elseif ($azContext.Tenant.Id -ne $TenantId)
         {
             $azContext = Set-AzContext -Tenant $TenantId
-    
+
             if ($azContext.Tenant.Id -ne $TenantId)
             {
                 Disconnect-AzAccount
-                
+
                 AzLogin
 
-                $azContext = Get-AzContext 
+                $azContext = Get-AzContext
 
                 if ($azContext.Tenant.Id -ne $TenantId)
                 {
                     throw "Could not login to the Azure Active Directory with the ID `"$TenantId`"!"
                 }
-            }           
+            }
         }
 
 
@@ -65,9 +65,9 @@ function Connect-AzServicePrincipal
         {
             $azContext = Set-AzContextWrapper -SubscriptionId $SubscriptionId
         }
-        
-        
-        
+
+
+
         return $azContext
     }
 }

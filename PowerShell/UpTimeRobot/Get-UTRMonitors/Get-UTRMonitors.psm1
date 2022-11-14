@@ -1,4 +1,4 @@
-function Get-UTRMonitors
+﻿function Get-UTRMonitor
 {
     [CmdletBinding()]
     [Alias("gutrm")]
@@ -15,7 +15,7 @@ function Get-UTRMonitors
         [string] $StatusIds
     )
 
-    
+
     Process
     {
         $headers = @{
@@ -34,7 +34,7 @@ function Get-UTRMonitors
         {
             $body += "&statuses=$StatusIds"
         }
-        
+
         Invoke-RestMethod -Uri "https://api.uptimerobot.com/v2/getMonitors" -Method Post -Headers $headers -Body $body
     }
 }

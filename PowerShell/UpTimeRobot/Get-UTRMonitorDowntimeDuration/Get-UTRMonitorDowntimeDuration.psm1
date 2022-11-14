@@ -1,4 +1,4 @@
-function Get-UTRMonitorDowntimeDuration
+﻿function Get-UTRMonitorDowntimeDuration
 {
     [CmdletBinding()]
     [Alias("gutrmdd")]
@@ -12,7 +12,7 @@ function Get-UTRMonitorDowntimeDuration
         [string] $MonitorId
     )
 
-    
+
     Process
     {
         try
@@ -24,11 +24,11 @@ function Get-UTRMonitorDowntimeDuration
             Write-Error "Failed to reach UpTimeRobot API!"
 
             Write-Error -Exception $_.Exception
-            
+
             exit 1
         }
 
-        
+
         switch ($response.stat)
         {
             "ok"

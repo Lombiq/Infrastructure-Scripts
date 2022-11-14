@@ -1,4 +1,4 @@
-function Start-TCBuild
+﻿function Start-TCBuild
 {
     [CmdletBinding()]
     [Alias("satcb")]
@@ -11,7 +11,7 @@ function Start-TCBuild
         [string] $Username = $(throw "You need to specify the username."),
 
         [Parameter(Mandatory = $true, HelpMessage = "The password of the user.")]
-        [string] $Password = $(throw "You need to specify the password."),
+        [SecureString] $Password = $(throw "You need to specify the password."),
 
         [Parameter(Mandatory = $true, HelpMessage = "The ID of the build configuration to trigger.")]
         [string] $BuildId = $(throw "You need to specify the build ID."),
@@ -34,7 +34,7 @@ function Start-TCBuild
                 $body = "<build><buildType id=`"$BuildId`"/></build>"
 
                 Invoke-RestMethod -Uri $url -Method Post -Headers @{ Authorization = $authentication } -ContentType "application/xml" -Body $body
-                
+
                 $success = $true
             }
             catch [System.Exception]

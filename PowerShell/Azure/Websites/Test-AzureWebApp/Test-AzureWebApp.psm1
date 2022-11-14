@@ -1,4 +1,4 @@
-<#
+﻿<#
 .Synopsis
    Pings an Azure Web App through its default hostname.
 
@@ -45,7 +45,7 @@ function Test-AzureWebApp
     Process
     {
         $webApp = Get-AzureWebAppWrapper -ResourceGroupName $ResourceGroupName -WebAppName $WebAppName -Slot $SlotName
-        
+
         # Enforcing the result to be an array so it can be indexed even if there's only one matching hostname.
         $url = "${Protocol}://" + ([array]($webApp.EnabledHostNames | Where-Object { $PSItem.EndsWith(".azurewebsites.net") }))[0]
 

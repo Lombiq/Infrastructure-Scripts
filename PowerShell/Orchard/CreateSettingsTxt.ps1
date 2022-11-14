@@ -1,4 +1,4 @@
-param
+﻿param
 (
     [Parameter(Mandatory = $true, HelpMessage = "The full path of the Orchard.Web folder of the application.")]
     [string] $PathToOrchardWeb = $(throw "You need to specify the full path of the Orchard.Web folder of the application where Settings.txt file should be created."),
@@ -38,7 +38,7 @@ param
 
 $settingsPath = "$PathToOrchardWeb\App_Data\Sites\$Name\Settings.txt"
 if (Test-Path($settingsPath))
-{    
+
     if (!$DeleteIfExists)
     {
         Write-Host ("`n*****`nWARNING: SETTINGS FILE FOUND, BUT NOT MODIFIED!`n*****`n")

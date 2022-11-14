@@ -1,4 +1,4 @@
-<#
+﻿<#
 .Synopsis
     Changes the pricing tier of a SQL Azure database.
 
@@ -30,7 +30,7 @@ function Set-AzureWebAppSqlDatabaseServiceObjective
 
         [Parameter(Mandatory = $true, HelpMessage = "You need to provide the name of the Web App.")]
         [string] $WebAppName,
-        
+
         [Parameter(HelpMessage = "The name of the Web App slot.")]
         [string] $SlotName,
 
@@ -62,7 +62,7 @@ function Set-AzureWebAppSqlDatabaseServiceObjective
         {
             Write-Warning ("Another operation is still pending for the database named `"$($database.DatabaseName)`" " +
                 "on the server `"$($database.ServerName)`"!")
-            
+
             return $null
         }
         elseif ($database.CurrentServiceObjectiveName -eq $ServiceObjectiveName)
@@ -105,7 +105,7 @@ function Set-AzureWebAppSqlDatabaseServiceObjective
         {
             Write-Error ("Changing the Service Objective failed - see the detailed error below. Did you define the " +
                 "Edition of the target Service Objective? The current value is `"$Edition`".")
-            
+
             throw
         }
     }

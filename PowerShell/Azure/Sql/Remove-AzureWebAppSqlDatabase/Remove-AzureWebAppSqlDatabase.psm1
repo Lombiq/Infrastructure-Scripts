@@ -1,4 +1,4 @@
-<#
+﻿<#
 .Synopsis
     Removes an Azure SQL database based on a connection string stored at a specific Web App.
 
@@ -35,7 +35,7 @@ function Remove-AzureWebAppSqlDatabase
 
         [Parameter(Mandatory = $true, HelpMessage = "You need to provide the name of the Web App.")]
         [string] $WebAppName,
-        
+
         [Parameter(HelpMessage = "The name of the Web App slot.")]
         [string] $SlotName,
 
@@ -51,13 +51,13 @@ function Remove-AzureWebAppSqlDatabase
         {
             throw ("Deleting the Production database is bad, 'mkay?")
         }
-        
+
         $database = Get-AzureWebAppSqlDatabase `
             -ResourceGroupName $ResourceGroupName `
             -WebAppName $WebAppName `
             -SlotName $SlotName `
             -ConnectionStringName $ConnectionStringName
-        
+
         if ($null -ne $database)
         {
             Write-Host ("`n*****`nDeleting the database named `"$($database.DatabaseName)`" on the server `"$($database.ServerName)`".`n*****`n")

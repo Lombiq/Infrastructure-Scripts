@@ -37,7 +37,7 @@ function Get-Maintenance
 
         [Parameter(Mandatory = $true,
                    HelpMessage = "The password of the user.")]
-        [string] $Password = $(throw "You need to specify the password."),
+        [SecureString] $Password = $(throw "You need to specify the password."),
 
         [Parameter(HelpMessage = "Number of retries for getting the status of the maintenance in case of an error.")]
         [int] $RetryCount = 0,
@@ -59,7 +59,7 @@ function Get-Maintenance
                 $authentication = "Basic " + [System.Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($Username + ":" + $Password))
 
                 $result = Invoke-WebRequest -Uri $url -Method Get -ContentType "application/json" -Headers @{ Authorization = $authentication }
-                
+
                 $success = $true
             }
             catch [System.Exception]

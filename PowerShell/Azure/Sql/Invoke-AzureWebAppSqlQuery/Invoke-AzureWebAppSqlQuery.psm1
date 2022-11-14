@@ -1,4 +1,4 @@
-Import-Module SqlServer
+﻿Import-Module SqlServer
 
 function Invoke-AzureWebAppSqlQuery
 {
@@ -11,7 +11,7 @@ function Invoke-AzureWebAppSqlQuery
 
         [Parameter(Mandatory = $true, HelpMessage = "You need to provide the name of the Web App.")]
         [string] $WebAppName,
-        
+
         [Parameter(HelpMessage = "The name of the Web App slot.")]
         [string] $SlotName,
 

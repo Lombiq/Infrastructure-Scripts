@@ -1,4 +1,4 @@
-<#
+﻿<#
 .Synopsis
     Exports a database of an Azure Web App to Blob Storage asnychronously.
 
@@ -35,7 +35,7 @@ function Start-AzureWebAppSqlDatabaseExport
         [Alias("WebAppName")]
         [Parameter(Mandatory = $true, HelpMessage = "You need to provide the name of the Web App.")]
         [string] $DatabaseWebAppName,
-        
+
         [Parameter(HelpMessage = "The name of the Web App slot.")]
         [string] $DatabaseSlotName,
 
@@ -49,7 +49,7 @@ function Start-AzureWebAppSqlDatabaseExport
 
         [Parameter(HelpMessage = "The name of the storage connection string's Web App if it differs from the database's.")]
         [string] $StorageWebAppName = $DatabaseWebAppName,
-        
+
         [Parameter(HelpMessage = "The name of the storage connection string's Web App Slot if it differs from the database's.")]
         [string] $StorageSlotName = $DatabaseSlotName,
 
@@ -64,13 +64,13 @@ function Start-AzureWebAppSqlDatabaseExport
     )
 
     Process
-    {        
+    {
         $storageConnection = Get-AzureWebAppStorageConnection `
             -ResourceGroupName $StorageResourceGroupName `
             -WebAppName $StorageWebAppName `
             -SlotName $StorageSlotName `
             -ConnectionStringName $StorageConnectionStringName
-        
+
         $storageContext = New-AzStorageContext `
             -StorageAccountName $storageConnection.AccountName `
             -StorageAccountKey $storageConnection.AccountKey
@@ -80,7 +80,7 @@ function Start-AzureWebAppSqlDatabaseExport
             -Container $ContainerName `
             -Blob $BlobName `
             -ErrorAction SilentlyContinue
-        
+
         if ($null -ne $blob)
         {
             $blob | Remove-AzStorageBlob -ErrorAction Stop -Force

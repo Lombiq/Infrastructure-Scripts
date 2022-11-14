@@ -1,4 +1,4 @@
-param
+﻿param
 (
     [Parameter(Mandatory = $true, HelpMessage = "The full path of the Settings.txt file to be modified.")]
     [string] $Path = $(throw "You need to specify the full path of the Settings.txt file to be modified."),
@@ -61,9 +61,9 @@ else
 
 
 $connectionStrings = $stagingSiteData.ConnectionStrings
-$connectionStringInfo = $connectionStrings | ? {$_.Name.Equals($ConnectionStringName)}
+$connectionStringInfo = $connectionStrings | Where-Object {$_.Name.Equals($ConnectionStringName)}
 
-if ($connectionStringInfo -eq $null)
+if ($null -eq $connectionStringInfo)
 {
     Write-Host ("`n*****`nERROR: CONNECTION STRING WITH THE NAME $ConnectionStringName IS MISSING!`n*****`n")
     exit 1
@@ -77,7 +77,7 @@ $settingsConnectionStringEntry = $settingsConnectionStringName + ": " + $connect
 
 for ($i = 0; $i -le $settingsFileContent.Length; $i++)
 {
-    if ($settingsFileContent[$i] -ne $null -and $settingsFileContent[$i].StartsWith($settingsConnectionStringName))
+    if ($null -ne $settingsFileContent[$i] -and $settingsFileContent[$i].StartsWith($settingsConnectionStringName))
     {
         $settingsFileContent[$i] = $settingsConnectionStringEntry
         break

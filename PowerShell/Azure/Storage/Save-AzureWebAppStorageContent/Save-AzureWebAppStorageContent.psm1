@@ -1,4 +1,4 @@
-<#
+﻿<#
 .Synopsis
    Downloads every Container and their Blobs from an Azure Blob Storage.
 
@@ -66,7 +66,7 @@ function Save-AzureWebAppStorageContent
 
         $containerWhiteListValid = $ContainerWhiteList -and $ContainerWhiteList.Count -gt 0
         $containerBlackListValid = $ContainerBlackList -and $ContainerBlackList.Count -gt 0
-        
+
         $containers = Get-AzStorageContainer -Context $storageContext | Where-Object `
         { `
             ((!$containerWhiteListValid -or ($containerWhiteListValid -and $ContainerWhiteList.Contains($PSItem.Name))) -and `
@@ -111,7 +111,7 @@ function Save-AzureWebAppStorageContent
                         }
 
                         $path = $containerPath + "\" + $blobPath
-                    
+
                         if (-not (Test-Path ($path)))
                         {
                             New-Item -ItemType Directory -Path (Split-Path -Path $path -Parent) -Force | Out-Null

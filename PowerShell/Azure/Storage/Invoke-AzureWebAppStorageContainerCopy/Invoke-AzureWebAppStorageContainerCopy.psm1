@@ -55,7 +55,7 @@ function Invoke-AzureWebAppStorageContainerCopy
 
         $sourceContainer = Get-AzStorageContainer -Context $sourceStorageContext | Where-Object { $PSItem.Name -eq $SourceContainerName }
 
-        if ($sourceContainer -eq $null)
+        if ($null -eq $sourceContainer)
         {
             throw ("The source container doesn't exist!")
         }
@@ -75,12 +75,12 @@ function Invoke-AzureWebAppStorageContainerCopy
         $destinationContainer = Get-AzStorageContainer -Context $destinationStorageContext | Where-Object { $PSItem.Name -eq $DestinationContainerName }
         $destinationContainerCreated = $false
 
-        if ($destinationContainer -eq $null)
+        if ($null -eq $destinationContainer)
         {
             do
             {
                 try
-                {                        
+                {
                     $destinationContainer = New-AzStorageContainer -Context $destinationStorageContext -Permission $sourceContainer.PublicAccess -Name $DestinationContainerName -ErrorAction Stop
 
                     $destinationContainerCreated = $true

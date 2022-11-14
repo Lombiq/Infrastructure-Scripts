@@ -54,14 +54,14 @@ function Backup-AzureWebAppStorageToStorage
 
         [Parameter(HelpMessage = "A list of folder names to exclude. Applied after `"FolderWhiteList`".")]
         [string[]] $FolderBlackList = @(),
-        
+
         [Parameter(HelpMessage = "Overrides the access level of the containers, but only affects those that are (re-)created.")]
         [Microsoft.WindowsAzure.Storage.Blob.BlobContainerPublicAccessType] $DestinationContainersAccessType = [Microsoft.WindowsAzure.Storage.Blob.BlobContainerPublicAccessType]::Off,
 
         [Parameter(HelpMessage = "The number of days to keep storage backup containers for, with respect to the LastModifiedDate property.")]
         [int] $RemoveBackupContainersOlderThanDays = 0
     )
-    
+
     Process
     {
         $now = (Get-Date).ToUniversalTime()

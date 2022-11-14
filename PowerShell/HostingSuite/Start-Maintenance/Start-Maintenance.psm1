@@ -1,4 +1,4 @@
-<#
+﻿<#
 .Synopsis
    Starts a maintenance through the Hosting Suite API.
 
@@ -39,7 +39,7 @@ function Start-Maintenance
 
         [Parameter(Mandatory = $true,
                    HelpMessage = "The password of the user.")]
-        [string] $Password = $(throw "You need to specify the password."),
+        [SecureString] $Password = $(throw "You need to specify the password."),
 
         [Parameter(HelpMessage = "The number of tenants to run the maintenance process in one go.")]
         [int] $BatchSize = 0,
@@ -75,7 +75,7 @@ function Start-Maintenance
 
                 # Invoke-RestMethod doesn't return a status code.
                 $result = Invoke-WebRequest -Uri $url -Method Post -ContentType "application/json" -Headers @{ Authorization = $authentication } -Body (ConvertTo-Json($maintenanceDescriptor))
-                
+
                 $success = $true
             }
             catch [System.Exception]

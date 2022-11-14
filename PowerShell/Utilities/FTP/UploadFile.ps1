@@ -10,7 +10,7 @@
     [string] $Username = $(throw "You need to specify the FTP username for the connection."),
 
     [Parameter(Mandatory = $true, HelpMessage = "FTP password.")]
-    [string] $Password = $(throw "You need to specify the FTP password for the connection."),
+    [SecureString] $Password = $(throw "You need to specify the FTP password for the connection."),
 
     [Parameter(HelpMessage = "The number of attempts for uploading the file. The default value is 3.")]
     [int] $RetryCount = 3
@@ -18,7 +18,7 @@
 
 $tryCount = 0
 $successful = $false
-$webclient = New-Object System.Net.WebClient 
+$webclient = New-Object System.Net.WebClient
 $webclient.Credentials = New-Object System.Net.NetworkCredential($Username, $Password)
 $remoteUri = New-Object System.Uri($RemotePath)
 

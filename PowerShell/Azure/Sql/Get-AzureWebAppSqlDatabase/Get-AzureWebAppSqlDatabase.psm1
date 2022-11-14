@@ -1,4 +1,4 @@
-<#
+﻿<#
 .Synopsis
     Returns information of an Azure SQL database based on a connection string stored at a specific Web App.
 
@@ -35,7 +35,7 @@ function Get-AzureWebAppSqlDatabase
 
         [Parameter(Mandatory = $true, HelpMessage = "You need to provide the name of the Web App.")]
         [string] $WebAppName,
-        
+
         [Parameter(HelpMessage = "The name of the Web App slot.")]
         [string] $SlotName,
 
@@ -50,7 +50,7 @@ function Get-AzureWebAppSqlDatabase
             -WebAppName $WebAppName `
             -SlotName $SlotName `
             -ConnectionStringName $ConnectionStringName
-        
+
         return Get-AzSqlDatabase `
             -ResourceGroupName $ResourceGroupName `
             -ServerName $databaseConnection.ServerName `

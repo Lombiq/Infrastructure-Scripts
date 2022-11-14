@@ -26,7 +26,7 @@ $nunitVersionFolderName = (Get-ChildItem $Destination -Directory)[0]
 $nunitVersionFolderNameSlash = $nunitVersionFolderName.ToString() + "\"
 $nunitVersionFolderPath = "$Destination\$nunitVersionFolderName"
 
-Get-ChildItem $nunitVersionFolderPath -Recurse | % { Move-Item -Path $_.FullName -Destination $_.FullName.Replace($nunitVersionFolderNameSlash, "") -Force }
+Get-ChildItem $nunitVersionFolderPath -Recurse | ForEach-Object { Move-Item -Path $_.FullName -Destination $_.FullName.Replace($nunitVersionFolderNameSlash, "") -Force }
 Remove-Item $nunitVersionFolderPath -Force
 
 exit 0

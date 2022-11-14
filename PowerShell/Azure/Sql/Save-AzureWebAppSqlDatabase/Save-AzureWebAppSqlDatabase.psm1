@@ -1,4 +1,4 @@
-<#
+﻿<#
 .Synopsis
     Exports a database of an Azure Web App to Blob Storage snychronously and downloads it to a specified destination.
 
@@ -34,7 +34,7 @@ function Save-AzureWebAppSqlDatabase
         [Alias("WebAppName")]
         [Parameter(Mandatory = $true, HelpMessage = "You need to provide the name of the Web App.")]
         [string] $DatabaseWebAppName,
-        
+
         [Parameter(HelpMessage = "The name of the Web App slot.")]
         [string] $DatabaseSlotName,
 
@@ -48,7 +48,7 @@ function Save-AzureWebAppSqlDatabase
 
         [Parameter(HelpMessage = "The name of the storage connection string's Web App if it differs from the database's.")]
         [string] $StorageWebAppName = $DatabaseWebAppName,
-        
+
         [Parameter(HelpMessage = "The name of the storage connection string's Web App Slot if it differs from the database's.")]
         [string] $StorageSlotName = $DatabaseSlotName,
 
@@ -84,7 +84,7 @@ function Save-AzureWebAppSqlDatabase
             -WebAppName $StorageWebAppName `
             -SlotName $StorageSlotName `
             -ConnectionStringName $StorageConnectionStringName
-        
+
         $storageContext = New-AzStorageContext `
             -StorageAccountName $storageConnection.AccountName `
             -StorageAccountKey $storageConnection.AccountKey

@@ -1,4 +1,4 @@
-<#
+﻿<#
 .Synopsis
    Downloads every Container and their Blobs from an Azure Blob Storage.
 
@@ -65,7 +65,7 @@ function Save-AzureWebAppStorageContentToRepository
         {
             throw ("The folder `"$RepositoryPath`" can not be found!")
         }
-                
+
         $destination = $RepositoryPath
 
         if (!([string]::IsNullOrEmpty($RepositorySubPath)))
@@ -90,8 +90,8 @@ function Save-AzureWebAppStorageContentToRepository
             throw ("Could not pull/update the repository at $RepositoryPath!")
         }
 
-        
-        
+
+
         Save-AzureWebAppStorageContent `
             -ResourceGroupName $ResourceGroupName `
             -WebAppName $WebAppName `

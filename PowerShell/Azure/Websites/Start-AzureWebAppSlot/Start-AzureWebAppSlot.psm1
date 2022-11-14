@@ -1,4 +1,4 @@
-<#
+﻿<#
 .Synopsis
    Starts a specific Slot of an Azure Web App.
 
@@ -33,7 +33,7 @@ function Start-AzureWebAppSlot
     {
         $slot = Get-AzureWebAppWrapper -ResourceGroupName $ResourceGroupName -WebAppName $WebAppName -SlotName $SlotName
 
-        if ($slot -eq $null)
+        if ($null -eq $slot)
         {
             throw ("$SlotName SLOT OF $WebAppName DOES NOT EXIST!")
         }
@@ -49,7 +49,7 @@ function Start-AzureWebAppSlot
             }
 
             Write-Host ("`n*****`n$SlotName SLOT OF $WebAppName STARTED.`n*****`n")
-            
+
             return $slot
         }
     }

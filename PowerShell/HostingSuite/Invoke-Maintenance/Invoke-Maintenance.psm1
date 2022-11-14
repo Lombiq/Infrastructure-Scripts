@@ -39,7 +39,7 @@ function Invoke-Maintenance
 
         [Parameter(Mandatory = $true,
                    HelpMessage = "The password of the user.")]
-        [string] $Password = $(throw "You need to specify the password."),
+        [SecureString] $Password = $(throw "You need to specify the password."),
 
         [Parameter(HelpMessage = "The number of tenants to run the maintenance process in one go.")]
         [int] $BatchSize = 0,
@@ -68,8 +68,8 @@ function Invoke-Maintenance
             if ($progress -ne $previousProgress)
             {
                 Write-Host "* $progress%"
-                
-                $previousProgress = $progress                
+
+                $previousProgress = $progress
             }
         }
         while ($progress -ne 100)
