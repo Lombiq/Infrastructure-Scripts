@@ -134,7 +134,7 @@ function Switch-AzureWebAppSlot
 
 
         # We happy.
-        Write-Host ("`n*****`nTHE `"$SourceSlotName`" AND `"$DestinationSlotName`" SLOTS OF `"$WebAppName`" HAVE BEEN SWAPPED!`n*****`n")
+        Write-Output ("`n*****`nTHE `"$SourceSlotName`" AND `"$DestinationSlotName`" SLOTS OF `"$WebAppName`" HAVE BEEN SWAPPED!`n*****`n")
 
 
 

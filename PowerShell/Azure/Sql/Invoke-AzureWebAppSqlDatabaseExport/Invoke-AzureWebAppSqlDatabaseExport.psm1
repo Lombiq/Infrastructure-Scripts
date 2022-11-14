@@ -64,7 +64,7 @@ function Invoke-AzureWebAppSqlDatabaseExport
 
     Process
     {
-        Write-Host ("`n*****`nDatabase export starting...`n*****")
+        Write-Output ("`n*****`nDatabase export starting...`n*****")
 
         $exportRequest = Start-AzureWebAppSqlDatabaseExport `
             -DatabaseResourceGroupName $DatabaseResourceGroupName `
@@ -83,7 +83,7 @@ function Invoke-AzureWebAppSqlDatabaseExport
             throw ("Could not start database export!")
         }
 
-        Write-Host ("`n*****`nDatabase export started with the following Status Link:`n$($exportRequest.OperationStatusLink)`n*****")
+        Write-Output ("`n*****`nDatabase export started with the following Status Link:`n$($exportRequest.OperationStatusLink)`n*****")
 
         $status = $previousStatus = $null
 
@@ -112,7 +112,7 @@ function Invoke-AzureWebAppSqlDatabaseExport
             throw ("Database export finished without success!")
         }
 
-        Write-Host ("*****`nDatabase export finished!`n*****`n")
+        Write-Output ("*****`nDatabase export finished!`n*****`n")
 
         return $exportRequest
     }

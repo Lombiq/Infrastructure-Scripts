@@ -89,7 +89,7 @@ function Save-AzureWebAppSqlDatabase
             -StorageAccountName $storageConnection.AccountName `
             -StorageAccountKey $storageConnection.AccountKey
 
-        Write-Host ("`n*****`nDownloading exported database...`n*****")
+        Write-Output ("`n*****`nDownloading exported database...`n*****")
 
         Get-AzStorageBlobContent `
             -Context $storageContext `
@@ -99,7 +99,7 @@ function Save-AzureWebAppSqlDatabase
             -ErrorAction Stop `
             -Force
 
-        Write-Host ("`n*****`nDownloading finished!`n*****")
+        Write-Output ("`n*****`nDownloading finished!`n*****")
 
         Remove-AzStorageBlob `
             -Context $storageContext `
@@ -108,6 +108,6 @@ function Save-AzureWebAppSqlDatabase
             -ErrorAction Stop `
             -Force
 
-        Write-Host ("`n*****`nBlob deleted!`n*****")
+        Write-Output ("`n*****`nBlob deleted!`n*****")
     }
 }

@@ -33,5 +33,5 @@ else
 }
 
 $Global:DownloadedFilePath = $fullFilePath
-Write-Host ("`n*****`nNOTIFICATION: SUCCESSFULLY DOWNLOADED FILE FROM $FileLocationUrl TO $fullFilePath.`n*****`n")
+Write-Output ("`n*****`nNOTIFICATION: SUCCESSFULLY DOWNLOADED FILE FROM $FileLocationUrl TO $fullFilePath.`n*****`n")
 exit 0

@@ -51,6 +51,6 @@
         }
         while (!$success)
 
-        Write-Host "Successfully triggered `"$BuildId`"!"
+        Write-Output "Successfully triggered `"$BuildId`"!"
     }
 }

@@ -18,7 +18,7 @@ if (Test-Path($downloadAndExtractZipScriptPath))
 }
 else
 {
-    Write-Host ("`n*****`nERROR: SCRIPT FILE NOT FOUND AT $downloadAndExtractZipScriptPath!`n*****`n")
+    Write-Output ("`n*****`nERROR: SCRIPT FILE NOT FOUND AT $downloadAndExtractZipScriptPath!`n*****`n")
     exit 1
 }
 

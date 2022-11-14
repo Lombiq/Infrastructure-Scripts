@@ -89,7 +89,7 @@ function Set-AzureWebAppSqlDatabaseServiceObjective
 
         try
         {
-            Write-Host ("`n*****`nChanging Service Objective of the database named `"$($database.DatabaseName)`" on " +
+            Write-Output ("`n*****`nChanging Service Objective of the database named `"$($database.DatabaseName)`" on " +
                 "the server `"$($database.ServerName)`" from `"$($database.Edition) $($database.CurrentServiceObjectiveName)`" " +
                 "to `"$($Edition) $($ServiceObjectiveName)`"...`n*****")
 

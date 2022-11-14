@@ -60,7 +60,7 @@ function Remove-AzureWebAppSqlDatabase
 
         if ($null -ne $database)
         {
-            Write-Host ("`n*****`nDeleting the database named `"$($database.DatabaseName)`" on the server `"$($database.ServerName)`".`n*****`n")
+            Write-Warning ("`n*****`nDeleting the database named `"$($database.DatabaseName)`" on the server `"$($database.ServerName)`".`n*****`n")
 
             return Remove-AzSqlDatabase `
                 -ResourceGroupName $ResourceGroupName `

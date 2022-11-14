@@ -40,6 +40,6 @@ if (!$successful)
     exit 1
 }
 
-Write-Host ("`n*****`nNOTIFICATION: $LocalPath UPLOADED TO $RemotePath!`n*****`n")
+Write-Output ("`n*****`nNOTIFICATION: $LocalPath UPLOADED TO $RemotePath!`n*****`n")
 
 exit 0

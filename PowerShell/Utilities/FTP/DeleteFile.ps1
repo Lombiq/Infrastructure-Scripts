@@ -32,7 +32,7 @@ while ($tryCount -lt $RetryCount -and !$successful)
     {
         if ($response.StatusCode -eq [System.Net.FtpStatusCode]::FileActionOK)
         {
-            Write-Host ("`n*****`nNOTIFICATION: $Path ALREADY DELETED OR NOT AVAILABLE!`n*****`n")
+            Write-Output ("`n*****`nNOTIFICATION: $Path ALREADY DELETED OR NOT AVAILABLE!`n*****`n")
             $response.Close()
             exit 0
         }
@@ -50,6 +50,6 @@ if (!$successful)
     exit 1
 }
 
-Write-Host ("`n*****`nNOTIFICATION: SUCCESSFULLY DELETED $Path!`n*****`n")
+Write-Output ("`n*****`nNOTIFICATION: SUCCESSFULLY DELETED $Path!`n*****`n")
 
 exit 0

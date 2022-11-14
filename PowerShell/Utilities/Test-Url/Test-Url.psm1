@@ -38,7 +38,7 @@ function Test-Url
 
     Process
     {
-        Write-Host ("`n*****`nAttempting to ping `"$Url`": $Timeout second timeout, $Interval second interval, $RetryCount retries!`n*****`n")
+        Write-Output ("`n*****`nAttempting to ping `"$Url`": $Timeout second timeout, $Interval second interval, $RetryCount retries!`n*****`n")
 
         $success = $false
         $retryCounter = 0
@@ -55,7 +55,7 @@ function Test-Url
             {
                 $retryCounter++
 
-                Write-Host ("Attempt #$retryCounter to ping the URL `"$Url`" failed with the following error:`n$($_.Exception)`n")
+                Write-Output ("Attempt #$retryCounter to ping the URL `"$Url`" failed with the following error:`n$($_.Exception)`n")
 
                 if ($retryCounter -gt $RetryCount)
                 {

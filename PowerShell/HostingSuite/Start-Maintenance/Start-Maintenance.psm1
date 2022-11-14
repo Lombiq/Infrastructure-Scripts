@@ -97,6 +97,6 @@ function Start-Maintenance
             throw ("Could not start the maintenance `"$MaintenanceName`" at `"$Hostname`"! Server returned status code " + $result.StatusCode + ".")
         }
 
-        Write-Host "Successfully started the maintenance `"$MaintenanceName`" at `"$Hostname`"!"
+        Write-Output "Successfully started the maintenance `"$MaintenanceName`" at `"$Hostname`"!"
     }
 }

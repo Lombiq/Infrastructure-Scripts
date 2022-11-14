@@ -54,7 +54,7 @@
         {
             0
             {
-                Write-Host "Monitor is UP!"
+                Write-Output "Monitor is UP!"
 
                 return 0
             }

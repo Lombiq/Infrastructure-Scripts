@@ -39,8 +39,8 @@ else
 if ($DeleteZipAfterExtract.IsPresent)
 {
     Remove-Item $FilePath -Force
-    Write-Host ("`n*****`nNOTIFICATION: $FilePath DELETED.`n*****`n")
+    Write-Output ("`n*****`nNOTIFICATION: $FilePath DELETED.`n*****`n")
 }
 
-Write-Host ("`n*****`nNOTIFICATION: SUCCESSFULLY EXTRACTED $FilePath TO $Destination.`n*****`n")
+Write-Output ("`n*****`nNOTIFICATION: SUCCESSFULLY EXTRACTED $FilePath TO $Destination.`n*****`n")
 exit 0

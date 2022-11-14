@@ -119,7 +119,7 @@ function Save-AzureWebAppStorageContent
 
                         Get-AzStorageBlobContent -Context $storageContext -Container $container.Name -Blob $blob.Name -Destination $path -ErrorAction Stop -Force | Out-Null
 
-                        Write-Host ("Downloaded `"" + $container.Name + "/" + $blob.Name + "`".")
+                        Write-Output ("Downloaded `"" + $container.Name + "/" + $blob.Name + "`".")
 
                         $success = $true
                     }

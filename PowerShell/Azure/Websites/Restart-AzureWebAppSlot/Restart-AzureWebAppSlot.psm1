@@ -48,7 +48,7 @@ function Restart-AzureWebAppSlot
                 throw ("COULD NOT RESTART $SlotName SLOT OF $WebAppName!" + $_.Exception.Message)
             }
 
-            Write-Host ("`n*****`n$SlotName SLOT OF $WebAppName RESTARTED.`n*****`n")
+            Write-Output ("`n*****`n$SlotName SLOT OF $WebAppName RESTARTED.`n*****`n")
 
             return $slot
         }

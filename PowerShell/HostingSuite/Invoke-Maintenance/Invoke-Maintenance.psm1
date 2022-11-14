@@ -54,7 +54,7 @@ function Invoke-Maintenance
     {
         Start-Maintenance -MaintenanceName $MaintenanceName -Hostname $Hostname -APIEndpoint $APIEndpoint -Username $Username -Password $Password -BatchSize $BatchSize -RetryCount $RetryCount -Protocol $Protocol
 
-        Write-Host ("`n*****`nStarting maintenance `"$MaintenanceName`" at `"$Hostname`"...`n*****")
+        Write-Output ("`n*****`nStarting maintenance `"$MaintenanceName`" at `"$Hostname`"...`n*****")
 
         $previousProgress = -1
         $progress = 0
@@ -67,14 +67,14 @@ function Invoke-Maintenance
 
             if ($progress -ne $previousProgress)
             {
-                Write-Host "* $progress%"
+                Write-Output "* $progress%"
 
                 $previousProgress = $progress
             }
         }
         while ($progress -ne 100)
 
-        Write-Host ("*****`nFinished maintenance `"$MaintenanceName`" at `"$Hostname`"!`n*****`n")
+        Write-Output ("*****`nFinished maintenance `"$MaintenanceName`" at `"$Hostname`"!`n*****`n")
 
         return
     }

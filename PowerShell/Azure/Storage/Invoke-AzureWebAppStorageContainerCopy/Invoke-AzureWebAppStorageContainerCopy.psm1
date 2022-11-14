@@ -94,7 +94,7 @@ function Invoke-AzureWebAppStorageContainerCopy
             while (!$destinationContainerCreated)
         }
 
-        Write-Host ("`n*****`nCopying blobs from `"$SourceContainerName`" to `"$DestinationContainerName`":`n*****")
+        Write-Output ("`n*****`nCopying blobs from `"$SourceContainerName`" to `"$DestinationContainerName`":`n*****")
 
         foreach ($blob in $sourceContainer | Get-AzStorageBlob)
         {
@@ -104,7 +104,7 @@ function Invoke-AzureWebAppStorageContainerCopy
                 {
                     Get-AzStorageBlob -Context $destinationStorageContext -Container $DestinationContainerName -Blob $blob.Name -ErrorAction Stop | Out-Null
 
-                    Write-Host ("Skipped `"$($blob.Name)`".")
+                    Write-Output ("Skipped `"$($blob.Name)`".")
 
                     continue
                 }
@@ -116,9 +116,9 @@ function Invoke-AzureWebAppStorageContainerCopy
 
             Start-AzStorageBlobCopy -Context $sourceStorageContext -SrcContainer $SourceContainerName -SrcBlob $blob.Name -DestContext $destinationStorageContext -DestContainer $DestinationContainerName -DestBlob $blob.Name -Force | Out-Null
 
-            Write-Host ("Copied `"$($blob.Name)`".")
+            Write-Output ("Copied `"$($blob.Name)`".")
         }
 
-        Write-Host ("*****`nFinished copying blobs from `"$SourceContainerName`" to `"$DestinationContainerName`"!`n*****`n")
+        Write-Output ("*****`nFinished copying blobs from `"$SourceContainerName`" to `"$DestinationContainerName`"!`n*****`n")
     }
 }

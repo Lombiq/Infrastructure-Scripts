@@ -48,7 +48,7 @@ function Start-AzureWebAppSlot
                 throw ("COULD NOT START $SlotName SLOT OF $WebAppName!" + $_.Exception.Message)
             }
 
-            Write-Host ("`n*****`n$SlotName SLOT OF $WebAppName STARTED.`n*****`n")
+            Write-Output ("`n*****`n$SlotName SLOT OF $WebAppName STARTED.`n*****`n")
 
             return $slot
         }

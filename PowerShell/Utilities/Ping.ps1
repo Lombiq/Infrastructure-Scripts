@@ -39,6 +39,6 @@ if (!$successful)
     exit 1
 }
 
-Write-Host ("`n*****`nNOTIFICATION: THE WEBSITE AT $URL IS ACCESSIBLE!`n*****`n")
+Write-Output ("`n*****`nNOTIFICATION: THE WEBSITE AT $URL IS ACCESSIBLE!`n*****`n")
 
 exit 0

@@ -49,7 +49,7 @@ function Test-AzureWebApp
         # Enforcing the result to be an array so it can be indexed even if there's only one matching hostname.
         $url = "${Protocol}://" + ([array]($webApp.EnabledHostNames | Where-Object { $PSItem.EndsWith(".azurewebsites.net") }))[0]
 
-        Write-Host ("Testing the `"$SlotName`" Slot of the Web App `"$WebAppName`" through the URL `"$url`".")
+        Write-Output ("Testing the `"$SlotName`" Slot of the Web App `"$WebAppName`" through the URL `"$url`".")
 
         Test-Url $url -Timeout $Timeout -Interval $Interval -RetryCount $RetryCount
     }
