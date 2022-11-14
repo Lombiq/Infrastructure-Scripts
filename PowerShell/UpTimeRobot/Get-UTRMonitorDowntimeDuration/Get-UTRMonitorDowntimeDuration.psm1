@@ -5,8 +5,9 @@
     [OutputType([int])]
     Param
     (
-        [Parameter(Mandatory = $true, HelpMessage = "The UpTimeRobot API key to access monitors. When using an API key that is not specific to a monitor, you also need to define the monitor ID as well.")]
-        [string] $ApiKey = $(throw "You need to specify the UpTimeRobot API key to access monitors."),
+        [Parameter(Mandatory = $true, HelpMessage = "The UpTimeRobot API key to access monitors. When using an API" +
+            " key that is not specific to a monitor, you also need to define the monitor ID as well.")]
+        [string] $ApiKey,
 
         [Parameter(HelpMessage = "The monitor ID.")]
         [string] $MonitorId

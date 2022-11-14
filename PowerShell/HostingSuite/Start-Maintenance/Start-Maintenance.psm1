@@ -20,25 +20,26 @@ function Start-Maintenance
     Param
     (
         [Parameter(Mandatory = $true,
-                   HelpMessage = "The name of the maintenance.",
-                   ValueFromPipelineByPropertyName = $true,
-                   Position = 0)]
+            HelpMessage = "The name of the maintenance.",
+            ValueFromPipelineByPropertyName = $true,
+            Position = 0)]
         [string] $MaintenanceName,
 
         [Parameter(Mandatory = $true,
-                   HelpMessage = "The hostname of the API endpoint to send the request for starting the maintenance.
-                                  The URL pattern is https://mywebsite.com/api/Lombiq.Hosting.MultiTenancy/Maintenance?maintenanceName=MyMaintenance, but you only need to define mywebsite.com.")]
-        [string] $Hostname = $(throw "You need to specify the API endpoint to send the request for starting the maintenance."),
+            HelpMessage = "The hostname of the API endpoint that returns the maintenance status. The URL pattern is" +
+            " https://mywebsite.com/api/Lombiq.Hosting.MultiTenancy/Maintenance?maintenanceName=MyMaintenance," +
+            " but you only need to define mywebsite.com.")]
+        [string] $Hostname,
 
         [Parameter(HelpMessage = "Optional: The API route on the host for starting a maintenance.")]
         [string] $APIEndpoint = "api/Lombiq.Hosting.MultiTenancy/Maintenance",
 
         [Parameter(Mandatory = $true,
-                   HelpMessage = "The name of the user to authenticate. Make sure that the user is in a role that is permitted to start maintenances.")]
+            HelpMessage = "The name of the user to authenticate. Make sure that the user is in a role that is permitted to start maintenances.")]
         [string] $Username = $(throw "You need to specify the username."),
 
         [Parameter(Mandatory = $true,
-                   HelpMessage = "The password of the user.")]
+            HelpMessage = "The password of the user.")]
         [SecureString] $Password = $(throw "You need to specify the password."),
 
         [Parameter(HelpMessage = "The number of tenants to run the maintenance process in one go.")]

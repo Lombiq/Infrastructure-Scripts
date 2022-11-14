@@ -5,23 +5,21 @@
     Param
     (
         [Parameter(Mandatory = $true, HelpMessage = "The fully qualified URL of the TeamCity server.")]
-        [string] $ServerUrl = $(throw "You need to specify the TeamCity server URL."),
-
+        [string] $ServerUrl,
         [Parameter(Mandatory = $true, HelpMessage = "The name of the user to authenticate with.")]
-        [string] $Username = $(throw "You need to specify the username."),
+        [string] $Username,
 
         [Parameter(Mandatory = $true, HelpMessage = "The password of the user.")]
-        [SecureString] $Password = $(throw "You need to specify the password."),
+        [SecureString] $Password,
 
         [Parameter(Mandatory = $true, HelpMessage = "The ID of the build configuration to trigger.")]
-        [string] $BuildId = $(throw "You need to specify the build ID."),
+        [string] $BuildId,
 
         [Parameter(HelpMessage = "Number of retries for triggering the build in case of an error. Default value is 3.")]
         [int] $RetryCount = 3
     )
     Process
     {
-        $result = @()
         $success = $false
         $retryCounter = 0
 

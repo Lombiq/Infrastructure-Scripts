@@ -18,16 +18,16 @@ function New-RootConnectionStringFile
     Param
     (
         [Parameter(Mandatory = $true, HelpMessage = "The path where the root connection string file should be placed.")]
-        [string] $Path = $(throw "You need to specify the path where the root connection string file should be placed."),
+        [string] $Path,
 
         [Parameter(Mandatory = $true, HelpMessage = "The extensionless name of the root connection string file to be created.")]
-        [string] $FileName = $(throw "You need to specify the extensionless name of the root connection string file to be created."),
+        [string] $FileName,
 
         [Parameter(Mandatory = $true, HelpMessage = "The name of the Resource Group the Web App is in.")]
-        [string] $ResourceGroupName = $(throw "You need to provide the name of the Resource Group."),
+        [string] $ResourceGroupName,
 
         [Parameter(Mandatory = $true, HelpMessage = "The name of the Azure Web App. The script throws exception if the Web App doesn't exist on the given subscription.")]
-        [string] $WebAppName = $(throw "You need to provide the name of the Web App."),
+        [string] $WebAppName,
 
         [Parameter(HelpMessage = "The name of the Web App slot. The default value is `"Production`".")]
         [string] $SlotName = "Production",
@@ -38,7 +38,11 @@ function New-RootConnectionStringFile
 
     Process
     {
-        $connectionString = Get-AzureWebAppConnectionString -ResourceGroupName $ResourceGroupName -WebAppName $WebAppName -ConnectionStringName $ConnectionStringName
+        $connectionString = Get-AzureWebAppConnectionString `
+            -ResourceGroupName $ResourceGroupName `
+            -WebAppName $WebAppName `
+            -SlotName $SlotName `
+            -ConnectionStringName $ConnectionStringName
 
         New-Item -ItemType File -Name "$FileName.txt" -Path "$Path" -Force | Out-Null
         Set-Content -Path "$Path\$FileName.txt" -Value $connectionString

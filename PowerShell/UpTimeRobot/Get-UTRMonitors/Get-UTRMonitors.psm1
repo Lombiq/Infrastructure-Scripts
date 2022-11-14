@@ -6,7 +6,7 @@
     Param
     (
         [Parameter(Mandatory = $true, HelpMessage = "The UpTimeRobot API key to access monitors.")]
-        [string] $ApiKey = $(throw "You need to specify the UpTimeRobot API key to access monitors."),
+        [string] $ApiKey,
 
         [Parameter(HelpMessage = "The hyphen-separated list of monitor IDs.")]
         [string] $MonitorIds,
@@ -20,7 +20,7 @@
     {
         $headers = @{
             "cache-control" = "no-cache"
-            "content-type" = "application/x-www-form-urlencoded"
+            "content-type"  = "application/x-www-form-urlencoded"
         }
 
         $body = "api_key=$ApiKey&logs=1"

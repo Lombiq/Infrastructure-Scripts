@@ -20,11 +20,11 @@ function Test-Url
     [OutputType([bool])]
     Param
     (
-        [Parameter(Mandatory=$true,
-                   ValueFromPipelineByPropertyName=$true,
-                   Position=0,
-                   HelpMessage = "Please specifiy a full URL (including protocol) to ping.")]
-        [string] $Url = $(throw "You need to provide a full URL (including protocol) to ping."),
+        [Parameter(Mandatory = $true,
+            ValueFromPipelineByPropertyName = $true,
+            Position = 0,
+            HelpMessage = "Please specifiy a full URL (including protocol) to ping.")]
+        [string] $Url,
 
         [Parameter(HelpMessage = "Request timeout in seconds. The default value is 100.")]
         [int] $Timeout = 100,
@@ -47,7 +47,7 @@ function Test-Url
         {
             try
             {
-                $response = Invoke-WebRequest -Uri $Url -TimeoutSec $Timeout
+                Invoke-WebRequest -Uri $Url -TimeoutSec $Timeout | Out-Null
 
                 $success = $true
             }
@@ -55,11 +55,11 @@ function Test-Url
             {
                 $retryCounter++
 
-                Write-Output ("Attempt #$retryCounter to ping the URL `"$Url`" failed with the following error:`n$($_.Exception)`n")
+                Write-Warning "Attempt #$retryCounter to ping the URL `"$Url`" failed with the following error:`n$($_.Exception)`n"
 
                 if ($retryCounter -gt $RetryCount)
                 {
-                    throw ("Failed to reach the URL `"$Url`"!")
+                    throw "Failed to reach the URL `"$Url`"!"
                 }
 
                 Start-Sleep -Seconds $Interval

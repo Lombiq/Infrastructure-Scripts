@@ -23,22 +23,22 @@ function Invoke-AzureWebAppStorageContainerCopy
     Param
     (
         [Parameter(Mandatory = $true, HelpMessage = "The name of the Resource Group the Web App is in.")]
-        [string] $ResourceGroupName = $(throw "You need to provide the name of the Resource Group."),
+        [string] $ResourceGroupName,
 
         [Parameter(Mandatory = $true, HelpMessage = "The name of the Azure Web App. The script throws exception if the Web App doesn't exist on the given subscription.")]
-        [string] $WebAppName = $(throw "You need to provide the name of the Web App."),
+        [string] $WebAppName,
 
         [Parameter(Mandatory = $true, HelpMessage = "The name of a connection string that identifies the source Storage Account.")]
-        [string] $SourceConnectionStringName = $(throw "You need to provide a connection string name for the source Storage Account."),
+        [string] $SourceConnectionStringName,
 
         [Parameter(Mandatory = $true, HelpMessage = "The name of the container to copy, under the source Storage Account.")]
-        [string] $SourceContainerName = $(throw "You need to define the name of the container to copy."),
+        [string] $SourceContainerName,
 
         [Parameter(Mandatory = $true, HelpMessage = "The name of a connection string that identifies the destination Storage Account.")]
-        [string] $DestinationConnectionStringName = $(throw "You need to provide a connection string name for the destination Storage Account."),
+        [string] $DestinationConnectionStringName,
 
         [Parameter(Mandatory = $true, HelpMessage = "The name of the container to copy, under the source Storage Account.")]
-        [string] $DestinationContainerName = $(throw "You need to define the name of the container to copy."),
+        [string] $DestinationContainerName,
 
         [switch] $Force
     )
@@ -85,7 +85,7 @@ function Invoke-AzureWebAppStorageContainerCopy
 
                     $destinationContainerCreated = $true
                 }
-                catch [System.Net.WebException],[System.Exception] # Catching [Microsoft.WindowsAzure.Storage.StorageException] is not sufficient for some reason...
+                catch [System.Net.WebException], [System.Exception] # Catching [Microsoft.WindowsAzure.Storage.StorageException] is not sufficient for some reason...
                 {
                     Write-Warning ("Error during creating the container `"$DestinationContainerName`". Retrying in a few seconds...`n" + $_.Exception.Message + "`n")
                     Start-Sleep 5
@@ -102,7 +102,7 @@ function Invoke-AzureWebAppStorageContainerCopy
             {
                 try
                 {
-                    Get-AzStorageBlob -Context $destinationStorageContext -Container $DestinationContainerName -Blob $blob.Name -ErrorAction Stop | Out-Null
+                    Get-AzStorageBlob -Context $destinationStorageContext -Container $DestinationContainerName -Blob $blob.Name -ErrorAction Continue | Out-Null
 
                     Write-Output ("Skipped `"$($blob.Name)`".")
 

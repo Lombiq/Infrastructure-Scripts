@@ -20,16 +20,16 @@ function Switch-AzureWebAppSlot
     Param
     (
         [Parameter(Mandatory = $true, HelpMessage = "The name of the Resource Group the Web App is in.")]
-        [string] $ResourceGroupName = $(throw "You need to provide the name of the Resource Group."),
+        [string] $ResourceGroupName,
 
         [Parameter(Mandatory = $true, HelpMessage = "The name of the Azure Web App. The script throws exception if the Web App doesn't exist on the given subscription.")]
-        [string] $WebAppName = $(throw "You need to provide the name of the Web App."),
+        [string] $WebAppName,
 
         [Parameter(Mandatory = $true, HelpMessage = "The name of the Web App slot to swap from.")]
-        [string] $SourceSlotName = $(throw "You need to specify the name of the Slot to swap from."),
+        [string] $SourceSlotName,
 
         [Parameter(Mandatory = $true, HelpMessage = "The name of the Web App slot to swap to.")]
-        [string] $DestinationSlotName = $(throw "You need to specify the name of the Slot to start to swap to."),
+        [string] $DestinationSlotName,
 
         [Parameter(HelpMessage = "The number of attempts for updating a Web App Slot. The default value is 3.")]
         [int] $RetryCount = 3
@@ -84,7 +84,7 @@ function Switch-AzureWebAppSlot
 
 
         # Applying the transformed App Settings and Connection Strings to the Source environment with Destination settings.
-        $updatedSourceSlotData = UpdateWebAppSlotAppSettingsAndConnectionStrings -ResourceGroupName $ResourceGroupName -WebAppName $WebAppName -SlotName $SourceSlotName -AppSettings $transformedAppSettings -ConnectionStrings $transformedConnectionStrings
+        $updatedSourceSlotData = UpdateWebAppSlotAppSettingsAndConnectionStrings -ResourceGroupName $ResourceGroupName -WebAppName $WebAppName -SlotName $SourceSlotName -AppSettings $transformedAppSettings -ConnectionStrings $transformedConnectionStrings -RetryCount $RetryCount
 
         # Verifying App Settings vailidity in the Source environment against Destination settings.
         $appSettingsValid = VerifyAppSettingsValidity -SlotName $DestinationSlotName -OriginalAppSettings $originalAppSettings -TransformedAppSettings (GetAppSettingsFromSlot -Slot $updatedSourceSlotData)
@@ -107,7 +107,7 @@ function Switch-AzureWebAppSlot
 
             Write-Warning "Attempting to restore the original App Settings and Connection Strings for the `"$SourceSlotName`" Slot of `"$WebAppName`"!"
 
-            UpdateWebAppSlotAppSettingsAndConnectionStrings -ResourceGroupName $ResourceGroupName -WebAppName $WebAppName -SlotName $SourceSlotName -AppSettings $originalAppSettings -ConnectionStrings $originalConnectionStrings | Out-Null
+            UpdateWebAppSlotAppSettingsAndConnectionStrings -ResourceGroupName $ResourceGroupName -WebAppName $WebAppName -SlotName $SourceSlotName -AppSettings $originalAppSettings -ConnectionStrings $originalConnectionStrings -RetryCount $RetryCount | Out-Null
 
             throw ("Failed to correctly update the `"$SourceSlotName`" Slot of `"$WebAppName`" for the `"$DestinationSlotName`" environment!")
         }
@@ -166,7 +166,7 @@ function Switch-AzureWebAppSlot
 
 
         # Applying the transformed App Settings and Connection Strings to the Source environment with Source settings.
-        $updatedSourceSlotData = UpdateWebAppSlotAppSettingsAndConnectionStrings -ResourceGroupName $ResourceGroupName -WebAppName $WebAppName -SlotName $SourceSlotName -AppSettings $transformedAppSettings -ConnectionStrings $transformedConnectionStrings
+        $updatedSourceSlotData = UpdateWebAppSlotAppSettingsAndConnectionStrings -ResourceGroupName $ResourceGroupName -WebAppName $WebAppName -SlotName $SourceSlotName -AppSettings $transformedAppSettings -ConnectionStrings $transformedConnectionStrings -RetryCount $RetryCount
 
         # Verifying App Settings vailidity in the Source environment against SourceSlotName settings.
         $appSettingsValid = VerifyAppSettingsValidity -SlotName $SourceSlotName -OriginalAppSettings $originalAppSettings -TransformedAppSettings (GetAppSettingsFromSlot -Slot $updatedSourceSlotData)
@@ -189,7 +189,7 @@ function Switch-AzureWebAppSlot
 
             Write-Warning "Attempting to restore the original App Settings and Connection Strings for the `"$SourceSlotName`" Slot of `"$WebAppName`"!"
 
-            UpdateWebAppSlotAppSettingsAndConnectionStrings -ResourceGroupName $ResourceGroupName -WebAppName $WebAppName -SlotName $SourceSlotName -AppSettings $originalAppSettings -ConnectionStrings $originalConnectionStrings | Out-Null
+            UpdateWebAppSlotAppSettingsAndConnectionStrings -ResourceGroupName $ResourceGroupName -WebAppName $WebAppName -SlotName $SourceSlotName -AppSettings $originalAppSettings -ConnectionStrings $originalConnectionStrings -RetryCount $RetryCount | Out-Null
 
             throw ("Failed to correctly update the `"$SourceSlotName`" Slot of `"$WebAppName`" for the `"$SourceSlotName`" environment!")
         }
@@ -324,7 +324,8 @@ function UpdateWebAppSlotAppSettingsAndConnectionStrings
         [string] $WebAppName,
         [string] $SlotName,
         [System.Collections.Hashtable] $AppSettings,
-        [System.Collections.Hashtable] $ConnectionStrings
+        [System.Collections.Hashtable] $ConnectionStrings,
+        [int] $RetryCount
     )
     process
     {
