@@ -126,23 +126,17 @@ function Invoke-AzureWebAppStorageContainerCopy
         {
             if (-not $Force.IsPresent -and -not $destinationContainerCreated)
             {
-                try
-                {
-                    Get-AzStorageBlob `
-                        -Context $destinationStorageContext `
-                        -Container $DestinationContainerName `
-                        -Blob $blob.Name `
-                        -ErrorAction Continue `
-                    | Out-Null
+                $destinationBlob = Get-AzStorageBlob `
+                    -Context $destinationStorageContext `
+                    -Container $DestinationContainerName `
+                    -Blob $blob.Name `
+                    -ErrorAction SilentlyContinue
 
-                    Write-Output ("Skipped `"$($blob.Name)`".")
+                if ($null -ne $destinationBlob)
+                {
+                    Write-Output ("Skipped `"$($destinationBlob.Name)`".")
 
                     continue
-                }
-                # Catching [Microsoft.WindowsAzure.Commands.Storage.Common.ResourceNotFoundException] doesn't work for some reason.
-                catch
-                {
-                    # Destination blob doesn't exist, so we can proceed with the copy.
                 }
             }
 
