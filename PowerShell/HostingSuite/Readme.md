@@ -17,7 +17,7 @@ Retrieves the status of a given maintenance through Web API.
 
 ### Start-Maintenance
 
-Invokes the execution of a given maintenance through Web API synchronously: after invoking the maintenance exeuction it will periodically monitor the progress of the maintenance until it's complete.
+Invokes the execution of a given maintenance through Web API synchronously: after invoking the maintenance execution it will periodically monitor the progress of the maintenance until it's complete.
 
 Dependencies: Invoke-Maintenance, Get-Maintenance.
 
