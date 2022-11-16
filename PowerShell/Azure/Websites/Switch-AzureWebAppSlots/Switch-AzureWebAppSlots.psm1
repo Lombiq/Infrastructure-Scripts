@@ -12,11 +12,12 @@
 
 Import-Module Az.Websites
 
-function Switch-AzureWebAppSlot
+function Switch-AzureWebAppSlots
 {
     [CmdletBinding()]
     [Alias("swas")]
     [OutputType([int])]
+    [Diagnostics.CodeAnalysis.SuppressMessage("PSUseSingularNouns", Justification = "This operation always involves multiple Slots.")]
     Param
     (
         [Parameter(Mandatory = $true, HelpMessage = "The name of the Resource Group the Web App is in.")]
