@@ -13,7 +13,7 @@ To be able to interact with `Azure` resources, you need to have an `Azure Publis
 Import-AzurePublishSettingsFile -PublishSettingsFile "C:\Path\To\File\lombiq.publishsettings"
 ```
 
-## Commandlets
+## Cmdlets
 
 ### Subscriptions
 
