@@ -1,4 +1,4 @@
-<#
+﻿<#
 .Synopsis
     Exports a database of an Azure Web App to Blob Storage snychronously.
 
@@ -34,7 +34,7 @@ function Invoke-AzureWebAppSqlDatabaseExport
         [Alias("WebAppName")]
         [Parameter(Mandatory = $true, HelpMessage = "You need to provide the name of the Web App.")]
         [string] $DatabaseWebAppName,
-        
+
         [Parameter(HelpMessage = "The name of the Web App slot.")]
         [string] $DatabaseSlotName,
 
@@ -48,7 +48,7 @@ function Invoke-AzureWebAppSqlDatabaseExport
 
         [Parameter(HelpMessage = "The name of the storage connection string's Web App if it differs from the database's.")]
         [string] $StorageWebAppName = $DatabaseWebAppName,
-        
+
         [Parameter(HelpMessage = "The name of the storage connection string's Web App Slot if it differs from the database's.")]
         [string] $StorageSlotName = $DatabaseSlotName,
 
@@ -64,7 +64,7 @@ function Invoke-AzureWebAppSqlDatabaseExport
 
     Process
     {
-        Write-Host ("`n*****`nDatabase export starting...`n*****")
+        Write-Output ("`n*****`nDatabase export starting...`n*****")
 
         $exportRequest = Start-AzureWebAppSqlDatabaseExport `
             -DatabaseResourceGroupName $DatabaseResourceGroupName `
@@ -83,7 +83,7 @@ function Invoke-AzureWebAppSqlDatabaseExport
             throw ("Could not start database export!")
         }
 
-        Write-Host ("`n*****`nDatabase export started with the following Status Link:`n$($exportRequest.OperationStatusLink)`n*****")
+        Write-Output ("`n*****`nDatabase export started with the following Status Link:`n$($exportRequest.OperationStatusLink)`n*****")
 
         $status = $previousStatus = $null
 
@@ -97,7 +97,7 @@ function Invoke-AzureWebAppSqlDatabaseExport
             {
                 throw ("Export operation failed: $($status.ErrorMessage)!")
             }
-            
+
             if ($null -eq $previousStatus -or $previousStatus.LastModifiedTime -ne $status.LastModifiedTime)
             {
                 $status
@@ -112,7 +112,7 @@ function Invoke-AzureWebAppSqlDatabaseExport
             throw ("Database export finished without success!")
         }
 
-        Write-Host ("*****`nDatabase export finished!`n*****`n")
+        Write-Output ("*****`nDatabase export finished!`n*****`n")
 
         return $exportRequest
     }

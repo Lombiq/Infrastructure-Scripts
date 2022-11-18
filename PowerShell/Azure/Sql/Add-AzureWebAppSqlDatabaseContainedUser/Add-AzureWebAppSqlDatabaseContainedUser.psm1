@@ -1,4 +1,4 @@
-<#
+﻿<#
 .Synopsis
     Adds a contained user to a SQL Azure database with the optionally specified role.
 
@@ -30,7 +30,7 @@ function Add-AzureWebAppSqlDatabaseContainedUser
         [Alias("WebAppName")]
         [Parameter(Mandatory = $true, HelpMessage = "You need to provide the name of the Web App.")]
         [string] $DatabaseWebAppName,
-        
+
         [Alias("SlotName")]
         [Parameter(HelpMessage = "The name of the Source Web App slot.")]
         [string] $DatabaseSlotName,
@@ -46,7 +46,7 @@ function Add-AzureWebAppSqlDatabaseContainedUser
 
         [Parameter(HelpMessage = "The name of the user connection string's Web App if it differs from the database's.")]
         [string] $UserWebAppName = $DatabaseWebAppName,
-        
+
         [Parameter(HelpMessage = "The name of the user connection string's Web App Slot if it differs from the database's.")]
         [string] $UserSlotName = $DatabaseSlotName,
 
@@ -64,7 +64,7 @@ function Add-AzureWebAppSqlDatabaseContainedUser
             -WebAppName $DatabaseWebAppName `
             -SlotName $DatabaseSlotName `
             -ConnectionStringName $DatabaseConnectionStringName
-        
+
         $userDatabaseConnection = Get-AzureWebAppSqlDatabaseConnection `
             -ResourceGroupName $UserResourceGroupName `
             -WebAppName $UserWebAppName `

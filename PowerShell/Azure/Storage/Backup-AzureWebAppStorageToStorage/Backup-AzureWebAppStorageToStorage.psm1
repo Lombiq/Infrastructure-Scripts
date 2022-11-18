@@ -32,16 +32,16 @@ function Backup-AzureWebAppStorageToStorage
     Param
     (
         [Parameter(Mandatory = $true, HelpMessage = "The name of the Resource Group the Web App is in.")]
-        [string] $ResourceGroupName = $(throw "You need to provide the name of the Resource Group."),
+        [string] $ResourceGroupName,
 
         [Parameter(Mandatory = $true, HelpMessage = "The name of the Azure Web App. The script throws exception if the Web App doesn't exist on the given subscription.")]
-        [string] $WebAppName = $(throw "You need to provide the name of the Web App."),
+        [string] $WebAppName,
 
         [Parameter(Mandatory = $true, HelpMessage = "The name of a connection string that identifies the source Storage Account. The script will exit with error if there is no connection string defined with the name provided for the Production slot of the given Web App.")]
-        [string] $SourceConnectionStringName = $(throw "You need to provide a connection string name for the source Storage Account."),
+        [string] $SourceConnectionStringName,
 
         [Parameter(Mandatory = $true, HelpMessage = "The name of a connection string that identifies the destination Storage Account. The script will exit with error if there is no connection string defined with the name provided for the Production slot of the given Web App.")]
-        [string] $DestinationConnectionStringName = $(throw "You need to provide a connection string name for the destination Storage Account."),
+        [string] $DestinationConnectionStringName,
 
         [Parameter(HelpMessage = "A list of names of Blob Containers to include. When valid values are provided, it cancels out `"ContainerBlackList`".")]
         [string[]] $ContainerWhiteList = @(),
@@ -54,14 +54,14 @@ function Backup-AzureWebAppStorageToStorage
 
         [Parameter(HelpMessage = "A list of folder names to exclude. Applied after `"FolderWhiteList`".")]
         [string[]] $FolderBlackList = @(),
-        
+
         [Parameter(HelpMessage = "Overrides the access level of the containers, but only affects those that are (re-)created.")]
         [Microsoft.WindowsAzure.Storage.Blob.BlobContainerPublicAccessType] $DestinationContainersAccessType = [Microsoft.WindowsAzure.Storage.Blob.BlobContainerPublicAccessType]::Off,
 
         [Parameter(HelpMessage = "The number of days to keep storage backup containers for, with respect to the LastModifiedDate property.")]
         [int] $RemoveBackupContainersOlderThanDays = 0
     )
-    
+
     Process
     {
         $now = (Get-Date).ToUniversalTime()

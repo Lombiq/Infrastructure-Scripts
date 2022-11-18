@@ -6,7 +6,7 @@ function Set-AzContextWrapper
     [OutputType([Microsoft.Azure.Commands.Profile.Models.Core.PSAzureContext])]
     Param
     (
-        [Parameter(Mandatory=$true)]
+        [Parameter(Mandatory = $true)]
         [string] $SubscriptionId
     )
 

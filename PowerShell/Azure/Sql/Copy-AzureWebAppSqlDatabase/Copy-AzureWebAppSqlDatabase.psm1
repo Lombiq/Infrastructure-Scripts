@@ -1,4 +1,4 @@
-<#
+﻿<#
 .Synopsis
     Starts a one-time copy operation between two Azure SQL databases.
 
@@ -33,7 +33,7 @@ function Copy-AzureWebAppSqlDatabase
         [Alias("WebAppName")]
         [Parameter(Mandatory = $true, HelpMessage = "You need to provide the name of the Web App.")]
         [string] $SourceWebAppName,
-        
+
         [Alias("SlotName")]
         [Parameter(HelpMessage = "The name of the Source Web App slot.")]
         [string] $SourceSlotName,
@@ -49,7 +49,7 @@ function Copy-AzureWebAppSqlDatabase
 
         [Parameter(HelpMessage = "The name of the Destination Web App if it differs from the Source.")]
         [string] $DestinationWebAppName = $SourceWebAppName,
-        
+
         [Parameter(HelpMessage = "The name of the Destination Web App Slot if it differs from the Source.")]
         [string] $DestinationSlotName = $SourceSlotName,
 

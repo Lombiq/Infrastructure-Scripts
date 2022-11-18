@@ -1,4 +1,4 @@
-<#
+﻿<#
 .Synopsis
     Downloads every Container and their Blobs from an Azure Blob Storage.
 
@@ -65,7 +65,7 @@ function Set-AzureWebAppStorageContentFromStorage
         [Alias("WebAppName")]
         [Parameter(Mandatory = $true, HelpMessage = "You need to provide the name of the Web App.")]
         [string] $SourceWebAppName,
-        
+
         [Alias("SlotName")]
         [Parameter(HelpMessage = "The name of the Source Web App slot.")]
         [string] $SourceSlotName,
@@ -81,7 +81,7 @@ function Set-AzureWebAppStorageContentFromStorage
 
         [Parameter(HelpMessage = "The name of the Destination Web App if it differs from the Source.")]
         [string] $DestinationWebAppName = $SourceWebAppName,
-        
+
         [Parameter(HelpMessage = "The name of the Destination Web App Slot if it differs from the Source.")]
         [string] $DestinationSlotName = $SourceSlotName,
 
@@ -105,7 +105,7 @@ function Set-AzureWebAppStorageContentFromStorage
         [Parameter(HelpMessage = "Determines whether the destination containers should be deleted and re-created " +
             "before copying the blobs from the source containers.")]
         [bool] $RemoveExtraFilesOnDestination = $true,
-        
+
         [Parameter(HelpMessage = "Overrides the access level of the containers, but only affects those that are (re-)created.")]
         [Microsoft.WindowsAzure.Storage.Blob.BlobContainerPublicAccessType] $DestinationContainersAccessType,
 
@@ -143,7 +143,7 @@ function Set-AzureWebAppStorageContentFromStorage
 
         $containerWhiteListValid = $ContainerWhiteList -and $ContainerWhiteList.Count -gt 0
         $containerBlackListValid = $ContainerBlackList -and $ContainerBlackList.Count -gt 0
-        
+
         $sourceContainers = Get-AzStorageContainer -Context $sourceStorageContext `
         | Where-Object `
         { `
@@ -196,7 +196,7 @@ function Set-AzureWebAppStorageContentFromStorage
                         {
                             $containerAccessType = $sourceContainer.PublicAccess
                         }
-                        
+
                         New-AzStorageContainer `
                             -Context $destinationStorageContext `
                             -Permission $containerAccessType `
@@ -230,7 +230,7 @@ function Set-AzureWebAppStorageContentFromStorage
                     Start-AzStorageBlobCopy -Context $sourceStorageContext -SrcContainer $sourceContainer.Name -SrcBlob $sourceBlob.Name `
                         -DestContext $destinationStorageContext -DestContainer $destinationContainerName -DestBlob $sourceBlob.Name -Force | Out-Null
 
-                    Write-Host ("Copied `"" + $sourceContainer.Name + "/" + $sourceBlob.Name + "`" to `"$destinationContainerName`".")
+                    Write-Output ("Copied `"" + $sourceContainer.Name + "/" + $sourceBlob.Name + "`" to `"$destinationContainerName`".")
                 }
             }
         }

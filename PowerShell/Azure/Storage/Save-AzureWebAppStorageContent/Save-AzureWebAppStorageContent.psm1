@@ -1,4 +1,4 @@
-<#
+﻿<#
 .Synopsis
    Downloads every Container and their Blobs from an Azure Blob Storage.
 
@@ -31,16 +31,16 @@ function Save-AzureWebAppStorageContent
     Param
     (
         [Parameter(Mandatory = $true, HelpMessage = "The name of the Resource Group the Web App is in.")]
-        [string] $ResourceGroupName = $(throw "You need to provide the name of the Resource Group."),
+        [string] $ResourceGroupName,
 
         [Parameter(Mandatory = $true, HelpMessage = "The name of the Azure Web App. The script throws exception if the Web App doesn't exist on the given subscription.")]
-        [string] $WebAppName = $(throw "You need to provide the name of the Web App."),
+        [string] $WebAppName,
 
         [Parameter(Mandatory = $true, HelpMessage = "The name of a connection string that identifies the Storage Account. The script will exit with error if there is no connection string defined with the name provided for the Production slot of the given Web App.")]
-        [string] $ConnectionStringName = $(throw "You need to provide a connection string name for the Storage Account."),
+        [string] $ConnectionStringName,
 
         [Parameter(Mandatory = $true, HelpMessage = "The path on the local machine where the files will be downloaded.")]
-        [string] $Destination = $(throw "You need to provide a path to download the files to."),
+        [string] $Destination,
 
         [Parameter(HelpMessage = "A list of names of Blob Containers to include. When valid values are provided, it cancels out `"ContainerBlackList`".")]
         [string[]] $ContainerWhiteList = @(),
@@ -66,11 +66,11 @@ function Save-AzureWebAppStorageContent
 
         $containerWhiteListValid = $ContainerWhiteList -and $ContainerWhiteList.Count -gt 0
         $containerBlackListValid = $ContainerBlackList -and $ContainerBlackList.Count -gt 0
-        
+
         $containers = Get-AzStorageContainer -Context $storageContext | Where-Object `
         { `
             ((!$containerWhiteListValid -or ($containerWhiteListValid -and $ContainerWhiteList.Contains($PSItem.Name))) -and `
-            ($containerWhiteListValid -or (!$containerBlackListValid -or !$ContainerBlackList.Contains($PSItem.Name)))) `
+                ($containerWhiteListValid -or (!$containerBlackListValid -or !$ContainerBlackList.Contains($PSItem.Name)))) `
         }
 
         $folderWhiteListValid = $FolderWhiteList -and $FolderWhiteList.Count -gt 0
@@ -90,7 +90,7 @@ function Save-AzureWebAppStorageContent
             $blobs = $container | Get-AzStorageBlob | Where-Object `
             { `
                 (!$folderWhiteListValid -or ($folderWhiteListValid -and (Compare-Object $PSItem.Name.Split("/", [StringSplitOptions]::RemoveEmptyEntries) $FolderWhiteList -PassThru -IncludeEqual -ExcludeDifferent))) `
-                -and (!$folderBlackListValid -or ($folderBlackListValid -and (!(Compare-Object $PSItem.Name.Split("/", [StringSplitOptions]::RemoveEmptyEntries) $FolderBlackList -PassThru -IncludeEqual -ExcludeDifferent)))) `
+                    -and (!$folderBlackListValid -or ($folderBlackListValid -and (!(Compare-Object $PSItem.Name.Split("/", [StringSplitOptions]::RemoveEmptyEntries) $FolderBlackList -PassThru -IncludeEqual -ExcludeDifferent)))) `
             }
 
             foreach ($blob in $blobs)
@@ -111,7 +111,7 @@ function Save-AzureWebAppStorageContent
                         }
 
                         $path = $containerPath + "\" + $blobPath
-                    
+
                         if (-not (Test-Path ($path)))
                         {
                             New-Item -ItemType Directory -Path (Split-Path -Path $path -Parent) -Force | Out-Null
@@ -119,7 +119,7 @@ function Save-AzureWebAppStorageContent
 
                         Get-AzStorageBlobContent -Context $storageContext -Container $container.Name -Blob $blob.Name -Destination $path -ErrorAction Stop -Force | Out-Null
 
-                        Write-Host ("Downloaded `"" + $container.Name + "/" + $blob.Name + "`".")
+                        Write-Output ("Downloaded `"" + $container.Name + "/" + $blob.Name + "`".")
 
                         $success = $true
                     }

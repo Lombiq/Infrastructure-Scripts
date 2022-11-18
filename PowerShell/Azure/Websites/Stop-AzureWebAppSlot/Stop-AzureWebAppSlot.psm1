@@ -1,4 +1,4 @@
-<#
+﻿<#
 .Synopsis
    Stops a specific Slot of an Azure Web App.
 
@@ -20,20 +20,20 @@ function Stop-AzureWebAppSlot
     Param
     (
         [Parameter(Mandatory = $true, HelpMessage = "The name of the Resource Group the Web App is in.")]
-        [string] $ResourceGroupName = $(throw "You need to provide the name of the Resource Group."),
+        [string] $ResourceGroupName,
 
         [Parameter(Mandatory = $true, HelpMessage = "The name of the Azure Web App. The script throws exception if the Web App doesn't exist on the given subscription.")]
-        [string] $WebAppName = $(throw "You need to provide the name of the Web App."),
+        [string] $WebAppName,
 
         [Parameter(Mandatory = $true, HelpMessage = "The name of the Web App slot.")]
-        [string] $SlotName = $(throw "You need to specify the name of the Slot to stop.")
+        [string] $SlotName
     )
 
     Process
     {
         $slot = Get-AzureWebAppWrapper -ResourceGroupName $ResourceGroupName -WebAppName $WebAppName -SlotName $SlotName
 
-        if ($slot -eq $null)
+        if ($null -eq $slot)
         {
             throw ("$SlotName SLOT OF $WebAppName DOES NOT EXIST!")
         }
@@ -48,8 +48,8 @@ function Stop-AzureWebAppSlot
                 throw ("COULD NOT STOP $SlotName SLOT OF $WebAppName!" + $_.Exception.Message)
             }
 
-            Write-Host ("`n*****`n$SlotName SLOT OF $WebAppName STOPPED.`n*****`n")
-            
+            Write-Output ("`n*****`n$SlotName SLOT OF $WebAppName STOPPED.`n*****`n")
+
             return $slot
         }
     }

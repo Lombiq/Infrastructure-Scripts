@@ -1,4 +1,4 @@
-function Get-VultrPlans
+﻿function Get-VultrPlan
 {
     [CmdletBinding()]
     param
@@ -9,7 +9,7 @@ function Get-VultrPlans
         [Parameter(Mandatory = $false)]
         [Switch] $BareMetal
     )
-    
+
     process
     {
         $endpoint = "plans"

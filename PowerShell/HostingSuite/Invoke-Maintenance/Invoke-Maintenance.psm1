@@ -26,9 +26,10 @@ function Invoke-Maintenance
         [string] $MaintenanceName,
 
         [Parameter(Mandatory = $true,
-                   HelpMessage = "The hostname of the API endpoint to send the request for starting the maintenance.
-                                  The URL pattern is https://mywebsite.com/api/Lombiq.Hosting.MultiTenancy/Maintenance?maintenanceName=MyMaintenance, but you only need to define mywebsite.com.")]
-        [string] $Hostname = $(throw "You need to specify the API endpoint to send the request for starting the maintenance."),
+            HelpMessage = "The hostname of the API endpoint that returns the maintenance status. The URL pattern is" +
+            " https://mywebsite.com/api/Lombiq.Hosting.MultiTenancy/Maintenance?maintenanceName=MyMaintenance," +
+            " but you only need to define mywebsite.com.")]
+        [string] $Hostname,
 
         [Parameter(HelpMessage = "Optional: The API route on the host for starting a maintenance.")]
         [string] $APIEndpoint = "api/Lombiq.Hosting.MultiTenancy/Maintenance",
@@ -39,7 +40,7 @@ function Invoke-Maintenance
 
         [Parameter(Mandatory = $true,
                    HelpMessage = "The password of the user.")]
-        [string] $Password = $(throw "You need to specify the password."),
+        [SecureString] $Password = $(throw "You need to specify the password."),
 
         [Parameter(HelpMessage = "The number of tenants to run the maintenance process in one go.")]
         [int] $BatchSize = 0,
@@ -54,7 +55,7 @@ function Invoke-Maintenance
     {
         Start-Maintenance -MaintenanceName $MaintenanceName -Hostname $Hostname -APIEndpoint $APIEndpoint -Username $Username -Password $Password -BatchSize $BatchSize -RetryCount $RetryCount -Protocol $Protocol
 
-        Write-Host ("`n*****`nStarting maintenance `"$MaintenanceName`" at `"$Hostname`"...`n*****")
+        Write-Output ("`n*****`nStarting maintenance `"$MaintenanceName`" at `"$Hostname`"...`n*****")
 
         $previousProgress = -1
         $progress = 0
@@ -67,14 +68,14 @@ function Invoke-Maintenance
 
             if ($progress -ne $previousProgress)
             {
-                Write-Host "* $progress%"
-                
-                $previousProgress = $progress                
+                Write-Output "* $progress%"
+
+                $previousProgress = $progress
             }
         }
         while ($progress -ne 100)
 
-        Write-Host ("*****`nFinished maintenance `"$MaintenanceName`" at `"$Hostname`"!`n*****`n")
+        Write-Output ("*****`nFinished maintenance `"$MaintenanceName`" at `"$Hostname`"!`n*****`n")
 
         return
     }

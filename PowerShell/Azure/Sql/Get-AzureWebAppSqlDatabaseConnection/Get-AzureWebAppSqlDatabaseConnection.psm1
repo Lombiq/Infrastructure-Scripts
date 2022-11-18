@@ -1,4 +1,4 @@
-<#
+﻿<#
 .Synopsis
     Returns the name and server name of an Azure SQL database based on a connection string stored at a specific Web App.
 
@@ -25,7 +25,7 @@ function Get-AzureWebAppSqlDatabaseConnection
 {
     [CmdletBinding()]
     [Alias("gasdc")]
-    [OutputType([Object])]
+    [OutputType([System.Collections.Hashtable])]
     Param
     (
         [Parameter(Mandatory = $true, HelpMessage = "You need to provide the name of the Resource Group.")]
@@ -33,7 +33,7 @@ function Get-AzureWebAppSqlDatabaseConnection
 
         [Parameter(Mandatory = $true, HelpMessage = "You need to provide the name of the Web App.")]
         [string] $WebAppName,
-        
+
         [Parameter(HelpMessage = "The name of the Web App slot.")]
         [string] $SlotName,
 
@@ -62,11 +62,11 @@ function Get-AzureWebAppSqlDatabaseConnection
         Split(":", [System.StringSplitOptions]::RemoveEmptyEntries)[1].
         Split(".", [System.StringSplitOptions]::RemoveEmptyEntries).
         Get(0)
-        
+
         if ([string]::IsNullOrEmpty($serverName))
         {
             throw ("The connection string is invalid: Server name not found!")
-        }        
+        }
 
 
         $databaseElement = $connectionStringElements | Where-Object { $PSItem.StartsWith("Database=") -or $PSItem.StartsWith("Initial Catalog=") }
@@ -81,7 +81,7 @@ function Get-AzureWebAppSqlDatabaseConnection
             throw ("The connection string is invalid: Database name not found!")
         }
 
-        
+
         $userIdElement = $connectionStringElements | Where-Object { $PSItem.StartsWith("User ID=") }
         if ($null -eq $userIdElement)
         {
@@ -94,7 +94,7 @@ function Get-AzureWebAppSqlDatabaseConnection
             throw ("The connection string is invalid: User ID not found!")
         }
 
-        
+
         $userName = $userId.Split("@", [System.StringSplitOptions]::RemoveEmptyEntries)[0]
         if ([string]::IsNullOrEmpty($userName))
         {
@@ -114,7 +114,7 @@ function Get-AzureWebAppSqlDatabaseConnection
         {
             throw ("The connection string is invalid: Password not found!")
         }
-        
+
 
         return @{
             ServerName = $serverName

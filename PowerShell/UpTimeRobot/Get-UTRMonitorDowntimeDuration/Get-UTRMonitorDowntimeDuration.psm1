@@ -1,18 +1,19 @@
-function Get-UTRMonitorDowntimeDuration
+﻿function Get-UTRMonitorDowntimeDuration
 {
     [CmdletBinding()]
     [Alias("gutrmdd")]
     [OutputType([int])]
     Param
     (
-        [Parameter(Mandatory = $true, HelpMessage = "The UpTimeRobot API key to access monitors. When using an API key that is not specific to a monitor, you also need to define the monitor ID as well.")]
-        [string] $ApiKey = $(throw "You need to specify the UpTimeRobot API key to access monitors."),
+        [Parameter(Mandatory = $true, HelpMessage = "The UpTimeRobot API key to access monitors. When using an API" +
+            " key that is not specific to a monitor, you also need to define the monitor ID as well.")]
+        [string] $ApiKey,
 
         [Parameter(HelpMessage = "The monitor ID.")]
         [string] $MonitorId
     )
 
-    
+
     Process
     {
         try
@@ -24,11 +25,11 @@ function Get-UTRMonitorDowntimeDuration
             Write-Error "Failed to reach UpTimeRobot API!"
 
             Write-Error -Exception $_.Exception
-            
+
             exit 1
         }
 
-        
+
         switch ($response.stat)
         {
             "ok"
@@ -54,7 +55,7 @@ function Get-UTRMonitorDowntimeDuration
         {
             0
             {
-                Write-Host "Monitor is UP!"
+                Write-Output "Monitor is UP!"
 
                 return 0
             }

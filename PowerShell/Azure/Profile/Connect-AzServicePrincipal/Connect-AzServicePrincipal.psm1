@@ -6,14 +6,14 @@ function Connect-AzServicePrincipal
     [OutputType([Microsoft.Azure.Commands.Profile.Models.Core.PSAzureProfile])]
     Param
     (
-        [Parameter(Mandatory=$true)]
-        [string] $TenantId = $(throw "Please provide the ID of the Azure Active Directory!"),
+        [Parameter(Mandatory = $true, HelpMessage = "Please provide the ID of the Azure Active Directory!")]
+        [string] $TenantId,
 
-        [Parameter(Mandatory=$true)]
-        [string] $ApplicationId = $(throw "Please provide the ID of the Service Principal Application!"),
+        [Parameter(Mandatory = $true, HelpMessage = "Please provide the ID of the Service Principal Application!")]
+        [string] $ApplicationId,
 
-        [Parameter(Mandatory=$true)]
-        [string] $CertificateThumbprint = $(throw "Please provide the thumbprint of the certificate to authenticate with!"),
+        [Parameter(Mandatory = $true, HelpMessage = "Please provide the thumbprint of the certificate to authenticate with!")]
+        [string] $CertificateThumbprint,
 
         [Parameter()]
         [string] $SubscriptionId
@@ -21,53 +21,38 @@ function Connect-AzServicePrincipal
 
     Process
     {
-        function AzLogin
-        {
-            Connect-AzAccount `
-                -ServicePrincipal `
-                -TenantId $TenantId `
-                -ApplicationId $ApplicationId `
-                -CertificateThumbprint $CertificateThumbprint
-        }
-
-        
-        
         $azContext = Get-AzContext
 
-        if ($azContext -eq $null)
+        if ($null -eq $azContext)
         {
-            AzLogin
-            
+            Connect-AzAccount -ServicePrincipal -TenantId $TenantId -ApplicationId $ApplicationId -CertificateThumbprint $CertificateThumbprint
+
             $azContext = Get-AzContext
         }
         elseif ($azContext.Tenant.Id -ne $TenantId)
         {
             $azContext = Set-AzContext -Tenant $TenantId
-    
+
             if ($azContext.Tenant.Id -ne $TenantId)
             {
                 Disconnect-AzAccount
-                
-                AzLogin
 
-                $azContext = Get-AzContext 
+                Connect-AzAccount -ServicePrincipal -TenantId $TenantId -ApplicationId $ApplicationId -CertificateThumbprint $CertificateThumbprint
+
+                $azContext = Get-AzContext
 
                 if ($azContext.Tenant.Id -ne $TenantId)
                 {
                     throw "Could not login to the Azure Active Directory with the ID `"$TenantId`"!"
                 }
-            }           
+            }
         }
-
-
 
         if (-not [string]::IsNullOrEmpty($SubscriptionId))
         {
             $azContext = Set-AzContextWrapper -SubscriptionId $SubscriptionId
         }
-        
-        
-        
+
         return $azContext
     }
 }

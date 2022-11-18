@@ -1,4 +1,4 @@
-function Get-UTRMonitors
+﻿function Get-UTRMonitor
 {
     [CmdletBinding()]
     [Alias("gutrm")]
@@ -6,7 +6,7 @@ function Get-UTRMonitors
     Param
     (
         [Parameter(Mandatory = $true, HelpMessage = "The UpTimeRobot API key to access monitors.")]
-        [string] $ApiKey = $(throw "You need to specify the UpTimeRobot API key to access monitors."),
+        [string] $ApiKey,
 
         [Parameter(HelpMessage = "The hyphen-separated list of monitor IDs.")]
         [string] $MonitorIds,
@@ -15,12 +15,12 @@ function Get-UTRMonitors
         [string] $StatusIds
     )
 
-    
+
     Process
     {
         $headers = @{
             "cache-control" = "no-cache"
-            "content-type" = "application/x-www-form-urlencoded"
+            "content-type"  = "application/x-www-form-urlencoded"
         }
 
         $body = "api_key=$ApiKey&logs=1"
@@ -34,7 +34,7 @@ function Get-UTRMonitors
         {
             $body += "&statuses=$StatusIds"
         }
-        
+
         Invoke-RestMethod -Uri "https://api.uptimerobot.com/v2/getMonitors" -Method Post -Headers $headers -Body $body
     }
 }
