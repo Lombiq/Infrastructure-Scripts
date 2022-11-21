@@ -45,7 +45,7 @@ function Restart-AzureWebAppSlot
             }
             catch [Exception]
             {
-                throw ("COULD NOT RESTART $SlotName SLOT OF $WebAppName!" + $_.Exception.Message)
+                throw ("COULD NOT RESTART $SlotName SLOT OF $WebAppName!" + $PSItem.Exception.Message)
             }
 
             Write-Output ("`n*****`n$SlotName SLOT OF $WebAppName RESTARTED.`n*****`n")

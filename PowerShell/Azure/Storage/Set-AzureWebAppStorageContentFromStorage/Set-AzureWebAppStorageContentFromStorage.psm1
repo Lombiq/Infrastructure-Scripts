@@ -158,7 +158,7 @@ function Set-AzureWebAppStorageContentFromStorage
         }
         elseif ($containerWhiteListValid)
         {
-            $notFoundSourceContainerNames = $ContainerWhiteList | Where-Object { $sourceContainerNames -notcontains $_ }
+            $notFoundSourceContainerNames = $ContainerWhiteList | Where-Object { $sourceContainerNames -notcontains $PSItem }
 
             if ($null -ne $notFoundSourceContainerNames)
             {
@@ -183,7 +183,7 @@ function Set-AzureWebAppStorageContentFromStorage
 
             # Creating the container on the destination if it was removed or it doesn't exist yet.
             if ($RemoveExtraFilesOnDestination -or $null -eq `
-                (Get-AzStorageContainer -Context $destinationStorageContext | Where-Object { $_.Name -eq $destinationContainerName }))
+                (Get-AzStorageContainer -Context $destinationStorageContext | Where-Object { $PSItem.Name -eq $destinationContainerName }))
             {
                 $containerCreated = $false
 
@@ -211,7 +211,7 @@ function Set-AzureWebAppStorageContentFromStorage
                             "Error during re-creating the container `"" `
                                 + $sourceContainer.Name `
                                 + "`". Retrying in a few seconds...`n" `
-                                + $_.Exception.Message + "`n")
+                                + $PSItem.Exception.Message + "`n")
                         Start-Sleep 5
                     }
                 }

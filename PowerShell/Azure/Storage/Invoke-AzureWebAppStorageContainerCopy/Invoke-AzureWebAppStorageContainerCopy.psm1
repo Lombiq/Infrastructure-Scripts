@@ -113,7 +113,7 @@ function Invoke-AzureWebAppStorageContainerCopy
                 catch [System.Net.WebException], [System.Exception]
                 {
                     Write-Warning ("Error during creating the container `"$DestinationContainerName`"." +
-                        " Retrying in a few seconds...`n" + $_.Exception.Message + "`n")
+                        " Retrying in a few seconds...`n" + $PSItem.Exception.Message + "`n")
                     Start-Sleep 5
                 }
             }
