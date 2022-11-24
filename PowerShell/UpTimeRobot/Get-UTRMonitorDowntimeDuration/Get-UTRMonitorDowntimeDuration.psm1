@@ -24,7 +24,7 @@
         {
             Write-Error "Failed to reach UpTimeRobot API!"
 
-            Write-Error -Exception $_.Exception
+            Write-Error -Exception $PSItem.Exception
 
             exit 1
         }
