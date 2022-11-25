@@ -55,18 +55,21 @@ function Invoke-AzureWebAppStorageContainerCopy
 
     Process
     {
-        if ($SourceConnectionStringName -eq $DestinationConnectionStringName -and $SourceContainerName -eq $DestinationContainerName)
+        if ($SourceConnectionStringName -eq $DestinationConnectionStringName -and
+            $SourceContainerName -eq $DestinationContainerName)
         {
             throw ("The destination container cannot be the same as the source!")
         }
 
-        $sourceStorageConnection = Get-AzureWebAppStorageConnection `
-            -ResourceGroupName $ResourceGroupName `
-            -WebAppName $WebAppName `
-            -ConnectionStringName $SourceConnectionStringName
-        $sourceStorageContext = New-AzStorageContext `
-            -StorageAccountName $sourceStorageConnection.AccountName `
-            -StorageAccountKey $sourceStorageConnection.AccountKey
+        $sourceStorageConnection = Get-AzureWebAppStorageConnection @{
+            ResourceGroupName    = $ResourceGroupName
+            WebAppName           = $WebAppName
+            ConnectionStringName = $SourceConnectionStringName
+        }
+        $sourceStorageContext = New-AzStorageContext @{
+            StorageAccountName = $sourceStorageConnection.AccountName
+            StorageAccountKey  = $sourceStorageConnection.AccountKey
+        }
 
         $sourceContainer = Get-AzStorageContainer -Context $sourceStorageContext | Where-Object { $PSItem.Name -eq $SourceContainerName }
 
@@ -83,17 +86,19 @@ function Invoke-AzureWebAppStorageContainerCopy
         }
         else
         {
-            $destinationStorageConnection = Get-AzureWebAppStorageConnection `
-                -ResourceGroupName $ResourceGroupName `
-                -WebAppName $WebAppName `
-                -ConnectionStringName $DestinationConnectionStringName
-            $destinationStorageContext = New-AzStorageContext `
-                -StorageAccountName $destinationStorageConnection.AccountName `
-                -StorageAccountKey $destinationStorageConnection.AccountKey
+            $destinationStorageConnection = Get-AzureWebAppStorageConnection @{
+                ResourceGroupName    = $ResourceGroupName
+                WebAppName           = $WebAppName
+                ConnectionStringName = $DestinationConnectionStringName
+            }
+            $destinationStorageContext = New-AzStorageContext @{
+                StorageAccountName = $destinationStorageConnection.AccountName
+                StorageAccountKey  = $destinationStorageConnection.AccountKey
+            }
         }
 
-        $destinationContainer = Get-AzStorageContainer -Context $destinationStorageContext `
-        | Where-Object { $PSItem.Name -eq $DestinationContainerName }
+        $destinationContainer = Get-AzStorageContainer -Context $destinationStorageContext |
+            Where-Object { $PSItem.Name -eq $DestinationContainerName }
         $destinationContainerCreated = $false
 
         if ($null -eq $destinationContainer)
@@ -102,10 +107,12 @@ function Invoke-AzureWebAppStorageContainerCopy
             {
                 try
                 {
-                    $destinationContainer = New-AzStorageContainer `
-                        -Context $destinationStorageContext `
-                        -Permission $sourceContainer.PublicAccess `
-                        -Name $DestinationContainerName -ErrorAction Stop
+                    $destinationContainer = New-AzStorageContainer @{
+                        Context     = $destinationStorageContext
+                        Permission  = $sourceContainer.PublicAccess
+                        Name        = $DestinationContainerName
+                        ErrorAction = "Stop"
+                    }
 
                     $destinationContainerCreated = $true
                 }
@@ -126,11 +133,12 @@ function Invoke-AzureWebAppStorageContainerCopy
         {
             if (-not $Force.IsPresent -and -not $destinationContainerCreated)
             {
-                $destinationBlob = Get-AzStorageBlob `
-                    -Context $destinationStorageContext `
-                    -Container $DestinationContainerName `
-                    -Blob $blob.Name `
-                    -ErrorAction SilentlyContinue
+                $destinationBlob = Get-AzStorageBlob @{
+                    Context     = $destinationStorageContext
+                    Container   = $DestinationContainerName
+                    Blob        = $blob.Name
+                    ErrorAction = "SilentlyContinue"
+                }
 
                 if ($null -ne $destinationBlob)
                 {
@@ -140,15 +148,15 @@ function Invoke-AzureWebAppStorageContainerCopy
                 }
             }
 
-            Start-AzStorageBlobCopy `
-                -Context $sourceStorageContext `
-                -SrcContainer $SourceContainerName `
-                -SrcBlob $blob.Name `
-                -DestContext $destinationStorageContext `
-                -DestContainer $DestinationContainerName `
-                -DestBlob $blob.Name `
-                -Force `
-            | Out-Null
+            Start-AzStorageBlobCopy @{
+                Context       = $sourceStorageContext
+                SrcContainer  = $SourceContainerName
+                SrcBlob       = $blob.Name
+                DestContext   = $destinationStorageContext
+                DestContainer = $DestinationContainerName
+                DestBlob      = $blob.Name
+                Force         = $true
+            } | Out-Null
 
             Write-Output ("Copied `"$($blob.Name)`".")
         }

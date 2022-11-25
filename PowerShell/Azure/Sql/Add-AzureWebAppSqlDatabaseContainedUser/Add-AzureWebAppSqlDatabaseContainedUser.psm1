@@ -7,11 +7,12 @@
     Connection String name of the database and the contained user.
 
 .EXAMPLE
-    Add-AzureWebAppSqlDatabaseContainedUser `
-        -ResourceGroupName "LikeAndSubscribe" `
-        -WebAppName "AppsEverywhere" `
-        -ConnectionStringName "Lombiq.Hosting.ShellManagement.ShellSettings.RootConnectionString.Localhost-master" `
-        -UserConnectionStringName "Lombiq.Hosting.ShellManagement.ShellSettings.RootConnectionString.Localhost"
+    Add-AzureWebAppSqlDatabaseContainedUser @{
+        ResourceGroupName        = "LikeAndSubscribe"
+        WebAppName               = "AppsEverywhere"
+        ConnectionStringName     = "Lombiq.Hosting.ShellManagement.ShellSettings.RootConnectionString.Localhost-master"
+        UserConnectionStringName = "Lombiq.Hosting.ShellManagement.ShellSettings.RootConnectionString.Localhost
+    }
 #>
 
 
@@ -59,20 +60,22 @@ function Add-AzureWebAppSqlDatabaseContainedUser
 
     Process
     {
-        $databaseConnection = Get-AzureWebAppSqlDatabaseConnection `
-            -ResourceGroupName $DatabaseResourceGroupName `
-            -WebAppName $DatabaseWebAppName `
-            -SlotName $DatabaseSlotName `
-            -ConnectionStringName $DatabaseConnectionStringName
+        $databaseConnection = Get-AzureWebAppSqlDatabaseConnection @{
+            ResourceGroupName    = $DatabaseResourceGroupName
+            WebAppName           = $DatabaseWebAppName
+            SlotName             = $DatabaseSlotName
+            ConnectionStringName = $DatabaseConnectionStringName
+        }
 
-        $userDatabaseConnection = Get-AzureWebAppSqlDatabaseConnection `
-            -ResourceGroupName $UserResourceGroupName `
-            -WebAppName $UserWebAppName `
-            -SlotName $UserSlotName `
-            -ConnectionStringName $UserConnectionStringName
+        $userDatabaseConnection = Get-AzureWebAppSqlDatabaseConnection @{
+            ResourceGroupName    = $UserResourceGroupName
+            WebAppName           = $UserWebAppName
+            SlotName             = $UserSlotName
+            ConnectionStringName = $UserConnectionStringName
+        }
 
-        if ($databaseConnection.ServerName -ne $userDatabaseConnection.ServerName `
-                -or $databaseConnection.DatabaseName -ne $userDatabaseConnection.DatabaseName)
+        if ($databaseConnection.ServerName -ne $userDatabaseConnection.ServerName -or
+            $databaseConnection.DatabaseName -ne $userDatabaseConnection.DatabaseName)
         {
             throw ("The contained user's connection string must connect to the same server and database as the " +
                 "database connection that executes the query!")
@@ -86,11 +89,12 @@ function Add-AzureWebAppSqlDatabaseContainedUser
         $query = "CREATE USER [$($userDatabaseConnection.UserName)] WITH PASSWORD = '$($userDatabaseConnection.Password)';" +
         "ALTER ROLE [$UserRole] ADD MEMBER [$($userDatabaseConnection.UserName)];"
 
-        return Invoke-AzureWebAppSqlQuery `
-            -ResourceGroupName $DatabaseResourceGroupName `
-            -WebAppName $DatabaseWebAppName `
-            -SlotName $DatabaseSlotName `
-            -ConnectionStringName $DatabaseConnectionStringName `
-            -Query $query
+        return Invoke-AzureWebAppSqlQuery @{
+            ResourceGroupName    = $DatabaseResourceGroupName
+            WebAppName           = $DatabaseWebAppName
+            SlotName             = $DatabaseSlotName
+            ConnectionStringName = $DatabaseConnectionStringName
+            Query                = $query
+        }
     }
 }

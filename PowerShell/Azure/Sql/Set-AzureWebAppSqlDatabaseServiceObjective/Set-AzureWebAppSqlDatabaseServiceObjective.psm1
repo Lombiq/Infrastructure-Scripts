@@ -7,12 +7,13 @@
     of a Connection String.
 
 .EXAMPLE
-    Set-AzureWebAppSqlDatabaseServiceObjective `
-        -ResourceGroupName "GreatStuffHere" `
-        -WebAppName "CloudFirst" `
-        -SlotName "MobileFirst" `
-        -ConnectionStringName "DatabaseFirst" `
-        -ServiceObjectiveName "S2"
+    Set-AzureWebAppSqlDatabaseServiceObjective @{
+        ResourceGroupName    = "GreatStuffHere"
+        WebAppName           = "CloudFirst"
+        SlotName             = "MobileFirst"
+        ConnectionStringName = "DatabaseFirst"
+        ServiceObjectiveName = "S2"
+    }
 #>
 
 
@@ -48,11 +49,12 @@ function Set-AzureWebAppSqlDatabaseServiceObjective
 
     Process
     {
-        $database = Get-AzureWebAppSqlDatabase `
-            -ResourceGroupName $ResourceGroupName `
-            -WebAppName $WebAppName `
-            -SlotName $SlotName `
-            -ConnectionStringName $ConnectionStringName
+        $database = Get-AzureWebAppSqlDatabase @{
+            ResourceGroupName    = $ResourceGroupName
+            WebAppName           = $WebAppName
+            SlotName             = $SlotName
+            ConnectionStringName = $ConnectionStringName
+        }
 
         if ($null -eq $database)
         {
@@ -73,13 +75,11 @@ function Set-AzureWebAppSqlDatabaseServiceObjective
             return $null
         }
 
-        $serviceObjectives = Get-AzSqlServerServiceObjective `
-            -ResourceGroupName $ResourceGroupName `
-            -ServerName $database.ServerName
+        $serviceObjectives = Get-AzSqlServerServiceObjective -ResourceGroupName $ResourceGroupName -ServerName $database.ServerName
 
-        $availableServiceObjectiveNames = $serviceObjectives `
-        | Where-Object { !$PSItem.IsSystem -and $PSItem.Enabled } `
-        | Select-Object -ExpandProperty "ServiceObjectiveName"
+        $availableServiceObjectiveNames = $serviceObjectives |
+            Where-Object { !$PSItem.IsSystem -and $PSItem.Enabled } |
+            Select-Object -ExpandProperty "ServiceObjectiveName"
 
         if (!$availableServiceObjectiveNames.Contains($ServiceObjectiveName))
         {
@@ -93,13 +93,14 @@ function Set-AzureWebAppSqlDatabaseServiceObjective
                 "the server `"$($database.ServerName)`" from `"$($database.Edition) $($database.CurrentServiceObjectiveName)`" " +
                 "to `"$($Edition) $($ServiceObjectiveName)`"...`n*****")
 
-            return Set-AzSqlDatabase `
-                -ResourceGroupName $ResourceGroupName `
-                -ServerName $database.ServerName `
-                -DatabaseName $database.DatabaseName `
-                -RequestedServiceObjectiveName $ServiceObjectiveName `
-                -Edition $Edition `
-                -ErrorAction Stop
+            return Set-AzSqlDatabase @{
+                ResourceGroupName             = $ResourceGroupName
+                ServerName                    = $database.ServerName
+                DatabaseName                  = $database.DatabaseName
+                RequestedServiceObjectiveName = $ServiceObjectiveName
+                Edition                       = $Edition
+                ErrorAction                   = "Stop"
+            }
         }
         catch
         {

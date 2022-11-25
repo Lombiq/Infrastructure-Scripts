@@ -7,17 +7,19 @@
     script will retrieve the name and server name of a specific Azure SQL database.
 
 .EXAMPLE
-    Get-AzureWebAppSqlDatabaseConnection `
-        -ResourceGroupName "YeahSubscribe" `
-        -WebAppName "EverythingIsAnApp" `
-        -ConnectionStringName "Nokia"
+    Get-AzureWebAppSqlDatabaseConnection @{
+        ResourceGroupName    = "YeahSubscribe"
+        WebAppName           = "EverythingIsAnApp"
+        ConnectionStringName = "Nokia"
+    }
 
 .EXAMPLE
-    Get-AzureWebAppSqlDatabaseConnection `
-        -ResourceGroupName "YeahSubscribe" `
-        -WebAppName "EverythingIsAnApp" `
-        -SlotName "UAT" `
-        -ConnectionStringName "Nokia"
+    Get-AzureWebAppSqlDatabaseConnection @{
+        ResourceGroupName    = "YeahSubscribe"
+        WebAppName           = "EverythingIsAnApp"
+        SlotName             = "Staging"
+        ConnectionStringName = "Nokia"
+    }
 #>
 
 
@@ -43,11 +45,12 @@ function Get-AzureWebAppSqlDatabaseConnection
 
     Process
     {
-        $connectionString = Get-AzureWebAppConnectionString `
-            -ResourceGroupName $ResourceGroupName `
-            -WebAppName $WebAppName `
-            -SlotName $SlotName `
-            -ConnectionStringName $ConnectionStringName
+        $connectionString = Get-AzureWebAppConnectionString @{
+            ResourceGroupName    = $ResourceGroupName
+            WebAppName           = $WebAppName
+            SlotName             = $SlotName
+            ConnectionStringName = $ConnectionStringName
+        }
 
         $connectionStringElements = $connectionString.Split(";", [System.StringSplitOptions]::RemoveEmptyEntries)
 
@@ -117,11 +120,11 @@ function Get-AzureWebAppSqlDatabaseConnection
 
 
         return @{
-            ServerName = $serverName
+            ServerName   = $serverName
             DatabaseName = $databaseName
-            UserId = $userId
-            UserName = $userName
-            Password = $password
+            UserId       = $userId
+            UserName     = $userName
+            Password     = $password
         }
     }
 }

@@ -92,15 +92,16 @@ function Save-AzureWebAppStorageContentToRepository
 
 
 
-        Save-AzureWebAppStorageContent `
-            -ResourceGroupName $ResourceGroupName `
-            -WebAppName $WebAppName `
-            -ConnectionStringName $ConnectionStringName `
-            -Destination $destination `
-            -ContainerWhiteList $ContainerWhiteList `
-            -ContainerBlackList $ContainerBlackList `
-            -FolderWhiteList $FolderWhiteList `
-            -FolderBlackList $FolderBlackList
+        Save-AzureWebAppStorageContent @{
+            ResourceGroupName    = $ResourceGroupName
+            WebAppName           = $WebAppName
+            ConnectionStringName = $ConnectionStringName
+            Destination          = $destination
+            ContainerWhiteList   = $ContainerWhiteList
+            ContainerBlackList   = $ContainerBlackList
+            FolderWhiteList      = $FolderWhiteList
+            FolderBlackList      = $FolderBlackList
+        }
 
 
 

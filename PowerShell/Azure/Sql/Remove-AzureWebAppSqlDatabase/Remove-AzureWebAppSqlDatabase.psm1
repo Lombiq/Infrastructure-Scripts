@@ -7,17 +7,19 @@
     script will remove a specific Azure SQL database.
 
 .EXAMPLE
-    Remove-AzureWebAppSqlDatabase `
-        -ResourceGroupName "YeahSubscribe" `
-        -WebAppName "EverythingIsAnApp" `
-        -ConnectionStringName "Nokia"
+    Remove-AzureWebAppSqlDatabase @{
+        ResourceGroupName    = "YeahSubscribe"
+        WebAppName           = "EverythingIsAnApp"
+        ConnectionStringName = "Nokia"
+    }
 
 .EXAMPLE
-    Remove-AzureWebAppSqlDatabase `
-        -ResourceGroupName "YeahSubscribe" `
-        -WebAppName "EverythingIsAnApp" `
-        -SlotName "Staging" `
-        -ConnectionStringName "Nokia"
+    Remove-AzureWebAppSqlDatabase @{
+        ResourceGroupName    = "YeahSubscribe"
+        WebAppName           = "EverythingIsAnApp"
+        SlotName             = "Staging"
+        ConnectionStringName = "Nokia"
+    }
 #>
 
 
@@ -46,27 +48,29 @@ function Remove-AzureWebAppSqlDatabase
     Process
     {
         # Preventing deleting the Production root database accordint to Orchard 1 conventions.
-        if ($ConnectionStringName -eq "Lombiq.Hosting.ShellManagement.ShellSettings.RootConnectionString" `
-                -or $ConnectionStringName.EndsWith(".Production"))
+        if ($ConnectionStringName -eq "Lombiq.Hosting.ShellManagement.ShellSettings.RootConnectionString" -or
+            $ConnectionStringName.EndsWith(".Production"))
         {
-            throw ("Deleting the Production database is bad, 'mkay?")
+            throw "Deleting the Production database is bad, 'mkay?"
         }
 
-        $database = Get-AzureWebAppSqlDatabase `
-            -ResourceGroupName $ResourceGroupName `
-            -WebAppName $WebAppName `
-            -SlotName $SlotName `
-            -ConnectionStringName $ConnectionStringName
+        $database = Get-AzureWebAppSqlDatabase @{
+            ResourceGroupName    = $ResourceGroupName
+            WebAppName           = $WebAppName
+            SlotName             = $SlotName
+            ConnectionStringName = $ConnectionStringName
+        }
 
         if ($null -ne $database)
         {
-            Write-Warning ("`n*****`nDeleting the database named `"$($database.DatabaseName)`" on the server `"$($database.ServerName)`".`n*****`n")
+            Write-Warning "`n*****`nDeleting the database named `"$($database.DatabaseName)`" on the server `"$($database.ServerName)`".`n*****`n"
 
-            return Remove-AzSqlDatabase `
-                -ResourceGroupName $ResourceGroupName `
-                -ServerName $database.ServerName `
-                -DatabaseName $database.DatabaseName `
-                -Force
+            return Remove-AzSqlDatabase @{
+                ResourceGroupName = $ResourceGroupName
+                ServerName        = $database.ServerName
+                DatabaseName      = $database.DatabaseName
+                Force             = $true
+            }
         }
 
         return $null

@@ -38,11 +38,12 @@ function New-RootConnectionStringFile
 
     Process
     {
-        $connectionString = Get-AzureWebAppConnectionString `
-            -ResourceGroupName $ResourceGroupName `
-            -WebAppName $WebAppName `
-            -SlotName $SlotName `
-            -ConnectionStringName $ConnectionStringName
+        $connectionString = Get-AzureWebAppConnectionString @{
+            ResourceGroupName    = $ResourceGroupName
+            WebAppName           = $WebAppName
+            SlotName             = $SlotName
+            ConnectionStringName = $ConnectionStringName
+        }
 
         New-Item -ItemType File -Name "$FileName.txt" -Path "$Path" -Force | Out-Null
         Set-Content -Path "$Path\$FileName.txt" -Value $connectionString

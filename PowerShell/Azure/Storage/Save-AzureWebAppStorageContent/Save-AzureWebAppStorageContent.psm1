@@ -67,11 +67,11 @@ function Save-AzureWebAppStorageContent
         $containerWhiteListValid = $ContainerWhiteList -and $ContainerWhiteList.Count -gt 0
         $containerBlackListValid = $ContainerBlackList -and $ContainerBlackList.Count -gt 0
 
-        $containers = Get-AzStorageContainer -Context $storageContext | Where-Object `
-        { `
-            ((!$containerWhiteListValid -or ($containerWhiteListValid -and $ContainerWhiteList.Contains($PSItem.Name))) -and `
-                ($containerWhiteListValid -or (!$containerBlackListValid -or !$ContainerBlackList.Contains($PSItem.Name)))) `
-        }
+        $containers = Get-AzStorageContainer -Context $storageContext |
+            Where-Object {
+            ((!$containerWhiteListValid -or ($containerWhiteListValid -and $ContainerWhiteList.Contains($PSItem.Name))) -and
+                ($containerWhiteListValid -or (!$containerBlackListValid -or !$ContainerBlackList.Contains($PSItem.Name))))
+            }
 
         $folderWhiteListValid = $FolderWhiteList -and $FolderWhiteList.Count -gt 0
         $folderBlackListValid = $FolderBlackList -and $FolderBlackList.Count -gt 0
@@ -87,11 +87,18 @@ function Save-AzureWebAppStorageContent
                 Remove-Item -Path $containerPath -Recurse -Force
             }
 
-            $blobs = $container | Get-AzStorageBlob | Where-Object `
-            { `
-                (!$folderWhiteListValid -or ($folderWhiteListValid -and (Compare-Object $PSItem.Name.Split("/", [StringSplitOptions]::RemoveEmptyEntries) $FolderWhiteList -PassThru -IncludeEqual -ExcludeDifferent))) `
-                    -and (!$folderBlackListValid -or ($folderBlackListValid -and (!(Compare-Object $PSItem.Name.Split("/", [StringSplitOptions]::RemoveEmptyEntries) $FolderBlackList -PassThru -IncludeEqual -ExcludeDifferent)))) `
+            $comparisonParameters = @{
+                PassThru         = $true
+                IncludeEqual     = $true
+                ExcludeDifferent = $true
             }
+            $blobs = $container | Get-AzStorageBlob |
+                Where-Object {
+                (!$folderWhiteListValid -or ($folderWhiteListValid -and
+                    (Compare-Object $PSItem.Name.Split("/", [StringSplitOptions]::RemoveEmptyEntries) $FolderWhiteList @comparisonParameters))) -and
+                (!$folderBlackListValid -or ($folderBlackListValid -and
+                    (!(Compare-Object $PSItem.Name.Split("/", [StringSplitOptions]::RemoveEmptyEntries) $FolderBlackList @comparisonParameters))))
+                }
 
             foreach ($blob in $blobs)
             {

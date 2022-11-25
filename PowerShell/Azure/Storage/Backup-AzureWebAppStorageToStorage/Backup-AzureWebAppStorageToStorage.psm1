@@ -76,8 +76,6 @@ function Backup-AzureWebAppStorageToStorage
 
         $sourceStorageConnection = Get-AzureWebAppStorageConnection -ResourceGroupName $ResourceGroupName -WebAppName $WebAppName -ConnectionStringName $SourceConnectionStringName
         $containerNamePrefix = $sourceStorageConnection.AccountName + "-" + $now.ToString("yyyy-MM-dd-HH-mm-ss") + "-"
-        Set-AzureWebAppStorageContentFromStorage -ResourceGroupName $ResourceGroupName -WebAppName $WebAppName -SourceConnectionStringName $SourceConnectionStringName -DestinationConnectionStringName $DestinationConnectionStringName `
-            -ContainerWhiteList $ContainerWhiteList -ContainerBlackList $ContainerBlackList -FolderWhiteList $FolderWhiteList -FolderBlackList $FolderBlackList -RemoveExtraFilesOnDestination $true `
-            -DestinationContainersAccessType $DestinationContainersAccessType -DestinationContainerNamePrefix $containerNamePrefix
+        Set-AzureWebAppStorageContentFromStorage -ResourceGroupName $ResourceGroupName -WebAppName $WebAppName -SourceConnectionStringName $SourceConnectionStringName -DestinationConnectionStringName $DestinationConnectionStringName -ContainerWhiteList $ContainerWhiteList -ContainerBlackList $ContainerBlackList -FolderWhiteList $FolderWhiteList -FolderBlackList $FolderBlackList -RemoveExtraFilesOnDestination $true -DestinationContainersAccessType $DestinationContainersAccessType -DestinationContainerNamePrefix $containerNamePrefix
     }
 }

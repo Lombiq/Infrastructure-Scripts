@@ -6,13 +6,14 @@
     Exports a database of an Azure Web App to Blob Storage snychronously.
 
 .EXAMPLE
-    Invoke-AzureWebAppSqlDatabaseExport `
-        -ResourceGroupName "CoolStuffHere" `
-        -WebAppName "NiceApp" `
-        -DatabaseConnectionStringName "Lombiq.Hosting.ShellManagement.ShellSettings.RootConnectionString" `
-        -StorageConnectionStringName "Orchard.Azure.Media.StorageConnectionString" `
-        -ContainerName "database" `
-        -BlobName "export.bacpac"
+    Invoke-AzureWebAppSqlDatabaseExport @{
+        ResourceGroupName            = "CoolStuffHere"
+        WebAppName                   = "NiceApp"
+        DatabaseConnectionStringName = "Lombiq.Hosting.ShellManagement.ShellSettings.RootConnectionString"
+        StorageConnectionStringName  = "Orchard.Azure.Media.StorageConnectionString"
+        ContainerName                = "database"
+        BlobName                     = "export.bacpac"
+    }
 #>
 
 
@@ -66,17 +67,18 @@ function Invoke-AzureWebAppSqlDatabaseExport
     {
         Write-Output ("`n*****`nDatabase export starting...`n*****")
 
-        $exportRequest = Start-AzureWebAppSqlDatabaseExport `
-            -DatabaseResourceGroupName $DatabaseResourceGroupName `
-            -DatabaseWebAppName $DatabaseWebAppName `
-            -DatabaseSlotName $DatabaseSlotName `
-            -DatabaseConnectionStringName $DatabaseConnectionStringName `
-            -StorageResourceGroupName $StorageResourceGroupName `
-            -StorageWebAppName $StorageWebAppName `
-            -StorageSlotName $StorageSlotName `
-            -StorageConnectionStringName $StorageConnectionStringName `
-            -ContainerName $ContainerName `
-            -BlobName $BlobName
+        $exportRequest = Start-AzureWebAppSqlDatabaseExport @{
+            DatabaseResourceGroupName    = $DatabaseResourceGroupName
+            DatabaseWebAppName           = $DatabaseWebAppName
+            DatabaseSlotName             = $DatabaseSlotName
+            DatabaseConnectionStringName = $DatabaseConnectionStringName
+            StorageResourceGroupName     = $StorageResourceGroupName
+            StorageWebAppName            = $StorageWebAppName
+            StorageSlotName              = $StorageSlotName
+            StorageConnectionStringName  = $StorageConnectionStringName
+            ContainerName                = $ContainerName
+            BlobName                     = $BlobName
+        }
 
         if ($null -eq $exportRequest)
         {

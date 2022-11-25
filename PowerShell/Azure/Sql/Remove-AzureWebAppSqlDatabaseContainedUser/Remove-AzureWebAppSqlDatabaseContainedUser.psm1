@@ -7,11 +7,12 @@
     the Connection String name of the database and the contained user.
 
 .EXAMPLE
-    Remove-AzureWebAppSqlDatabaseContainedUser `
-        -ResourceGroupName "LikeAndSubscribe" `
-        -WebAppName "AppsEverywhere" `
-        -ConnectionStringName "Lombiq.Hosting.ShellManagement.ShellSettings.RootConnectionString.Localhost-master" `
-        -UserConnectionStringName "Lombiq.Hosting.ShellManagement.ShellSettings.RootConnectionString"
+    Remove-AzureWebAppSqlDatabaseContainedUser @{
+        ResourceGroupName        = "LikeAndSubscribe"
+        WebAppName               = "AppsEverywhere"
+        ConnectionStringName     = "Lombiq.Hosting.ShellManagement.ShellSettings.RootConnectionString.Localhost-master"
+        UserConnectionStringName = "Lombiq.Hosting.ShellManagement.ShellSettings.RootConnectionString.Localhost
+    }
 #>
 
 
@@ -56,17 +57,19 @@ function Remove-AzureWebAppSqlDatabaseContainedUser
 
     Process
     {
-        $databaseConnection = Get-AzureWebAppSqlDatabaseConnection `
-            -ResourceGroupName $DatabaseResourceGroupName `
-            -WebAppName $DatabaseWebAppName `
-            -SlotName $DatabaseSlotName `
-            -ConnectionStringName $DatabaseConnectionStringName
+        $databaseConnection = Get-AzureWebAppSqlDatabaseConnection @{
+            ResourceGroupName    = $DatabaseResourceGroupName
+            WebAppName           = $DatabaseWebAppName
+            SlotName             = $DatabaseSlotName
+            ConnectionStringName = $DatabaseConnectionStringName
+        }
 
-        $userDatabaseConnection = Get-AzureWebAppSqlDatabaseConnection `
-            -ResourceGroupName $UserResourceGroupName `
-            -WebAppName $UserWebAppName `
-            -SlotName $UserSlotName `
-            -ConnectionStringName $UserConnectionStringName
+        $userDatabaseConnection = Get-AzureWebAppSqlDatabaseConnection @{
+            ResourceGroupName    = $UserResourceGroupName
+            WebAppName           = $UserWebAppName
+            SlotName             = $UserSlotName
+            ConnectionStringName = $UserConnectionStringName
+        }
 
         if ($databaseConnection.UserName -eq $userDatabaseConnection.UserName)
         {
@@ -75,11 +78,12 @@ function Remove-AzureWebAppSqlDatabaseContainedUser
 
         $query = "DROP USER IF EXISTS [$($userDatabaseConnection.UserName)];"
 
-        return Invoke-AzureWebAppSqlQuery `
-            -ResourceGroupName $DatabaseResourceGroupName `
-            -WebAppName $DatabaseWebAppName `
-            -SlotName $DatabaseSlotName `
-            -ConnectionStringName $DatabaseConnectionStringName `
-            -Query $query
+        return Invoke-AzureWebAppSqlQuery @{
+            ResourceGroupName    = $DatabaseResourceGroupName
+            WebAppName           = $DatabaseWebAppName
+            SlotName             = $DatabaseSlotName
+            ConnectionStringName = $DatabaseConnectionStringName
+            Query                = $query
+        }
     }
 }
