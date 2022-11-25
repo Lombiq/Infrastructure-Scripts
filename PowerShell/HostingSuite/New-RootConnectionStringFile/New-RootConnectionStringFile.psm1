@@ -6,9 +6,15 @@
    Sets up a root connection string file at a given path taken from an Azure Web App's Connection Strings.
 
 .EXAMPLE
-   New-RootConnectionStringFile -Path "C:\AwesomeProject\src\Orchard.Web\App_Data\Sites" -FileName "Lombiq.Hosting.ShellManagement.ShellSettings.RootConnectionString" -ResourceGroupName "InsertNameHere" -WebAppName "YummyWebApp" -SlotName "Lucky" -ConnectionStringName "DatDatabase"
+    New-RootConnectionStringFile @{
+        Path                 = "C:\AwesomeProject\src\Orchard.Web\App_Data\Sites"
+        FileName             = "Lombiq.Hosting.ShellManagement.ShellSettings.RootConnectionString"
+        ResourceGroupName    = "InsertNameHere"
+        WebAppName           = "YummyWebApp"
+        SlotName             = "Lucky"
+        ConnectionStringName = "DatDatabase"
+    }
 #>
-
 
 function New-RootConnectionStringFile
 {

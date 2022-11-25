@@ -240,7 +240,15 @@ function Set-AzureWebAppStorageContentFromStorage
                     (!$folderBlackListValid -or
                         ($folderBlackListValid -and (!(Compare-Object $blobNameElements $FolderBlackList @comparisonParameters)))))
                 {
-                    Start-AzStorageBlobCopy -Context $sourceStorageContext -SrcContainer $sourceContainer.Name -SrcBlob $sourceBlob.Name -DestContext $destinationStorageContext -DestContainer $destinationContainerName -DestBlob $sourceBlob.Name -Force | Out-Null
+                    Start-AzStorageBlobCopy @{
+                        Context       = $sourceStorageContext
+                        SrcContainer  = $sourceContainer.Name
+                        SrcBlob       = $sourceBlob.Name
+                        DestContext   = $destinationStorageContext
+                        DestContainer = $destinationContainerName
+                        DestBlob      = $sourceBlob.Name
+                        Force         = $true
+                    } | Out-Null
 
                     Write-Output "Copied `"" + $sourceContainer.Name + "/" + $sourceBlob.Name + "`" to `"$destinationContainerName`"."
                 }

@@ -1,20 +1,35 @@
 ﻿<#
 .Synopsis
-   Copies each blob in a container between two Storage Accounts.
+    Copies each blob in a container between two Storage Accounts.
 
 .DESCRIPTION
-   Copies each blob of a container defined by its name the name of an Azure Blob Storage specified by a Connection String of a Web App to another container.
+    Copies each blob of a container defined by its name the name of an Azure Blob Storage specified by a Connection
+    String of a Web App to another container.
 
 .EXAMPLE
-   Invoke-AzureWebAppStorageContainerCopy -ResourceGroupName "HelloAzure" -WebAppName "ThisWebApp" -SourceConnectionStringName "Lombiq.Hosting.Azure.Backup.StorageConnectionString" -SourceContainerName "backup" -DestinationConnectionStringName "Orchard.Azure.Media.StorageConnectionString" -DestinationContainerName "production"
+    Invoke-AzureWebAppStorageContainerCopy @{
+        ResourceGroupName               = "HelloAzure"
+        WebAppName                      = "ThisWebApp"
+        SourceConnectionStringName      = "Lombiq.Hosting.Azure.Backup.StorageConnectionString"
+        SourceContainerName             = "backup"
+        DestinationConnectionStringName = "Orchard.Azure.Media.StorageConnectionString"
+        DestinationContainerName        = "production"
+    }
 
 .EXAMPLE
-   Invoke-AzureWebAppStorageContainerCopy -ResourceGroupName "HelloAzure" -WebAppName "ThisWebApp" -SourceConnectionStringName "Lombiq.Hosting.Azure.Backup.StorageConnectionString" -SourceContainerName "backup" -DestinationConnectionStringName "Orchard.Azure.Media.StorageConnectionString" -DestinationContainerName "production" -Force
+    Invoke-AzureWebAppStorageContainerCopy @{
+        ResourceGroupName               = "HelloAzure"
+        WebAppName                      = "ThisWebApp"
+        SourceConnectionStringName      = "Lombiq.Hosting.Azure.Backup.StorageConnectionString"
+        SourceContainerName             = "backup"
+        DestinationConnectionStringName = "Orchard.Azure.Media.StorageConnectionString"
+        DestinationContainerName        = "production"
+        Force                           = $true
+    }
 #>
 
 
 Import-Module Az.Storage
-
 
 function Invoke-AzureWebAppStorageContainerCopy
 {
