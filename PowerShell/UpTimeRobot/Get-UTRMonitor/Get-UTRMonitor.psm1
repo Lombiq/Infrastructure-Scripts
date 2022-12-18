@@ -20,7 +20,7 @@
     {
         $headers = @{
             "cache-control" = "no-cache"
-            "content-type"  = "application/x-www-form-urlencoded"
+            "content-type" = "application/x-www-form-urlencoded"
         }
 
         $body = "api_key=$ApiKey&logs=1"

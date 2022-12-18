@@ -1,15 +1,15 @@
 ﻿<#
 .Synopsis
-   Pings a specified URL.
+    Pings a specified URL.
 
 .DESCRIPTION
-   Pings a specified URL with retries if unsuccessful.
+    Pings a specified URL with retries if unsuccessful.
 
 .EXAMPLE
-   Test-Url "http://lombiq.com"
+    Test-Url "http://lombiq.com"
 
 .EXAMPLE
-   Test-Url "http://lombiq.com" -Timeout 32 -Interval 16 -RetryCount 8
+    Test-Url "http://lombiq.com" -Timeout 32 -Interval 16 -RetryCount 8
 #>
 
 
