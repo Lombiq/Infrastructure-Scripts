@@ -66,15 +66,22 @@ function Start-Maintenance
 
                 if ($BatchSize -lt 1)
                 {
-                    $maintenanceDescriptor = @{ MaintenanceName = "$MaintenanceName" }
+                    $maintenanceDescriptor = @{ MaintenanceName = $MaintenanceName }
                 }
                 else
                 {
-                    $maintenanceDescriptor = @{ MaintenanceName = "$MaintenanceName"; BatchSize = $BatchSize }
+                    $maintenanceDescriptor = @{ MaintenanceName = $MaintenanceName; BatchSize = $BatchSize }
                 }
 
+                $requestParameters = @{
+                    Uri = $url
+                    Method = "Post"
+                    ContentType = "application/json"
+                    Headers = @{ Authorization = $authentication }
+                    Body = ConvertTo-Json($maintenanceDescriptor)
+                }
                 # Invoke-RestMethod doesn't return a status code.
-                $result = Invoke-WebRequest -Uri $url -Method Post -ContentType "application/json" -Headers @{ Authorization = $authentication } -Body (ConvertTo-Json($maintenanceDescriptor))
+                $result = Invoke-WebRequest @requestParameters
 
                 $success = $true
             }

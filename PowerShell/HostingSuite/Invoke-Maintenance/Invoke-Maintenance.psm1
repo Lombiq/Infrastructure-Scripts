@@ -53,7 +53,17 @@ function Invoke-Maintenance
     )
     Process
     {
-        Start-Maintenance -MaintenanceName $MaintenanceName -Hostname $Hostname -APIEndpoint $APIEndpoint -Username $Username -Password $Password -BatchSize $BatchSize -RetryCount $RetryCount -Protocol $Protocol
+        $startMaintenanceParameters = @{
+            Hostname = $Hostname
+            MaintenanceName = $MaintenanceName
+            APIEndpoint = $APIEndpoint
+            Username = $Username
+            Password = $Password
+            BatchSize = $BatchSize
+            RetryCount = $RetryCount
+            Protocol = $Protocol
+        }
+        Start-Maintenance @startMaintenanceParameters
 
         Write-Output ("`n*****`nStarting maintenance `"$MaintenanceName`" at `"$Hostname`"...`n*****")
 
@@ -64,7 +74,14 @@ function Invoke-Maintenance
         {
             Start-Sleep -Seconds 10
 
-            $progress = (Get-Maintenance -MaintenanceName $MaintenanceName -Hostname $Hostname -Username $Username -Password $Password -Protocol $Protocol).ProgressPercent
+            $getMaintenanceParameters = @{
+                Hostname = $Hostname
+                MaintenanceName = $MaintenanceName
+                Username = $Username
+                Password = $Password
+                Protocol = $Protocol
+            }
+            $progress = (Get-Maintenance @getMaintenanceParameters).ProgressPercent
 
             if ($progress -ne $previousProgress)
             {
