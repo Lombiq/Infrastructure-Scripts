@@ -8,20 +8,19 @@
 
 .EXAMPLE
     Remove-AzureWebAppSqlDatabase @{
-        ResourceGroupName    = "YeahSubscribe"
-        WebAppName           = "EverythingIsAnApp"
+        ResourceGroupName = "YeahSubscribe"
+        WebAppName = "EverythingIsAnApp"
         ConnectionStringName = "Nokia"
     }
 
 .EXAMPLE
     Remove-AzureWebAppSqlDatabase @{
-        ResourceGroupName    = "YeahSubscribe"
-        WebAppName           = "EverythingIsAnApp"
-        SlotName             = "Staging"
+        ResourceGroupName = "YeahSubscribe"
+        WebAppName = "EverythingIsAnApp"
+        SlotName = "Staging"
         ConnectionStringName = "Nokia"
     }
 #>
-
 
 Import-Module Az.Sql
 
@@ -55,9 +54,9 @@ function Remove-AzureWebAppSqlDatabase
         }
 
         $database = Get-AzureWebAppSqlDatabase @{
-            ResourceGroupName    = $ResourceGroupName
-            WebAppName           = $WebAppName
-            SlotName             = $SlotName
+            ResourceGroupName = $ResourceGroupName
+            WebAppName = $WebAppName
+            SlotName = $SlotName
             ConnectionStringName = $ConnectionStringName
         }
 
@@ -67,9 +66,9 @@ function Remove-AzureWebAppSqlDatabase
 
             return Remove-AzSqlDatabase @{
                 ResourceGroupName = $ResourceGroupName
-                ServerName        = $database.ServerName
-                DatabaseName      = $database.DatabaseName
-                Force             = $true
+                ServerName = $database.ServerName
+                DatabaseName = $database.DatabaseName
+                Force = $true
             }
         }
 

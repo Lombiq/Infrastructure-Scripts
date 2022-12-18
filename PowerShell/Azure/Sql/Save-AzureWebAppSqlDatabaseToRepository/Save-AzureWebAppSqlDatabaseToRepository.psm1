@@ -9,16 +9,15 @@
 
 .EXAMPLE
     Save-AzureWebAppSqlDatabaseToRepository @{
-        ResourceGroupName            = "CoolStuffHere"
-        WebAppName                   = "NiceApp"
+        ResourceGroupName = "CoolStuffHere"
+        WebAppName = "NiceApp"
         DatabaseConnectionStringName = "Lombiq.Hosting.ShellManagement.ShellSettings.RootConnectionString"
-        StorageConnectionStringName  = "Orchard.Azure.Media.StorageConnectionString"
-        ContainerName                = "database"
-        RepositoryPath               = "C:\ItsARepo"
-        RepositorySubPath            = "Database"
+        StorageConnectionStringName = "Orchard.Azure.Media.StorageConnectionString"
+        ContainerName = "database"
+        RepositoryPath = "C:\ItsARepo"
+        RepositorySubPath = "Database"
     }
 #>
-
 
 function Save-AzureWebAppSqlDatabaseToRepository
 {
@@ -104,17 +103,17 @@ function Save-AzureWebAppSqlDatabaseToRepository
 
 
         Save-AzureWebAppSqlDatabase @{
-            DatabaseResourceGroupName    = $DatabaseResourceGroupName
-            DatabaseWebAppName           = $DatabaseWebAppName
-            DatabaseSlotName             = $DatabaseSlotName
+            DatabaseResourceGroupName = $DatabaseResourceGroupName
+            DatabaseWebAppName = $DatabaseWebAppName
+            DatabaseSlotName = $DatabaseSlotName
             DatabaseConnectionStringName = $DatabaseConnectionStringName
-            StorageResourceGroupName     = $StorageResourceGroupName
-            StorageWebAppName            = $StorageWebAppName
-            StorageSlotName              = $StorageSlotName
-            StorageConnectionStringName  = $StorageConnectionStringName
-            ContainerName                = $ContainerName
-            BlobName                     = $BlobName
-            Destination                  = $destination
+            StorageResourceGroupName = $StorageResourceGroupName
+            StorageWebAppName = $StorageWebAppName
+            StorageSlotName = $StorageSlotName
+            StorageConnectionStringName = $StorageConnectionStringName
+            ContainerName = $ContainerName
+            BlobName = $BlobName
+            Destination = $destination
         }
 
         try

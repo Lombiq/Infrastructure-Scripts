@@ -8,9 +8,9 @@
 
 .EXAMPLE
     Add-AzureWebAppSqlDatabaseContainedUser @{
-        ResourceGroupName        = "LikeAndSubscribe"
-        WebAppName               = "AppsEverywhere"
-        ConnectionStringName     = "Lombiq.Hosting.ShellManagement.ShellSettings.RootConnectionString.Localhost-master"
+        ResourceGroupName = "LikeAndSubscribe"
+        WebAppName = "AppsEverywhere"
+        ConnectionStringName = "Lombiq.Hosting.ShellManagement.ShellSettings.RootConnectionString.Localhost-master"
         UserConnectionStringName = "Lombiq.Hosting.ShellManagement.ShellSettings.RootConnectionString.Localhost
     }
 #>
@@ -61,16 +61,16 @@ function Add-AzureWebAppSqlDatabaseContainedUser
     Process
     {
         $databaseConnection = Get-AzureWebAppSqlDatabaseConnection @{
-            ResourceGroupName    = $DatabaseResourceGroupName
-            WebAppName           = $DatabaseWebAppName
-            SlotName             = $DatabaseSlotName
+            ResourceGroupName = $DatabaseResourceGroupName
+            WebAppName = $DatabaseWebAppName
+            SlotName = $DatabaseSlotName
             ConnectionStringName = $DatabaseConnectionStringName
         }
 
         $userDatabaseConnection = Get-AzureWebAppSqlDatabaseConnection @{
-            ResourceGroupName    = $UserResourceGroupName
-            WebAppName           = $UserWebAppName
-            SlotName             = $UserSlotName
+            ResourceGroupName = $UserResourceGroupName
+            WebAppName = $UserWebAppName
+            SlotName = $UserSlotName
             ConnectionStringName = $UserConnectionStringName
         }
 
@@ -90,11 +90,11 @@ function Add-AzureWebAppSqlDatabaseContainedUser
         "ALTER ROLE [$UserRole] ADD MEMBER [$($userDatabaseConnection.UserName)];"
 
         return Invoke-AzureWebAppSqlQuery @{
-            ResourceGroupName    = $DatabaseResourceGroupName
-            WebAppName           = $DatabaseWebAppName
-            SlotName             = $DatabaseSlotName
+            ResourceGroupName = $DatabaseResourceGroupName
+            WebAppName = $DatabaseWebAppName
+            SlotName = $DatabaseSlotName
             ConnectionStringName = $DatabaseConnectionStringName
-            Query                = $query
+            Query = $query
         }
     }
 }

@@ -7,54 +7,54 @@
 
 .EXAMPLE
     Save-AzureWebAppStorageContentToRepository @{
-        ResourceGroupName    = "CoolStuffHere"
-        WebAppName           = "NiceApp"
+        ResourceGroupName = "CoolStuffHere"
+        WebAppName = "NiceApp"
         ConnectionStringName = "SourceStorage"
-        RepositoryPath       = "C:\ItsARepo"
-        RepositorySubPath    = "Database"
+        RepositoryPath = "C:\ItsARepo"
+        RepositorySubPath = "Database"
     }
 
 .EXAMPLE
     Save-AzureWebAppStorageContentToRepository @{
-        ResourceGroupName    = "CoolStuffHere"
-        WebAppName           = "NiceApp"
+        ResourceGroupName = "CoolStuffHere"
+        WebAppName = "NiceApp"
         ConnectionStringName = "SourceStorage"
-        ContainerWhiteList   = @("media", "stuff")
-        RepositoryPath       = "C:\ItsARepo"
-        RepositorySubPath    = "Database"
+        ContainerWhiteList = @("media", "stuff")
+        RepositoryPath = "C:\ItsARepo"
+        RepositorySubPath = "Database"
     }
 
 .EXAMPLE
     Save-AzureWebAppStorageContentToRepository @{
-        ResourceGroupName    = "CoolStuffHere"
-        WebAppName           = "NiceApp"
+    ResourceGroupName = "CoolStuffHere"
+    WebAppName = "NiceApp"
+    ConnectionStringName = "SourceStorage"
+    ContainerBlackList = @("stuffidontneed")
+    RepositoryPath = "C:\ItsARepo"
+    RepositorySubPath = "Database"
+}
+
+.EXAMPLE
+    Save-AzureWebAppStorageContentToRepository @{
+        ResourceGroupName = "CoolStuffHere"
+        WebAppName = "NiceApp"
         ConnectionStringName = "SourceStorage"
-        ContainerBlackList   = @("stuffidontneed")
-        RepositoryPath       = "C:\ItsARepo"
-        RepositorySubPath    = "Database"
+        ContainerBlackList = @("stuffidontneed")
+        FolderWhiteList = @("usefulfolder")
+        RepositoryPath = "C:\ItsARepo"
+        RepositorySubPath = "Database"
     }
 
 .EXAMPLE
     Save-AzureWebAppStorageContentToRepository @{
-        ResourceGroupName    = "CoolStuffHere"
-        WebAppName           = "NiceApp"
+        ResourceGroupName = "CoolStuffHere"
+        WebAppName = "NiceApp"
         ConnectionStringName = "SourceStorage"
-        ContainerBlackList   = @("stuffidontneed")
-        FolderWhiteList      = @("usefulfolder")
-        RepositoryPath       = "C:\ItsARepo"
-        RepositorySubPath    = "Database"
-    }
-
-.EXAMPLE
-    Save-AzureWebAppStorageContentToRepository @{
-        ResourceGroupName    = "CoolStuffHere"
-        WebAppName           = "NiceApp"
-        ConnectionStringName = "SourceStorage"
-        ContainerBlackList   = @("stuffidontneed")
-        FolderWhiteList      = @("usefulfolder")
-        FolderBlackList      = @("uselessfolderintheusefulfolder")
-        RepositoryPath       = "C:\ItsARepo"
-        RepositorySubPath    = "Database"
+        ContainerBlackList = @("stuffidontneed")
+        FolderWhiteList = @("usefulfolder")
+        FolderBlackList = @("uselessfolderintheusefulfolder")
+        RepositoryPath = "C:\ItsARepo"
+        RepositorySubPath = "Database"
     }
 #>
 
@@ -134,14 +134,14 @@ function Save-AzureWebAppStorageContentToRepository
 
 
         Save-AzureWebAppStorageContent @{
-            ResourceGroupName    = $ResourceGroupName
-            WebAppName           = $WebAppName
+            ResourceGroupName = $ResourceGroupName
+            WebAppName = $WebAppName
             ConnectionStringName = $ConnectionStringName
-            Destination          = $destination
-            ContainerWhiteList   = $ContainerWhiteList
-            ContainerBlackList   = $ContainerBlackList
-            FolderWhiteList      = $FolderWhiteList
-            FolderBlackList      = $FolderBlackList
+            Destination = $destination
+            ContainerWhiteList = $ContainerWhiteList
+            ContainerBlackList = $ContainerBlackList
+            FolderWhiteList = $FolderWhiteList
+            FolderBlackList = $FolderBlackList
         }
 
 

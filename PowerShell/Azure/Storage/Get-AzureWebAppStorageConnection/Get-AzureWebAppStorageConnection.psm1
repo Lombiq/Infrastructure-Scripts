@@ -8,12 +8,11 @@
 
 .EXAMPLE
     Get-AzureWebAppStorageConnection @{
-        ResourceGroupName    = "YeahSubscribe"
-        WebAppName           = "EverythingIsAnApp"
+        ResourceGroupName = "YeahSubscribe"
+        WebAppName = "EverythingIsAnApp"
         ConnectionStringName = "Nokia"
     }
 #>
-
 
 function Get-AzureWebAppStorageConnection
 {
@@ -38,9 +37,9 @@ function Get-AzureWebAppStorageConnection
     Process
     {
         $connectionString = Get-AzureWebAppConnectionString @{
-            ResourceGroupName    = $ResourceGroupName
-            WebAppName           = $WebAppName
-            SlotName             = $SlotName
+            ResourceGroupName = $ResourceGroupName
+            WebAppName = $WebAppName
+            SlotName = $SlotName
             ConnectionStringName = $ConnectionStringName
         }
 

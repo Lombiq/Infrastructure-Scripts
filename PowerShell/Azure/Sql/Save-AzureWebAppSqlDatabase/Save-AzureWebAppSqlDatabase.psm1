@@ -7,16 +7,15 @@
 
 .EXAMPLE
     Save-AzureWebAppSqlDatabase @{
-        ResourceGroupName            = "CoolStuffHere"
-        WebAppName                   = "NiceApp"
+        ResourceGroupName = "CoolStuffHere"
+        WebAppName = "NiceApp"
         DatabaseConnectionStringName = "Lombiq.Hosting.ShellManagement.ShellSettings.RootConnectionString"
-        StorageConnectionStringName  = "Orchard.Azure.Media.StorageConnectionString"
-        ContainerName                = "database"
-        BlobName                     = "export.bacpac"
-        Destination                  = "C:\backup"
+        StorageConnectionStringName = "Orchard.Azure.Media.StorageConnectionString"
+        ContainerName = "database"
+        BlobName = "export.bacpac"
+        Destination = "C:\backup"
     }
 #>
-
 
 Import-Module Az.Storage
 
@@ -69,49 +68,49 @@ function Save-AzureWebAppSqlDatabase
     Process
     {
         Invoke-AzureWebAppSqlDatabaseExport @{
-            DatabaseResourceGroupName    = $DatabaseResourceGroupName
-            DatabaseWebAppName           = $DatabaseWebAppName
-            DatabaseSlotName             = $DatabaseSlotName
+            DatabaseResourceGroupName = $DatabaseResourceGroupName
+            DatabaseWebAppName = $DatabaseWebAppName
+            DatabaseSlotName = $DatabaseSlotName
             DatabaseConnectionStringName = $DatabaseConnectionStringName
-            StorageResourceGroupName     = $StorageResourceGroupName
-            StorageWebAppName            = $StorageWebAppName
-            StorageSlotName              = $StorageSlotName
-            StorageConnectionStringName  = $StorageConnectionStringName
-            ContainerName                = $ContainerName
-            BlobName                     = $BlobName
+            StorageResourceGroupName = $StorageResourceGroupName
+            StorageWebAppName = $StorageWebAppName
+            StorageSlotName = $StorageSlotName
+            StorageConnectionStringName = $StorageConnectionStringName
+            ContainerName = $ContainerName
+            BlobName = $BlobName
         }
 
         $storageConnection = Get-AzureWebAppStorageConnection @{
-            ResourceGroupName    = $StorageResourceGroupName
-            WebAppName           = $StorageWebAppName
-            SlotName             = $StorageSlotName
+            ResourceGroupName = $StorageResourceGroupName
+            WebAppName = $StorageWebAppName
+            SlotName = $StorageSlotName
             ConnectionStringName = $StorageConnectionStringName
         }
 
         $storageContext = New-AzStorageContext @{
             StorageAccountName = $storageConnection.AccountName
-            StorageAccountKey  = $storageConnection.AccountKey
+            StorageAccountKey = $storageConnection.AccountKey
         }
 
         Write-Output ("`n*****`nDownloading exported database...`n*****")
 
         Get-AzStorageBlobContent @{
-            Context     = $storageContext
-            Container   = $ContainerName
-            Blob        = $BlobName
+            Context = $storageContext
+            Container = $ContainerName
+            Blob = $BlobName
             Destination = $Destination
             ErrorAction = "Stop"
-            Force       = $true
+            Force = $true
         }
 
         Write-Output ("`n*****`nDownloading finished!`n*****")
 
         Remove-AzStorageBlob @{
-            Context     = $storageContext
-            Container   = $ContainerName
-            Blob        = $BlobName
+            Context = $storageContext
+            Container = $ContainerName
+            Blob = $BlobName
             ErrorAction = "Stop"
-            Force       = $true
+            Force = $true
         }
 
         Write-Output ("`n*****`nBlob deleted!`n*****")

@@ -22,9 +22,9 @@ function Connect-AzServicePrincipal
     Process
     {
         $azureConnectionParameters = @{
-            ServicePrincipal      = $true
-            TenantId              = $TenantId
-            ApplicationId         = $ApplicationId
+            ServicePrincipal = $true
+            TenantId = $TenantId
+            ApplicationId = $ApplicationId
             CertificateThumbprint = $CertificateThumbprint
         }
 

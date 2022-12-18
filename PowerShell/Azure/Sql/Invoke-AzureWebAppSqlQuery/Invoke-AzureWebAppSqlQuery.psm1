@@ -25,18 +25,18 @@ function Invoke-AzureWebAppSqlQuery
     Process
     {
         $databaseConnection = Get-AzureWebAppSqlDatabaseConnection @{
-            ResourceGroupName    = $ResourceGroupName
-            WebAppName           = $WebAppName
-            SlotName             = $SlotName
+            ResourceGroupName = $ResourceGroupName
+            WebAppName = $WebAppName
+            SlotName = $SlotName
             ConnectionStringName = $ConnectionStringName
         }
 
         return Invoke-Sqlcmd @{
-            ServerInstance    = "$($databaseConnection.ServerName).database.windows.net"
-            Database          = $databaseConnection.DatabaseName
-            Username          = $databaseConnection.UserName
-            Password          = $databaseConnection.Password
-            Query             = $Query
+            ServerInstance = "$($databaseConnection.ServerName).database.windows.net"
+            Database = $databaseConnection.DatabaseName
+            Username = $databaseConnection.UserName
+            Password = $databaseConnection.Password
+            Query = $Query
             EncryptConnection = $true
         }
     }

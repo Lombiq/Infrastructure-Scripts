@@ -8,13 +8,12 @@
 
 .EXAMPLE
     Remove-AzureWebAppSqlDatabaseContainedUser @{
-        ResourceGroupName        = "LikeAndSubscribe"
-        WebAppName               = "AppsEverywhere"
-        ConnectionStringName     = "Lombiq.Hosting.ShellManagement.ShellSettings.RootConnectionString.Localhost-master"
-        UserConnectionStringName = "Lombiq.Hosting.ShellManagement.ShellSettings.RootConnectionString.Localhost
+        ResourceGroupName = "LikeAndSubscribe"
+        WebAppName = "AppsEverywhere"
+        ConnectionStringName = "Lombiq.Hosting.ShellManagement.ShellSettings.RootConnectionString.Localhost-master"
+        UserConnectionStringName = "Lombiq.Hosting.ShellManagement.ShellSettings.RootConnectionString.Localhost"
     }
 #>
-
 
 function Remove-AzureWebAppSqlDatabaseContainedUser
 {
@@ -58,16 +57,16 @@ function Remove-AzureWebAppSqlDatabaseContainedUser
     Process
     {
         $databaseConnection = Get-AzureWebAppSqlDatabaseConnection @{
-            ResourceGroupName    = $DatabaseResourceGroupName
-            WebAppName           = $DatabaseWebAppName
-            SlotName             = $DatabaseSlotName
+            ResourceGroupName = $DatabaseResourceGroupName
+            WebAppName = $DatabaseWebAppName
+            SlotName = $DatabaseSlotName
             ConnectionStringName = $DatabaseConnectionStringName
         }
 
         $userDatabaseConnection = Get-AzureWebAppSqlDatabaseConnection @{
-            ResourceGroupName    = $UserResourceGroupName
-            WebAppName           = $UserWebAppName
-            SlotName             = $UserSlotName
+            ResourceGroupName = $UserResourceGroupName
+            WebAppName = $UserWebAppName
+            SlotName = $UserSlotName
             ConnectionStringName = $UserConnectionStringName
         }
 
@@ -79,11 +78,11 @@ function Remove-AzureWebAppSqlDatabaseContainedUser
         $query = "DROP USER IF EXISTS [$($userDatabaseConnection.UserName)];"
 
         return Invoke-AzureWebAppSqlQuery @{
-            ResourceGroupName    = $DatabaseResourceGroupName
-            WebAppName           = $DatabaseWebAppName
-            SlotName             = $DatabaseSlotName
+            ResourceGroupName = $DatabaseResourceGroupName
+            WebAppName = $DatabaseWebAppName
+            SlotName = $DatabaseSlotName
             ConnectionStringName = $DatabaseConnectionStringName
-            Query                = $query
+            Query = $query
         }
     }
 }

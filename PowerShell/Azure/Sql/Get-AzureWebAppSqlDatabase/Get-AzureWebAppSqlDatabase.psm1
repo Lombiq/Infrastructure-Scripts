@@ -8,20 +8,19 @@
 
 .EXAMPLE
     Get-AzureWebAppSqlDatabase @{
-        ResourceGroupName    = "YeahSubscribe"
-        WebAppName           = "EverythingIsAnApp"
+        ResourceGroupName = "YeahSubscribe"
+        WebAppName = "EverythingIsAnApp"
         ConnectionStringName = "Nokia"
-    }
+    } 
 
 .EXAMPLE
     Get-AzureWebAppSqlDatabase @{
-        ResourceGroupName    = "YeahSubscribe"
-        WebAppName           = "EverythingIsAnApp"
-        SlotName             = "Staging"
+        ResourceGroupName = "YeahSubscribe"
+        WebAppName = "EverythingIsAnApp"
+        SlotName = "Staging"
         ConnectionStringName = "Nokia"
-    }
+    }    
 #>
-
 
 Import-Module Az.Sql
 
@@ -48,17 +47,17 @@ function Get-AzureWebAppSqlDatabase
     Process
     {
         $databaseConnection = Get-AzureWebAppSqlDatabaseConnection @{
-            ResourceGroupName    = $ResourceGroupName
-            WebAppName           = $WebAppName
-            SlotName             = $SlotName
+            ResourceGroupName = $ResourceGroupName
+            WebAppName = $WebAppName
+            SlotName = $SlotName
             ConnectionStringName = $ConnectionStringName
         }
 
         return Get-AzSqlDatabase @{
             ResourceGroupName = $ResourceGroupName
-            ServerName        = $databaseConnection.ServerName
-            DatabaseName      = $databaseConnection.DatabaseName
-            ErrorAction       = "Stop"
+            ServerName = $databaseConnection.ServerName
+            DatabaseName = $databaseConnection.DatabaseName
+            ErrorAction = "Stop"
         }
     }
 }

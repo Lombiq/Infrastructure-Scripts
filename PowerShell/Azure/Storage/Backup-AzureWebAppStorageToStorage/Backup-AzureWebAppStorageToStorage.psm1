@@ -7,49 +7,49 @@
 
 .EXAMPLE
     Backup-AzureWebAppStorageToStorage @{
-        ResourceGroupName               = "CoolStuffHere"
-        WebAppName                      = "NiceApp"
-        SourceConnectionStringName      = "SourceStorage"
+        ResourceGroupName = "CoolStuffHere"
+        WebAppName = "NiceApp"
+        SourceConnectionStringName = "SourceStorage"
         DestinationConnectionStringName = "DestinationStorage"
     }
 
 .EXAMPLE
     Backup-AzureWebAppStorageToStorage @{
-        ResourceGroupName               = "CoolStuffHere"
-        WebAppName                      = "NiceApp"
-        SourceConnectionStringName      = "SourceStorage"
+        ResourceGroupName = "CoolStuffHere"
+        WebAppName = "NiceApp"
+        SourceConnectionStringName = "SourceStorage"
         DestinationConnectionStringName = "DestinationStorage"
-        ContainerWhiteList              = @("media", "stuff")
+        ContainerWhiteList = @("media", "stuff")
     }
 
 .EXAMPLE
     Backup-AzureWebAppStorageToStorage @{
-        ResourceGroupName               = "CoolStuffHere"
-        WebAppName                      = "NiceApp"
-        SourceConnectionStringName      = "SourceStorage"
+        ResourceGroupName = "CoolStuffHere"
+        WebAppName = "NiceApp"
+        SourceConnectionStringName = "SourceStorage"
         DestinationConnectionStringName = "DestinationStorage"
-        ContainerBlackList              = @("stuffidontneed")
+        ContainerBlackList = @("stuffidontneed")
     }
 
 .EXAMPLE
     Backup-AzureWebAppStorageToStorage @{
-        ResourceGroupName               = "CoolStuffHere"
-        WebAppName                      = "NiceApp"
-        SourceConnectionStringName      = "SourceStorage"
+        ResourceGroupName = "CoolStuffHere"
+        WebAppName = "NiceApp"
+        SourceConnectionStringName = "SourceStorage"
         DestinationConnectionStringName = "DestinationStorage"
-        ContainerBlackList              = @("stuffidontneed")
-        FolderWhiteList                 = @("usefulfolder")
+        ContainerBlackList = @("stuffidontneed")
+        FolderWhiteList = @("usefulfolder")
     }
 
 .EXAMPLE
     Backup-AzureWebAppStorageToStorage @{
-        ResourceGroupName               = "CoolStuffHere"
-        WebAppName                      = "NiceApp"
-        SourceConnectionStringName      = "SourceStorage"
+        ResourceGroupName = "CoolStuffHere"
+        WebAppName = "NiceApp"
+        SourceConnectionStringName = "SourceStorage"
         DestinationConnectionStringName = "DestinationStorage"
-        ContainerBlackList              = @("stuffidontneed")
-        FolderWhiteList                 = @("usefulfolder")
-        FolderBlackList                 = @("uselessfolderintheusefulfolder")
+        ContainerBlackList = @("stuffidontneed")
+        FolderWhiteList = @("usefulfolder")
+        FolderBlackList = @("uselessfolderintheusefulfolder")
         DestinationContainersAccessType = "Off"
     }
 #>
@@ -101,13 +101,13 @@ function Backup-AzureWebAppStorageToStorage
         if ($RemoveBackupContainersOlderThanDays -gt 0)
         {
             $destinationStorageConnection = Get-AzureWebAppStorageConnection @{
-                ResourceGroupName    = $ResourceGroupName
-                WebAppName           = $WebAppName
+                ResourceGroupName = $ResourceGroupName
+                WebAppName = $WebAppName
                 ConnectionStringName = $DestinationConnectionStringName
             }
             $destinationStorageContext = New-AzStorageContext @{
                 StorageAccountName = $destinationStorageConnection.AccountName
-                StorageAccountKey  = $destinationStorageConnection.AccountKey
+                StorageAccountKey = $destinationStorageConnection.AccountKey
             }
             Write-Warning ("Removing backup storage containers older than $RemoveBackupContainersOlderThanDays days!")
             Get-AzStorageContainer -Context $destinationStorageContext |
@@ -116,24 +116,24 @@ function Backup-AzureWebAppStorageToStorage
         }
 
         $sourceStorageConnection = Get-AzureWebAppStorageConnection @{
-            ResourceGroupName    = $ResourceGroupName
-            WebAppName           = $WebAppName
+            ResourceGroupName = $ResourceGroupName
+            WebAppName = $WebAppName
             ConnectionStringName = $SourceConnectionStringName
         }
         $containerNamePrefix = $sourceStorageConnection.AccountName + "-" + $now.ToString("yyyy-MM-dd-HH-mm-ss") + "-"
       
         Set-AzureWebAppStorageContentFromStorage @{
-            ResourceGroupName               = $ResourceGroupName
-            WebAppName                      = $WebAppName
-            SourceConnectionStringName      = $SourceConnectionStringName
+            ResourceGroupName = $ResourceGroupName
+            WebAppName = $WebAppName
+            SourceConnectionStringName = $SourceConnectionStringName
             DestinationConnectionStringName = $DestinationConnectionStringName
-            ContainerWhiteList              = $ContainerWhiteList
-            ContainerBlackList              = $ContainerBlackList
-            FolderWhiteList                 = $FolderWhiteList
-            FolderBlackList                 = $FolderBlackList
-            RemoveExtraFilesOnDestination   = $true
+            ContainerWhiteList = $ContainerWhiteList
+            ContainerBlackList = $ContainerBlackList
+            FolderWhiteList = $FolderWhiteList
+            FolderBlackList = $FolderBlackList
+            RemoveExtraFilesOnDestination = $true
             DestinationContainersAccessType = $DestinationContainersAccessType
-            DestinationContainerNamePrefix  = $containerNamePrefix
+            DestinationContainerNamePrefix = $containerNamePrefix
         }
     }
 }

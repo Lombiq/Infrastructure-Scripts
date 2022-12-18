@@ -8,14 +8,13 @@
 
 .EXAMPLE
     Set-AzureWebAppSqlDatabaseServiceObjective @{
-        ResourceGroupName    = "GreatStuffHere"
-        WebAppName           = "CloudFirst"
-        SlotName             = "MobileFirst"
+        ResourceGroupName = "GreatStuffHere"
+        WebAppName = "CloudFirst"
+        SlotName = "MobileFirst"
         ConnectionStringName = "DatabaseFirst"
         ServiceObjectiveName = "S2"
     }
 #>
-
 
 Import-Module Az.Sql
 
@@ -50,9 +49,9 @@ function Set-AzureWebAppSqlDatabaseServiceObjective
     Process
     {
         $database = Get-AzureWebAppSqlDatabase @{
-            ResourceGroupName    = $ResourceGroupName
-            WebAppName           = $WebAppName
-            SlotName             = $SlotName
+            ResourceGroupName = $ResourceGroupName
+            WebAppName = $WebAppName
+            SlotName = $SlotName
             ConnectionStringName = $ConnectionStringName
         }
 
@@ -94,12 +93,12 @@ function Set-AzureWebAppSqlDatabaseServiceObjective
                 "to `"$($Edition) $($ServiceObjectiveName)`"...`n*****")
 
             return Set-AzSqlDatabase @{
-                ResourceGroupName             = $ResourceGroupName
-                ServerName                    = $database.ServerName
-                DatabaseName                  = $database.DatabaseName
+                ResourceGroupName = $ResourceGroupName
+                ServerName = $database.ServerName
+                DatabaseName = $database.DatabaseName
                 RequestedServiceObjectiveName = $ServiceObjectiveName
-                Edition                       = $Edition
-                ErrorAction                   = "Stop"
+                Edition = $Edition
+                ErrorAction = "Stop"
             }
         }
         catch

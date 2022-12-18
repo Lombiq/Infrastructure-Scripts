@@ -7,51 +7,51 @@
 
 .EXAMPLE
     Save-AzureWebAppStorageContent @{
-        ResourceGroupName    = "CoolStuffHere"
-        WebAppName           = "NiceApp"
+        ResourceGroupName = "CoolStuffHere"
+        WebAppName = "NiceApp"
         ConnectionStringName = "SourceStorage"
-        Destination          = "D:\Backup"
+        Destination = "D:\Backup"
     }
 
 .EXAMPLE
     Save-AzureWebAppStorageContent @{
-        ResourceGroupName    = "CoolStuffHere"
-        WebAppName           = "NiceApp"
+        ResourceGroupName = "CoolStuffHere"
+        WebAppName = "NiceApp"
         ConnectionStringName = "SourceStorage"
-        Destination          = "D:\Backup"
-        ContainerWhiteList   = @("media", "stuff")
+        Destination = "D:\Backup"
+        ContainerWhiteList = @("media", "stuff")
     }
 
 .EXAMPLE
     Save-AzureWebAppStorageContent @{
-        ResourceGroupName    = "CoolStuffHere"
-        WebAppName           = "NiceApp"
+        ResourceGroupName = "CoolStuffHere"
+        WebAppName = "NiceApp"
         ConnectionStringName = "SourceStorage"
-        Destination          = "D:\Backup"
-        ContainerBlackList   = @("stuffidontneed")
+        Destination = "D:\Backup"
+        ContainerBlackList = @("stuffidontneed")
     }
 
 .EXAMPLE
     Save-AzureWebAppStorageContent @{
-        ResourceGroupName    = "CoolStuffHere"
-        WebAppName           = "NiceApp"
+        ResourceGroupName = "CoolStuffHere"
+        WebAppName = "NiceApp"
         ConnectionStringName = "SourceStorage"
-        Destination          = "D:\Backup"
-        ContainerBlackList   = @("stuffidontneed")
-        FolderWhiteList      = @("usefulfolder")
+        Destination = "D:\Backup"
+        ContainerBlackList = @("stuffidontneed")
+        FolderWhiteList = @("usefulfolder")
     }
 
 .EXAMPLE
-   Save-AzureWebAppStorageContent @{
-        ResourceGroupName               = "CoolStuffHere"
-        WebAppName                      = "NiceApp"
-        ConnectionStringName            = "SourceStorage"
-        Destination                     = "D:\Backup"
-        ContainerBlackList              = @("stuffidontneed")
-        FolderWhiteList                 = @("usefulfolder")
-        FolderBlackList                 = @("uselessfolderintheusefulfolder")
+    Save-AzureWebAppStorageContent @{
+        ResourceGroupName = "CoolStuffHere"
+        WebAppName = "NiceApp"
+        ConnectionStringName = "SourceStorage"
+        Destination = "D:\Backup"
+        ContainerBlackList = @("stuffidontneed")
+        FolderWhiteList = @("usefulfolder")
+        FolderBlackList = @("uselessfolderintheusefulfolder")
         DestinationContainersAccessType = "Off"
-   }
+    }
 #>
 
 Import-Module Az.Storage
@@ -98,14 +98,14 @@ function Save-AzureWebAppStorageContent
     Process
     {
         $storageConnection = Get-AzureWebAppStorageConnection @{
-            ResourceGroupName    = $ResourceGroupName
-            WebAppName           = $WebAppName
+            ResourceGroupName = $ResourceGroupName
+            WebAppName = $WebAppName
             ConnectionStringName = $ConnectionStringName
         }
 
         $storageContext = New-AzStorageContext @{
             StorageAccountName = $storageConnection.AccountName
-            StorageAccountKey  = $storageConnection.AccountKey
+            StorageAccountKey = $storageConnection.AccountKey
         }
 
         $containerWhiteListValid = $ContainerWhiteList -and $ContainerWhiteList.Count -gt 0
@@ -132,8 +132,8 @@ function Save-AzureWebAppStorageContent
             }
 
             $comparisonParameters = @{
-                PassThru         = $true
-                IncludeEqual     = $true
+                PassThru = $true
+                IncludeEqual = $true
                 ExcludeDifferent = $true
             }
             $blobs = $container | Get-AzStorageBlob |
@@ -169,12 +169,12 @@ function Save-AzureWebAppStorageContent
                         }
 
                         Get-AzStorageBlobContent @{
-                            Context     = $storageContext
-                            Container   = $container.Name
-                            Blob        = $blob.Name
+                            Context = $storageContext
+                            Container = $container.Name
+                            Blob = $blob.Name
                             Destination = $path
                             ErrorAction = "Stop"
-                            Force       = $true
+                            Force = $true
                         } | Out-Null
 
                         Write-Output ("Downloaded `"" + $container.Name + "/" + $blob.Name + "`".")

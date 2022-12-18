@@ -46,8 +46,8 @@ function Switch-AzureWebAppSlots
 
         $sourceSlotData = Get-AzureWebAppWrapper @{
             ResourceGroupName = $ResourceGroupName
-            WebAppName        = $WebAppName
-            SlotName          = $SourceSlotName
+            WebAppName = $WebAppName
+            SlotName = $SourceSlotName
         }
 
         if ($null -eq $sourceSlotData)
@@ -57,8 +57,8 @@ function Switch-AzureWebAppSlots
 
         $destinationSlotData = Get-AzureWebAppWrapper @{
             ResourceGroupName = $ResourceGroupName
-            WebAppName        = $WebAppName
-            SlotName          = $DestinationSlotName
+            WebAppName = $WebAppName
+            SlotName = $DestinationSlotName
         }
 
         if ($null -eq $destinationSlotData)
@@ -74,8 +74,8 @@ function Switch-AzureWebAppSlots
         TransformAppSettings -SlotName $DestinationSlotName -AppSettings $transformedAppSettings
 
         if (-not (VerifyAppSettingsValidity @{
-                    SlotName               = $DestinationSlotName
-                    OriginalAppSettings    = $originalAppSettings
+                    SlotName = $DestinationSlotName
+                    OriginalAppSettings = $originalAppSettings
                     TransformedAppSettings = $transformedAppSettings
                 }))
         {
@@ -90,8 +90,8 @@ function Switch-AzureWebAppSlots
         TransformConnectionStrings -SlotName $DestinationSlotName -ConnectionStrings $transformedConnectionStrings
 
         if (-not (VerifyConnectionStringsValidity @{
-                    SlotName                     = $DestinationSlotName
-                    OriginalConnectionStrings    = $originalConnectionStrings
+                    SlotName = $DestinationSlotName
+                    OriginalConnectionStrings = $originalConnectionStrings
                     TransformedConnectionStrings = $transformedConnectionStrings
                 }))
         {
@@ -103,17 +103,17 @@ function Switch-AzureWebAppSlots
         # Applying the transformed App Settings and Connection Strings to the Source environment with Destination settings.
         $updatedSourceSlotData = UpdateWebAppSlotAppSettingsAndConnectionStrings @{
             ResourceGroupName = $ResourceGroupName
-            WebAppName        = $WebAppName
-            SlotName          = $SourceSlotName
-            AppSettings       = $transformedAppSettings
+            WebAppName = $WebAppName
+            SlotName = $SourceSlotName
+            AppSettings = $transformedAppSettings
             ConnectionStrings = $transformedConnectionStrings
-            RetryCount        = $RetryCount
+            RetryCount = $RetryCount
         }
 
         # Verifying App Settings vailidity in the Source environment against Destination settings.
         $appSettingsValid = VerifyAppSettingsValidity @{
-            SlotName               = $DestinationSlotName
-            OriginalAppSettings    = $originalAppSettings
+            SlotName = $DestinationSlotName
+            OriginalAppSettings = $originalAppSettings
             TransformedAppSettings = (GetAppSettingsFromSlot -Slot $updatedSourceSlotData)
         }
         if (-not $appSettingsValid)
@@ -123,8 +123,8 @@ function Switch-AzureWebAppSlots
 
         # Verifying Connection Strings vailidity in the Source environment against Destination settings.
         $connectionStringsValid = VerifyConnectionStringsValidity @{
-            SlotName                     = $DestinationSlotName
-            OriginalConnectionStrings    = $originalConnectionStrings
+            SlotName = $DestinationSlotName
+            OriginalConnectionStrings = $originalConnectionStrings
             TransformedConnectionStrings = (GetConnectionStringsFromSlot -Slot $updatedSourceSlotData)
         }
         if (-not $appSettingsValid)
@@ -137,19 +137,19 @@ function Switch-AzureWebAppSlots
         {
             Stop-AzWebAppSlot @{
                 ResourceGroupName = $ResourceGroupName
-                Name              = $WebAppName
-                Slot              = $SourceSlotName
+                Name = $WebAppName
+                Slot = $SourceSlotName
             } | Out-Null
 
             Write-Warning "Attempting to restore the original App Settings and Connection Strings for the `"$SourceSlotName`" Slot of `"$WebAppName`"!"
 
             UpdateWebAppSlotAppSettingsAndConnectionStrings @{
                 ResourceGroupName = $ResourceGroupName
-                WebAppName        = $WebAppName
-                SlotName          = $SourceSlotName
-                AppSettings       = $originalAppSettings
+                WebAppName = $WebAppName
+                SlotName = $SourceSlotName
+                AppSettings = $originalAppSettings
                 ConnectionStrings = $originalConnectionStrings
-                RetryCount        = $RetryCount
+                RetryCount = $RetryCount
             } | Out-Null
 
             throw ("Failed to correctly update the `"$SourceSlotName`" Slot of `"$WebAppName`" for the `"$DestinationSlotName`" environment!")
@@ -160,9 +160,9 @@ function Switch-AzureWebAppSlots
         # Sending a warm-up request to the Source environment.
         Test-AzureWebApp @{
             ResourceGroupName = $ResourceGroupName
-            WebAppName        = $WebAppName
-            SlotName          = $SourceSlotName
-            RetryCount        = 10
+            WebAppName = $WebAppName
+            SlotName = $SourceSlotName
+            RetryCount = 10
         }
 
 
@@ -171,11 +171,11 @@ function Switch-AzureWebAppSlots
         try
         {
             Switch-AzWebAppSlot @{
-                ResourceGroupName   = $ResourceGroupName
-                Name                = $WebAppName
-                SourceSlotName      = $SourceSlotName
+                ResourceGroupName = $ResourceGroupName
+                Name = $WebAppName
+                SourceSlotName = $SourceSlotName
                 DestinationSlotName = $DestinationSlotName
-                ErrorAction         = "Stop"
+                ErrorAction = "Stop"
             }
         }
         catch [Exception]
@@ -183,8 +183,8 @@ function Switch-AzureWebAppSlots
             # Stopping the Source environment and the script execution if swapping the Slots failed.
             Stop-AzWebAppSlot @{
                 ResourceGroupName = $ResourceGroupName
-                Name              = $WebAppName
-                Slot              = $SourceSlotName
+                Name = $WebAppName
+                Slot = $SourceSlotName
             } | Out-Null
 
             throw
@@ -199,9 +199,9 @@ function Switch-AzureWebAppSlots
         # Sending a warm-up request to the Destination environment.
         Test-AzureWebApp @{
             ResourceGroupName = $ResourceGroupName
-            WebAppName        = $WebAppName
-            SlotName          = $DestinationSlotName
-            RetryCount        = 10
+            WebAppName = $WebAppName
+            SlotName = $DestinationSlotName
+            RetryCount = 10
         }
 
 
@@ -211,8 +211,8 @@ function Switch-AzureWebAppSlots
         TransformAppSettings -SlotName $SourceSlotName -AppSettings $transformedAppSettings
 
         if (-not (VerifyAppSettingsValidity @{
-                    SlotName               = $SourceSlotName
-                    OriginalAppSettings    = $originalAppSettings
+                    SlotName = $SourceSlotName
+                    OriginalAppSettings = $originalAppSettings
                     TransformedAppSettings = $transformedAppSettings
                 }))
         {
@@ -226,8 +226,8 @@ function Switch-AzureWebAppSlots
         TransformConnectionStrings -SlotName $SourceSlotName -ConnectionStrings $transformedConnectionStrings
 
         if (-not (VerifyConnectionStringsValidity @{
-                    SlotName                     = $SourceSlotName
-                    OriginalConnectionStrings    = $originalConnectionStrings
+                    SlotName = $SourceSlotName
+                    OriginalConnectionStrings = $originalConnectionStrings
                     TransformedConnectionStrings = $transformedConnectionStrings
                 }))
         {
@@ -239,17 +239,17 @@ function Switch-AzureWebAppSlots
         # Applying the transformed App Settings and Connection Strings to the Source environment with Source settings.
         $updatedSourceSlotData = UpdateWebAppSlotAppSettingsAndConnectionStrings @{
             ResourceGroupName = $ResourceGroupName
-            WebAppName        = $WebAppName
-            SlotName          = $SourceSlotName
-            AppSettings       = $transformedAppSettings
+            WebAppName = $WebAppName
+            SlotName = $SourceSlotName
+            AppSettings = $transformedAppSettings
             ConnectionStrings = $transformedConnectionStrings
-            RetryCount        = $RetryCount
+            RetryCount = $RetryCount
         }
 
         # Verifying App Settings vailidity in the Source environment against SourceSlotName settings.
         $appSettingsValid = VerifyAppSettingsValidity @{
-            SlotName               = $SourceSlotName
-            OriginalAppSettings    = $originalAppSettings
+            SlotName = $SourceSlotName
+            OriginalAppSettings = $originalAppSettings
             TransformedAppSettings = (GetAppSettingsFromSlot -Slot $updatedSourceSlotData)
         }
         if (-not $appSettingsValid)
@@ -259,8 +259,8 @@ function Switch-AzureWebAppSlots
 
         # Verifying Connection Strings vailidity in the Source environment against SourceSlotName settings.
         $connectionStringsValid = VerifyConnectionStringsValidity @{
-            SlotName                     = $SourceSlotName
-            OriginalConnectionStrings    = $originalConnectionStrings
+            SlotName = $SourceSlotName
+            OriginalConnectionStrings = $originalConnectionStrings
             TransformedConnectionStrings = (GetConnectionStringsFromSlot -Slot $updatedSourceSlotData)
         }
         if (-not $appSettingsValid)
@@ -273,19 +273,19 @@ function Switch-AzureWebAppSlots
         {
             Stop-AzWebAppSlot @{
                 ResourceGroupName = $ResourceGroupName
-                Name              = $WebAppName
-                Slot              = $SourceSlotName
+                Name = $WebAppName
+                Slot = $SourceSlotName
             } | Out-Null
 
             Write-Warning "Attempting to restore the original App Settings and Connection Strings for the `"$SourceSlotName`" Slot of `"$WebAppName`"!"
 
             UpdateWebAppSlotAppSettingsAndConnectionStrings @{
                 ResourceGroupName = $ResourceGroupName
-                WebAppName        = $WebAppName
-                SlotName          = $SourceSlotName
-                AppSettings       = $originalAppSettings
+                WebAppName = $WebAppName
+                SlotName = $SourceSlotName
+                AppSettings = $originalAppSettings
                 ConnectionStrings = $originalConnectionStrings
-                RetryCount        = $RetryCount
+                RetryCount = $RetryCount
             } | Out-Null
 
             throw ("Failed to correctly update the `"$SourceSlotName`" Slot of `"$WebAppName`" for the `"$SourceSlotName`" environment!")
@@ -295,9 +295,9 @@ function Switch-AzureWebAppSlots
         # Sending a warm-up request to the Source environment.
         Test-AzureWebApp @{
             ResourceGroupName = $ResourceGroupName
-            WebAppName        = $WebAppName
-            SlotName          = $SourceSlotName
-            RetryCount        = 10
+            WebAppName = $WebAppName
+            SlotName = $SourceSlotName
+            RetryCount = 10
         }
     }
 }
@@ -336,7 +336,7 @@ function GetConnectionStringsFromSlot
         foreach ($connectionString in $Slot.SiteConfig.ConnectionStrings)
         {
             $connectionStrings.Add($connectionString.Name, @{
-                    Type  = $connectionString.Type.ToString()
+                    Type = $connectionString.Type.ToString()
                     Value = $connectionString.ConnectionString.ToString()
                 })
         }
@@ -411,7 +411,7 @@ function TransformConnectionStrings
             if ($null -eq $ConnectionStrings[$connectionStringName])
             {
                 $ConnectionStrings.Add($connectionStringName, @{
-                        Type  = $destinationSlotConnectionString.Type
+                        Type = $destinationSlotConnectionString.Type
                         Value = $destinationSlotConnectionString.ConnectionString
                     })
             }
@@ -447,9 +447,9 @@ function UpdateWebAppSlotAppSettingsAndConnectionStrings
             {
                 $slot = Set-AzWebAppSlot @{
                     ResourceGroupName = $ResourceGroupName
-                    Name              = $WebAppName
-                    Slot              = $SlotName
-                    AppSettings       = $AppSettings
+                    Name = $WebAppName
+                    Slot = $SlotName
+                    AppSettings = $AppSettings
                     ConnectionStrings = $ConnectionStrings
                 }
 

@@ -8,20 +8,19 @@
 
 .EXAMPLE
     Get-AzureWebAppSqlDatabaseConnection @{
-        ResourceGroupName    = "YeahSubscribe"
-        WebAppName           = "EverythingIsAnApp"
+        ResourceGroupName = "YeahSubscribe"
+        WebAppName = "EverythingIsAnApp"
         ConnectionStringName = "Nokia"
     }
 
 .EXAMPLE
     Get-AzureWebAppSqlDatabaseConnection @{
-        ResourceGroupName    = "YeahSubscribe"
-        WebAppName           = "EverythingIsAnApp"
-        SlotName             = "Staging"
+        ResourceGroupName = "YeahSubscribe"
+        WebAppName = "EverythingIsAnApp"
+        SlotName = "Staging"
         ConnectionStringName = "Nokia"
     }
 #>
-
 
 function Get-AzureWebAppSqlDatabaseConnection
 {
@@ -46,9 +45,9 @@ function Get-AzureWebAppSqlDatabaseConnection
     Process
     {
         $connectionString = Get-AzureWebAppConnectionString @{
-            ResourceGroupName    = $ResourceGroupName
-            WebAppName           = $WebAppName
-            SlotName             = $SlotName
+            ResourceGroupName = $ResourceGroupName
+            WebAppName = $WebAppName
+            SlotName = $SlotName
             ConnectionStringName = $ConnectionStringName
         }
 
@@ -120,11 +119,11 @@ function Get-AzureWebAppSqlDatabaseConnection
 
 
         return @{
-            ServerName   = $serverName
+            ServerName = $serverName
             DatabaseName = $databaseName
-            UserId       = $userId
-            UserName     = $userName
-            Password     = $password
+            UserId = $userId
+            UserName = $userName
+            Password = $password
         }
     }
 }

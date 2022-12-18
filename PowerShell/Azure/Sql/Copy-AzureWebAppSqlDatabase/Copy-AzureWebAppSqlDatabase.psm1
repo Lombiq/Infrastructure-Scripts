@@ -8,13 +8,12 @@
 
 .EXAMPLE
     Copy-AzureWebAppSqlDatabase @{
-        ResourceGroupName               = "YeahSubscribe"
-        WebAppName                      = "EverythingIsAnApp"
-        SourceConnectionStringName      = "CleverDatabase"
+        ResourceGroupName = "YeahSubscribe"
+        WebAppName = "EverythingIsAnApp"
+        SourceConnectionStringName = "CleverDatabase"
         DestinationConnectionStringName = "NiceDatabase"
     }
 #>
-
 
 Import-Module Az.Sql
 
@@ -63,9 +62,9 @@ function Copy-AzureWebAppSqlDatabase
     Process
     {
         $sourceDatabase = Get-AzureWebAppSqlDatabase @{
-            ResourceGroupName    = $SourceResourceGroupName
-            WebAppName           = $SourceWebAppName
-            SlotName             = $SourceSlotName
+            ResourceGroupName = $SourceResourceGroupName
+            WebAppName = $SourceWebAppName
+            SlotName = $SourceSlotName
             ConnectionStringName = $SourceConnectionStringName
         }
 
@@ -75,17 +74,17 @@ function Copy-AzureWebAppSqlDatabase
         }
 
         $destinationDatabaseConnection = Get-AzureWebAppSqlDatabaseConnection @{
-            ResourceGroupName    = $DestinationResourceGroupName
-            WebAppName           = $DestinationWebAppName
-            SlotName             = $DestinationSlotName
+            ResourceGroupName = $DestinationResourceGroupName
+            WebAppName = $DestinationWebAppName
+            SlotName = $DestinationSlotName
             ConnectionStringName = $DestinationConnectionStringName
         }
 
         $destinationDatabase = Get-AzSqlDatabase @{
             ResourceGroupName = $DestinationResourceGroupName
-            ServerName        = $destinationDatabaseConnection.ServerName
-            DatabaseName      = $destinationDatabaseConnection.DatabaseName
-            ErrorAction       = "Ignore"
+            ServerName = $destinationDatabaseConnection.ServerName
+            DatabaseName = $destinationDatabaseConnection.DatabaseName
+            ErrorAction = "Ignore"
         }
 
         if ($sourceDatabase.ServerName -eq $destinationDatabaseConnection.ServerName -and
@@ -97,9 +96,9 @@ function Copy-AzureWebAppSqlDatabase
         if ($null -ne $destinationDatabase)
         {
             if ($Force.IsPresent -and $null -ne (Remove-AzureWebAppSqlDatabase @{
-                        ResourceGroupName    = $DestinationResourceGroupName
-                        WebAppName           = $DestinationWebAppName
-                        SlotName             = $DestinationSlotName
+                        ResourceGroupName = $DestinationResourceGroupName
+                        WebAppName = $DestinationWebAppName
+                        SlotName = $DestinationSlotName
                         ConnectionStringName = $DestinationConnectionStringName
                     }
                 ))
@@ -118,12 +117,12 @@ function Copy-AzureWebAppSqlDatabase
             # stores the connection string of the destination database. However, it is possible that the destination
             # database's server is in a different resource group (but we don't know that from the connection string).
             return New-AzSqlDatabaseCopy @{
-                ResourceGroupName     = $sourceDatabase.ResourceGroupName
-                ServerName            = $sourceDatabase.ServerName
-                DatabaseName          = $sourceDatabase.DatabaseName
+                ResourceGroupName = $sourceDatabase.ResourceGroupName
+                ServerName = $sourceDatabase.ServerName
+                DatabaseName = $sourceDatabase.DatabaseName
                 CopyResourceGroupName = $DestinationResourceGroupName
-                CopyServerName        = $destinationDatabaseConnection.ServerName
-                CopyDatabaseName      = $destinationDatabaseConnection.DatabaseName
+                CopyServerName = $destinationDatabaseConnection.ServerName
+                CopyDatabaseName = $destinationDatabaseConnection.DatabaseName
             }
 
         }

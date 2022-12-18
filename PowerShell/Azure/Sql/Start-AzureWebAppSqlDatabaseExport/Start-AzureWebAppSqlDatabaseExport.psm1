@@ -7,15 +7,14 @@
 
 .EXAMPLE
     Start-AzureWebAppSqlDatabaseExport @{
-        ResourceGroupName            = "CoolStuffHere"
-        WebAppName                   = "NiceApp"
+        ResourceGroupName = "CoolStuffHere"
+        WebAppName = "NiceApp"
         DatabaseConnectionStringName = "Lombiq.Hosting.ShellManagement.ShellSettings.RootConnectionString"
-        StorageConnectionStringName  = "Orchard.Azure.Media.StorageConnectionString"
-        ContainerName                = "database"
-        BlobName                     = "export.bacpac"
+        StorageConnectionStringName = "Orchard.Azure.Media.StorageConnectionString"
+        ContainerName = "database"
+        BlobName = "export.bacpac"
     }
 #>
-
 
 Import-Module Az.Storage
 Import-Module Az.Sql
@@ -71,21 +70,21 @@ function Start-AzureWebAppSqlDatabaseExport
     Process
     {
         $storageConnection = Get-AzureWebAppStorageConnection @{
-            ResourceGroupName    = $StorageResourceGroupName
-            WebAppName           = $StorageWebAppName
-            SlotName             = $StorageSlotName
+            ResourceGroupName = $StorageResourceGroupName
+            WebAppName = $StorageWebAppName
+            SlotName = $StorageSlotName
             ConnectionStringName = $StorageConnectionStringName
         }
 
         $storageContext = New-AzStorageContext @{
             StorageAccountName = $storageConnection.AccountName
-            StorageAccountKey  = $storageConnection.AccountKey
+            StorageAccountKey = $storageConnection.AccountKey
         }
 
         $blob = Get-AzStorageBlob @{
-            Context     = $storageContext
-            Container   = $ContainerName
-            Blob        = $BlobName
+            Context = $storageContext
+            Container = $ContainerName
+            Blob = $BlobName
             ErrorAction = "SilentlyContinue"
         }
 
@@ -95,22 +94,22 @@ function Start-AzureWebAppSqlDatabaseExport
         }
 
         $databaseConnection = Get-AzureWebAppSqlDatabaseConnection @{
-            ResourceGroupName    = $DatabaseResourceGroupName
-            WebAppName           = $DatabaseWebAppName
-            SlotName             = $DatabaseSlotName
+            ResourceGroupName = $DatabaseResourceGroupName
+            WebAppName = $DatabaseWebAppName
+            SlotName = $DatabaseSlotName
             ConnectionStringName = $DatabaseConnectionStringName
         }
 
         return (New-AzSqlDatabaseExport @{
-                ResourceGroupName          = $DatabaseResourceGroupName
-                ServerName                 = $databaseConnection.ServerName
-                DatabaseName               = $databaseConnection.DatabaseName
-                AdministratorLogin         = $databaseConnection.UserName
+                ResourceGroupName = $DatabaseResourceGroupName
+                ServerName = $databaseConnection.ServerName
+                DatabaseName = $databaseConnection.DatabaseName
+                AdministratorLogin = $databaseConnection.UserName
                 AdministratorLoginPassword = (ConvertTo-SecureString $databaseConnection.PasswordAsPlainTextForce)
-                StorageKeyType             = "StorageAccessKey"
-                StorageKey                 = $storageConnection.AccountKey
-                StorageUri                 = "https://$($storageConnection.AccountName).blob.core.windows.net/$ContainerName/$BlobName"
-                ErrorAction                = "Stop"
+                StorageKeyType = "StorageAccessKey"
+                StorageKey = $storageConnection.AccountKey
+                StorageUri = "https://$($storageConnection.AccountName).blob.core.windows.net/$ContainerName/$BlobName"
+                ErrorAction = "Stop"
             })
     }
 }
