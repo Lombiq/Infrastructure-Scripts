@@ -14,7 +14,7 @@ The Infrastructure Scripts does not require the Orchard modules of the Hosting S
 
 ## Folder structure and components
 
-- `Utility` (subrepository): A few useful scripts/modules for everyday use (not closely related to hosting). [This component has its own readme](Utility/Readme.md).
+- `Utility` (submodule): A few useful scripts/modules for everyday use (not closely related to hosting). [This component has its own readme](Utility/Readme.md).
 - `PowerShell`: The heart and soul of Infrastructure Scripts (see the `PowerShell` subfolder), divided into these sub-features:
 	- `Azure`: These modules interact directly with Azure services, such as Blob Storages, Databases and Web Apps. [This component has its own readme](PowerShell/Azure/Readme.md)
 	- `Hosting Suite`: These modules interact directly with Orchard modules of the Hosting Suite through WebAPI, e.g. for starting/executing maintenances. [This component has its own readme](PowerShell/HostingSuite/Readme.md).
