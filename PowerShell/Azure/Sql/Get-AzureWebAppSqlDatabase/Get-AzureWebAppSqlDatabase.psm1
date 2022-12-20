@@ -11,7 +11,7 @@
         ResourceGroupName = "YeahSubscribe"
         WebAppName = "EverythingIsAnApp"
         ConnectionStringName = "Nokia"
-    } 
+    }
 
 .EXAMPLE
     Get-AzureWebAppSqlDatabase @{
