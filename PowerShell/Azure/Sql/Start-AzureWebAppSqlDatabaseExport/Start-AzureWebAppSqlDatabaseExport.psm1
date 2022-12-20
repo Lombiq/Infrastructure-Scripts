@@ -6,15 +6,15 @@
     Exports a database of an Azure Web App to Blob Storage asnychronously.
 
 .EXAMPLE
-    Start-AzureWebAppSqlDatabaseExport `
-        -ResourceGroupName "CoolStuffHere" `
-        -WebAppName "NiceApp" `
-        -DatabaseConnectionStringName "Lombiq.Hosting.ShellManagement.ShellSettings.RootConnectionString" `
-        -StorageConnectionStringName "Orchard.Azure.Media.StorageConnectionString" `
-        -ContainerName "database" `
-        -BlobName "export.bacpac"
+    Start-AzureWebAppSqlDatabaseExport @{
+        ResourceGroupName = "CoolStuffHere"
+        WebAppName = "NiceApp"
+        DatabaseConnectionStringName = "Lombiq.Hosting.ShellManagement.ShellSettings.RootConnectionString"
+        StorageConnectionStringName = "Orchard.Azure.Media.StorageConnectionString"
+        ContainerName = "database"
+        BlobName = "export.bacpac"
+    }
 #>
-
 
 Import-Module Az.Storage
 Import-Module Az.Sql
@@ -69,42 +69,47 @@ function Start-AzureWebAppSqlDatabaseExport
 
     Process
     {
-        $storageConnection = Get-AzureWebAppStorageConnection `
-            -ResourceGroupName $StorageResourceGroupName `
-            -WebAppName $StorageWebAppName `
-            -SlotName $StorageSlotName `
-            -ConnectionStringName $StorageConnectionStringName
+        $storageConnection = Get-AzureWebAppStorageConnection @{
+            ResourceGroupName = $StorageResourceGroupName
+            WebAppName = $StorageWebAppName
+            SlotName = $StorageSlotName
+            ConnectionStringName = $StorageConnectionStringName
+        }
 
-        $storageContext = New-AzStorageContext `
-            -StorageAccountName $storageConnection.AccountName `
-            -StorageAccountKey $storageConnection.AccountKey
+        $storageContext = New-AzStorageContext @{
+            StorageAccountName = $storageConnection.AccountName
+            StorageAccountKey = $storageConnection.AccountKey
+        }
 
-        $blob = Get-AzStorageBlob `
-            -Context $storageContext `
-            -Container $ContainerName `
-            -Blob $BlobName `
-            -ErrorAction SilentlyContinue
+        $blob = Get-AzStorageBlob @{
+            Context = $storageContext
+            Container = $ContainerName
+            Blob = $BlobName
+            ErrorAction = "SilentlyContinue"
+        }
 
         if ($null -ne $blob)
         {
             $blob | Remove-AzStorageBlob -ErrorAction Stop -Force
         }
 
-        $databaseConnection = Get-AzureWebAppSqlDatabaseConnection `
-            -ResourceGroupName $DatabaseResourceGroupName `
-            -WebAppName $DatabaseWebAppName `
-            -SlotName $DatabaseSlotName `
-            -ConnectionStringName $DatabaseConnectionStringName
+        $databaseConnection = Get-AzureWebAppSqlDatabaseConnection @{
+            ResourceGroupName = $DatabaseResourceGroupName
+            WebAppName = $DatabaseWebAppName
+            SlotName = $DatabaseSlotName
+            ConnectionStringName = $DatabaseConnectionStringName
+        }
 
-        return (New-AzSqlDatabaseExport `
-            -ResourceGroupName $DatabaseResourceGroupName `
-            -ServerName $databaseConnection.ServerName `
-            -DatabaseName $databaseConnection.DatabaseName `
-            -AdministratorLogin $databaseConnection.UserName `
-            -AdministratorLoginPassword (ConvertTo-SecureString $databaseConnection.Password -AsPlainText -Force) `
-            -StorageKeyType "StorageAccessKey" `
-            -StorageKey $storageConnection.AccountKey `
-            -StorageUri "https://$($storageConnection.AccountName).blob.core.windows.net/$ContainerName/$BlobName" `
-            -ErrorAction Stop)
+        return (New-AzSqlDatabaseExport @{
+                ResourceGroupName = $DatabaseResourceGroupName
+                ServerName = $databaseConnection.ServerName
+                DatabaseName = $databaseConnection.DatabaseName
+                AdministratorLogin = $databaseConnection.UserName
+                AdministratorLoginPassword = (ConvertTo-SecureString $databaseConnection.PasswordAsPlainTextForce)
+                StorageKeyType = "StorageAccessKey"
+                StorageKey = $storageConnection.AccountKey
+                StorageUri = "https://$($storageConnection.AccountName).blob.core.windows.net/$ContainerName/$BlobName"
+                ErrorAction = "Stop"
+            })
     }
 }

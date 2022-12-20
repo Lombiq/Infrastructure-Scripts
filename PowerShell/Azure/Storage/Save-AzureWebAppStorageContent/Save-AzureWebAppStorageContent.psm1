@@ -6,21 +6,53 @@
    Downloads every Container and their Blobs from an Azure Blob Storage specified by a Connection String of a Web App.
 
 .EXAMPLE
-   Save-AzureWebAppStorageContent -ResourceGroupName "CoolStuffHere" -WebAppName "NiceApp" -ConnectionStringName "Orchard.Azure.Media.StorageConnectionString" -Destination "D:\Backup"
+    Save-AzureWebAppStorageContent @{
+        ResourceGroupName = "CoolStuffHere"
+        WebAppName = "NiceApp"
+        ConnectionStringName = "SourceStorage"
+        Destination = "D:\Backup"
+    }
 
 .EXAMPLE
-   Save-AzureWebAppStorageContent -ResourceGroupName "CoolStuffHere" -WebAppName "NiceApp" -ConnectionStringName "takemetothestorage" -Destination "D:\Backup" -ContainerWhiteList @("media", "stuff")
+    Save-AzureWebAppStorageContent @{
+        ResourceGroupName = "CoolStuffHere"
+        WebAppName = "NiceApp"
+        ConnectionStringName = "SourceStorage"
+        Destination = "D:\Backup"
+        ContainerWhiteList = @("media", "stuff")
+    }
 
 .EXAMPLE
-   Save-AzureWebAppStorageContent -ResourceGroupName "CoolStuffHere" -WebAppName "NiceApp" -ConnectionStringName "storage" -Destination "D:\Backup" -ContainerBlackList @("stuffidontneed")
+    Save-AzureWebAppStorageContent @{
+        ResourceGroupName = "CoolStuffHere"
+        WebAppName = "NiceApp"
+        ConnectionStringName = "SourceStorage"
+        Destination = "D:\Backup"
+        ContainerBlackList = @("stuffidontneed")
+    }
 
 .EXAMPLE
-   Save-AzureWebAppStorageContent -ResourceGroupName "CoolStuffHere" -WebAppName "NiceApp" -ConnectionStringName "storage" -Destination "D:\Backup" -ContainerBlackList @("stuffidontneed") -FolderWhiteList @("usefulfolder")
+    Save-AzureWebAppStorageContent @{
+        ResourceGroupName = "CoolStuffHere"
+        WebAppName = "NiceApp"
+        ConnectionStringName = "SourceStorage"
+        Destination = "D:\Backup"
+        ContainerBlackList = @("stuffidontneed")
+        FolderWhiteList = @("usefulfolder")
+    }
 
 .EXAMPLE
-   Save-AzureWebAppStorageContent -ResourceGroupName "CoolStuffHere" -WebAppName "NiceApp" -ConnectionStringName "storage" -Destination "D:\Backup" -ContainerBlackList @("stuffidontneed") -FolderWhiteList @("usefulfolder") -FolderBlackList @("uselessfolderintheusefulfolder")
+    Save-AzureWebAppStorageContent @{
+        ResourceGroupName = "CoolStuffHere"
+        WebAppName = "NiceApp"
+        ConnectionStringName = "SourceStorage"
+        Destination = "D:\Backup"
+        ContainerBlackList = @("stuffidontneed")
+        FolderWhiteList = @("usefulfolder")
+        FolderBlackList = @("uselessfolderintheusefulfolder")
+        DestinationContainersAccessType = "Off"
+    }
 #>
-
 
 Import-Module Az.Storage
 
@@ -33,19 +65,24 @@ function Save-AzureWebAppStorageContent
         [Parameter(Mandatory = $true, HelpMessage = "The name of the Resource Group the Web App is in.")]
         [string] $ResourceGroupName,
 
-        [Parameter(Mandatory = $true, HelpMessage = "The name of the Azure Web App. The script throws exception if the Web App doesn't exist on the given subscription.")]
+        [Parameter(Mandatory = $true, HelpMessage = "The name of the Azure Web App. The script throws exception if" +
+            "the Web App doesn't exist on the given subscription.")]
         [string] $WebAppName,
 
-        [Parameter(Mandatory = $true, HelpMessage = "The name of a connection string that identifies the Storage Account. The script will exit with error if there is no connection string defined with the name provided for the Production slot of the given Web App.")]
+        [Parameter(Mandatory = $true, HelpMessage = "The name of a connection string that identifies the Storage" +
+            " Account. The script will exit with error if there is no connection string defined with the name" +
+            " provided for the Production slot of the given Web App.")]
         [string] $ConnectionStringName,
 
         [Parameter(Mandatory = $true, HelpMessage = "The path on the local machine where the files will be downloaded.")]
         [string] $Destination,
 
-        [Parameter(HelpMessage = "A list of names of Blob Containers to include. When valid values are provided, it cancels out `"ContainerBlackList`".")]
+        [Parameter(HelpMessage = "A list of names of Blob Containers to include. When valid values are provided," +
+            " it cancels out `"ContainerBlackList`".")]
         [string[]] $ContainerWhiteList = @(),
 
-        [Parameter(HelpMessage = "A list of names of Blob Containers to exclude. When valid values are provided for `"ContainerWhiteList`", then `"ContainerBlackList`" is not taken into consideration.")]
+        [Parameter(HelpMessage = "A list of names of Blob Containers to exclude. When valid values are provided for" +
+            " `"ContainerWhiteList`", then `"ContainerBlackList`" is not taken into consideration.")]
         [string[]] $ContainerBlackList = @(),
 
         [Parameter(HelpMessage = "A list of folder names to include. Applied before `"FolderBlackList`".")]
@@ -60,18 +97,25 @@ function Save-AzureWebAppStorageContent
 
     Process
     {
-        $storageConnection = Get-AzureWebAppStorageConnection -ResourceGroupName $ResourceGroupName -WebAppName $WebAppName -ConnectionStringName $ConnectionStringName
+        $storageConnection = Get-AzureWebAppStorageConnection @{
+            ResourceGroupName = $ResourceGroupName
+            WebAppName = $WebAppName
+            ConnectionStringName = $ConnectionStringName
+        }
 
-        $storageContext = New-AzStorageContext -StorageAccountName $storageConnection.AccountName -StorageAccountKey $storageConnection.AccountKey
+        $storageContext = New-AzStorageContext @{
+            StorageAccountName = $storageConnection.AccountName
+            StorageAccountKey = $storageConnection.AccountKey
+        }
 
         $containerWhiteListValid = $ContainerWhiteList -and $ContainerWhiteList.Count -gt 0
         $containerBlackListValid = $ContainerBlackList -and $ContainerBlackList.Count -gt 0
 
-        $containers = Get-AzStorageContainer -Context $storageContext | Where-Object `
-        { `
-            ((!$containerWhiteListValid -or ($containerWhiteListValid -and $ContainerWhiteList.Contains($PSItem.Name))) -and `
-                ($containerWhiteListValid -or (!$containerBlackListValid -or !$ContainerBlackList.Contains($PSItem.Name)))) `
-        }
+        $containers = Get-AzStorageContainer -Context $storageContext |
+            Where-Object {
+            ((!$containerWhiteListValid -or ($containerWhiteListValid -and $ContainerWhiteList.Contains($PSItem.Name))) -and
+                ($containerWhiteListValid -or (!$containerBlackListValid -or !$ContainerBlackList.Contains($PSItem.Name))))
+            }
 
         $folderWhiteListValid = $FolderWhiteList -and $FolderWhiteList.Count -gt 0
         $folderBlackListValid = $FolderBlackList -and $FolderBlackList.Count -gt 0
@@ -87,11 +131,18 @@ function Save-AzureWebAppStorageContent
                 Remove-Item -Path $containerPath -Recurse -Force
             }
 
-            $blobs = $container | Get-AzStorageBlob | Where-Object `
-            { `
-                (!$folderWhiteListValid -or ($folderWhiteListValid -and (Compare-Object $PSItem.Name.Split("/", [StringSplitOptions]::RemoveEmptyEntries) $FolderWhiteList -PassThru -IncludeEqual -ExcludeDifferent))) `
-                    -and (!$folderBlackListValid -or ($folderBlackListValid -and (!(Compare-Object $PSItem.Name.Split("/", [StringSplitOptions]::RemoveEmptyEntries) $FolderBlackList -PassThru -IncludeEqual -ExcludeDifferent)))) `
+            $comparisonParameters = @{
+                PassThru = $true
+                IncludeEqual = $true
+                ExcludeDifferent = $true
             }
+            $blobs = $container | Get-AzStorageBlob |
+                Where-Object {
+                (!$folderWhiteListValid -or ($folderWhiteListValid -and
+                    (Compare-Object $PSItem.Name.Split("/", [StringSplitOptions]::RemoveEmptyEntries) $FolderWhiteList @comparisonParameters))) -and
+                (!$folderBlackListValid -or ($folderBlackListValid -and
+                    (!(Compare-Object $PSItem.Name.Split("/", [StringSplitOptions]::RemoveEmptyEntries) $FolderBlackList @comparisonParameters))))
+                }
 
             foreach ($blob in $blobs)
             {
@@ -117,7 +168,14 @@ function Save-AzureWebAppStorageContent
                             New-Item -ItemType Directory -Path (Split-Path -Path $path -Parent) -Force | Out-Null
                         }
 
-                        Get-AzStorageBlobContent -Context $storageContext -Container $container.Name -Blob $blob.Name -Destination $path -ErrorAction Stop -Force | Out-Null
+                        Get-AzStorageBlobContent @{
+                            Context = $storageContext
+                            Container = $container.Name
+                            Blob = $blob.Name
+                            Destination = $path
+                            ErrorAction = "Stop"
+                            Force = $true
+                        } | Out-Null
 
                         Write-Output ("Downloaded `"" + $container.Name + "/" + $blob.Name + "`".")
 

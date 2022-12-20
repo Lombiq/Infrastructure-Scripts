@@ -1,14 +1,20 @@
 <#
 .Synopsis
-   Sets up a root connection string file at a given path taken from an Azure Web App's Connection Strings.
+    Sets up a root connection string file at a given path taken from an Azure Web App's Connection Strings.
 
 .DESCRIPTION
-   Sets up a root connection string file at a given path taken from an Azure Web App's Connection Strings.
+    Sets up a root connection string file at a given path taken from an Azure Web App's Connection Strings.
 
 .EXAMPLE
-   New-RootConnectionStringFile -Path "C:\AwesomeProject\src\Orchard.Web\App_Data\Sites" -FileName "Lombiq.Hosting.ShellManagement.ShellSettings.RootConnectionString" -ResourceGroupName "InsertNameHere" -WebAppName "YummyWebApp" -SlotName "Lucky" -ConnectionStringName "DatDatabase"
+    New-RootConnectionStringFile @{
+        Path = "C:\AwesomeProject\src\Orchard.Web\App_Data\Sites"
+        FileName = "Lombiq.Hosting.ShellManagement.ShellSettings.RootConnectionString"
+        ResourceGroupName = "InsertNameHere"
+        WebAppName = "YummyWebApp"
+        SlotName = "Lucky"
+        ConnectionStringName = "DatDatabase"
+    }
 #>
-
 
 function New-RootConnectionStringFile
 {
@@ -38,11 +44,12 @@ function New-RootConnectionStringFile
 
     Process
     {
-        $connectionString = Get-AzureWebAppConnectionString `
-            -ResourceGroupName $ResourceGroupName `
-            -WebAppName $WebAppName `
-            -SlotName $SlotName `
-            -ConnectionStringName $ConnectionStringName
+        $connectionString = Get-AzureWebAppConnectionString @{
+            ResourceGroupName = $ResourceGroupName
+            WebAppName = $WebAppName
+            SlotName = $SlotName
+            ConnectionStringName = $ConnectionStringName
+        }
 
         New-Item -ItemType File -Name "$FileName.txt" -Path "$Path" -Force | Out-Null
         Set-Content -Path "$Path\$FileName.txt" -Value $connectionString

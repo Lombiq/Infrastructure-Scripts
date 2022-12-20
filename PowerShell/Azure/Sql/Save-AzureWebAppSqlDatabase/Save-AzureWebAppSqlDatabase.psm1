@@ -6,16 +6,16 @@
     Exports a database of an Azure Web App to Blob Storage snychronously and downloads it to a specified destination.
 
 .EXAMPLE
-    Save-AzureWebAppSqlDatabase `
-        -ResourceGroupName "CoolStuffHere" `
-        -WebAppName "NiceApp" `
-        -DatabaseConnectionStringName "Lombiq.Hosting.ShellManagement.ShellSettings.RootConnectionString" `
-        -StorageConnectionStringName "Orchard.Azure.Media.StorageConnectionString" `
-        -ContainerName "database" `
-        -BlobName "export.bacpac" `
-        -Destination "C:\backup"
+    Save-AzureWebAppSqlDatabase @{
+        ResourceGroupName = "CoolStuffHere"
+        WebAppName = "NiceApp"
+        DatabaseConnectionStringName = "Lombiq.Hosting.ShellManagement.ShellSettings.RootConnectionString"
+        StorageConnectionStringName = "Orchard.Azure.Media.StorageConnectionString"
+        ContainerName = "database"
+        BlobName = "export.bacpac"
+        Destination = "C:\backup"
+    }
 #>
-
 
 Import-Module Az.Storage
 
@@ -67,46 +67,51 @@ function Save-AzureWebAppSqlDatabase
 
     Process
     {
-        Invoke-AzureWebAppSqlDatabaseExport `
-            -DatabaseResourceGroupName $DatabaseResourceGroupName `
-            -DatabaseWebAppName $DatabaseWebAppName `
-            -DatabaseSlotName $DatabaseSlotName `
-            -DatabaseConnectionStringName $DatabaseConnectionStringName `
-            -StorageResourceGroupName $StorageResourceGroupName `
-            -StorageWebAppName $StorageWebAppName `
-            -StorageSlotName $StorageSlotName `
-            -StorageConnectionStringName $StorageConnectionStringName `
-            -ContainerName $ContainerName `
-            -BlobName $BlobName
+        Invoke-AzureWebAppSqlDatabaseExport @{
+            DatabaseResourceGroupName = $DatabaseResourceGroupName
+            DatabaseWebAppName = $DatabaseWebAppName
+            DatabaseSlotName = $DatabaseSlotName
+            DatabaseConnectionStringName = $DatabaseConnectionStringName
+            StorageResourceGroupName = $StorageResourceGroupName
+            StorageWebAppName = $StorageWebAppName
+            StorageSlotName = $StorageSlotName
+            StorageConnectionStringName = $StorageConnectionStringName
+            ContainerName = $ContainerName
+            BlobName = $BlobName
+        }
 
-        $storageConnection = Get-AzureWebAppStorageConnection `
-            -ResourceGroupName $StorageResourceGroupName `
-            -WebAppName $StorageWebAppName `
-            -SlotName $StorageSlotName `
-            -ConnectionStringName $StorageConnectionStringName
+        $storageConnection = Get-AzureWebAppStorageConnection @{
+            ResourceGroupName = $StorageResourceGroupName
+            WebAppName = $StorageWebAppName
+            SlotName = $StorageSlotName
+            ConnectionStringName = $StorageConnectionStringName
+        }
 
-        $storageContext = New-AzStorageContext `
-            -StorageAccountName $storageConnection.AccountName `
-            -StorageAccountKey $storageConnection.AccountKey
+        $storageContext = New-AzStorageContext @{
+            StorageAccountName = $storageConnection.AccountName
+            StorageAccountKey = $storageConnection.AccountKey
+        }
 
         Write-Output ("`n*****`nDownloading exported database...`n*****")
 
-        Get-AzStorageBlobContent `
-            -Context $storageContext `
-            -Container $ContainerName `
-            -Blob $BlobName `
-            -Destination $Destination `
-            -ErrorAction Stop `
-            -Force
+        Get-AzStorageBlobContent @{
+            Context = $storageContext
+            Container = $ContainerName
+            Blob = $BlobName
+            Destination = $Destination
+            ErrorAction = "Stop"
+            Force = $true
+        }
 
         Write-Output ("`n*****`nDownloading finished!`n*****")
 
-        Remove-AzStorageBlob `
-            -Context $storageContext `
-            -Container $ContainerName `
-            -Blob $BlobName `
-            -ErrorAction Stop `
-            -Force
+        Remove-AzStorageBlob @{
+            Context = $storageContext
+            Container = $ContainerName
+            Blob = $BlobName
+            ErrorAction = "Stop"
+            Force = $true
+        }
 
         Write-Output ("`n*****`nBlob deleted!`n*****")
     }

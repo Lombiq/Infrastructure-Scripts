@@ -21,11 +21,18 @@ function Connect-AzServicePrincipal
 
     Process
     {
+        $azureConnectionParameters = @{
+            ServicePrincipal = $true
+            TenantId = $TenantId
+            ApplicationId = $ApplicationId
+            CertificateThumbprint = $CertificateThumbprint
+        }
+
         $azContext = Get-AzContext
 
         if ($null -eq $azContext)
         {
-            Connect-AzAccount -ServicePrincipal -TenantId $TenantId -ApplicationId $ApplicationId -CertificateThumbprint $CertificateThumbprint
+            Connect-AzAccount @azureConnectionParameters
 
             $azContext = Get-AzContext
         }
@@ -37,7 +44,7 @@ function Connect-AzServicePrincipal
             {
                 Disconnect-AzAccount
 
-                Connect-AzAccount -ServicePrincipal -TenantId $TenantId -ApplicationId $ApplicationId -CertificateThumbprint $CertificateThumbprint
+                Connect-AzAccount @azureConnectionParameters
 
                 $azContext = Get-AzContext
 
