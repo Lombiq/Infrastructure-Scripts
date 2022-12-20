@@ -1,16 +1,15 @@
 ﻿<#
 .Synopsis
-   Starts a maintenance through the Hosting Suite API.
+    Starts a maintenance through the Hosting Suite API.
 
 .DESCRIPTION
-   Starts a maintenance through the Hosting Suite API asynchronously.
+    Starts a maintenance through the Hosting Suite API asynchronously.
 
 .EXAMPLE
-   Invoke-Maintenance -MaintenanceName "TestMaintenance" -Hostname "mywebsite.com" -Usermame "Fox Mulder" -Password "trustno1"
+    Invoke-Maintenance -MaintenanceName "TestMaintenance" -Hostname "mywebsite.com" -Usermame "Fox Mulder" -Password "trustno1"
 .EXAMPLE
-   Invoke-Maintenance -MaintenanceName "TestMaintenance" -Hostname "mywebsite.com" -Usermame "Fox Mulder" -Password "trustno1" -BatchSize 10 -RetryCount 3
+    Invoke-Maintenance -MaintenanceName "TestMaintenance" -Hostname "mywebsite.com" -Usermame "Fox Mulder" -Password "trustno1" -BatchSize 10 -RetryCount 3
 #>
-
 
 function Start-Maintenance
 {
@@ -67,15 +66,22 @@ function Start-Maintenance
 
                 if ($BatchSize -lt 1)
                 {
-                    $maintenanceDescriptor = @{ MaintenanceName = "$MaintenanceName" }
+                    $maintenanceDescriptor = @{ MaintenanceName = $MaintenanceName }
                 }
                 else
                 {
-                    $maintenanceDescriptor = @{ MaintenanceName = "$MaintenanceName"; BatchSize = $BatchSize }
+                    $maintenanceDescriptor = @{ MaintenanceName = $MaintenanceName; BatchSize = $BatchSize }
                 }
 
+                $requestParameters = @{
+                    Uri = $url
+                    Method = "Post"
+                    ContentType = "application/json"
+                    Headers = @{ Authorization = $authentication }
+                    Body = ConvertTo-Json($maintenanceDescriptor)
+                }
                 # Invoke-RestMethod doesn't return a status code.
-                $result = Invoke-WebRequest -Uri $url -Method Post -ContentType "application/json" -Headers @{ Authorization = $authentication } -Body (ConvertTo-Json($maintenanceDescriptor))
+                $result = Invoke-WebRequest @requestParameters
 
                 $success = $true
             }

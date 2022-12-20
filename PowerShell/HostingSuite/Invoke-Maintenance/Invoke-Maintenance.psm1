@@ -1,14 +1,14 @@
 ﻿<#
 .Synopsis
-   Starts a maintenance through the Hosting Suite API.
+    Starts a maintenance through the Hosting Suite API.
 
 .DESCRIPTION
-   Starts a maintenance through the Hosting Suite API and waits for it to finish.
+    Starts a maintenance through the Hosting Suite API and waits for it to finish.
 
 .EXAMPLE
-   Start-Maintenance -MaintenanceName "TestMaintenance" -Hostname "mywebsite.com" -Usermame "Fox Mulder" -Password "trustno1"
+    Start-Maintenance -MaintenanceName "TestMaintenance" -Hostname "mywebsite.com" -Usermame "Fox Mulder" -Password "trustno1"
 .EXAMPLE
-   Start-Maintenance -MaintenanceName "TestMaintenance" -Hostname "mywebsite.com" -Usermame "Fox Mulder" -Password "trustno1" -BatchSize 10 -RetryCount 3
+    Start-Maintenance -MaintenanceName "TestMaintenance" -Hostname "mywebsite.com" -Usermame "Fox Mulder" -Password "trustno1" -BatchSize 10 -RetryCount 3
 #>
 
 
@@ -20,9 +20,9 @@ function Invoke-Maintenance
     Param
     (
         [Parameter(Mandatory = $true,
-                   HelpMessage = "The name of the maintenance.",
-                   ValueFromPipelineByPropertyName = $true,
-                   Position = 0)]
+            HelpMessage = "The name of the maintenance.",
+            ValueFromPipelineByPropertyName = $true,
+            Position = 0)]
         [string] $MaintenanceName,
 
         [Parameter(Mandatory = $true,
@@ -35,11 +35,11 @@ function Invoke-Maintenance
         [string] $APIEndpoint = "api/Lombiq.Hosting.MultiTenancy/Maintenance",
 
         [Parameter(Mandatory = $true,
-                   HelpMessage = "The name of the user to authenticate. Make sure that the user is in a role that is permitted to start maintenances.")]
+            HelpMessage = "The name of the user to authenticate. Make sure that the user is in a role that is permitted to start maintenances.")]
         [string] $Username = $(throw "You need to specify the username."),
 
         [Parameter(Mandatory = $true,
-                   HelpMessage = "The password of the user.")]
+            HelpMessage = "The password of the user.")]
         [SecureString] $Password = $(throw "You need to specify the password."),
 
         [Parameter(HelpMessage = "The number of tenants to run the maintenance process in one go.")]
@@ -53,7 +53,17 @@ function Invoke-Maintenance
     )
     Process
     {
-        Start-Maintenance -MaintenanceName $MaintenanceName -Hostname $Hostname -APIEndpoint $APIEndpoint -Username $Username -Password $Password -BatchSize $BatchSize -RetryCount $RetryCount -Protocol $Protocol
+        $startMaintenanceParameters = @{
+            Hostname = $Hostname
+            MaintenanceName = $MaintenanceName
+            APIEndpoint = $APIEndpoint
+            Username = $Username
+            Password = $Password
+            BatchSize = $BatchSize
+            RetryCount = $RetryCount
+            Protocol = $Protocol
+        }
+        Start-Maintenance @startMaintenanceParameters
 
         Write-Output ("`n*****`nStarting maintenance `"$MaintenanceName`" at `"$Hostname`"...`n*****")
 
@@ -64,7 +74,14 @@ function Invoke-Maintenance
         {
             Start-Sleep -Seconds 10
 
-            $progress = (Get-Maintenance -MaintenanceName $MaintenanceName -Hostname $Hostname -Username $Username -Password $Password -Protocol $Protocol).ProgressPercent
+            $getMaintenanceParameters = @{
+                Hostname = $Hostname
+                MaintenanceName = $MaintenanceName
+                Username = $Username
+                Password = $Password
+                Protocol = $Protocol
+            }
+            $progress = (Get-Maintenance @getMaintenanceParameters).ProgressPercent
 
             if ($progress -ne $previousProgress)
             {
