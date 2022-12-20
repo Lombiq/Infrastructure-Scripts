@@ -19,7 +19,7 @@
         WebAppName = "EverythingIsAnApp"
         SlotName = "Staging"
         ConnectionStringName = "Nokia"
-    }    
+    }
 #>
 
 Import-Module Az.Sql
