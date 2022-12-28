@@ -229,8 +229,8 @@ function Set-AzureWebAppStorageContentFromStorage
                     # Catching [Microsoft.WindowsAzure.Storage.StorageException] is not sufficient for some reason...
                     catch [System.Net.WebException], [System.Exception]
                     {
-                        Write-Warning "Error during re-creating the container `"$($sourceContainer.Name)`". Retrying in a few seconds...`n" +
-                        $PSItem.Exception.Message + "`n"
+                        Write-Warning ("Error during re-creating the container `"$($sourceContainer.Name)`". Retrying in a few seconds...`n" +
+                            $PSItem.Exception.Message + "`n")
 
                         Start-Sleep 5
                     }
