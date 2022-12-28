@@ -263,7 +263,7 @@ function Set-AzureWebAppStorageContentFromStorage
                     }
                     Start-AzStorageBlobCopy @copyParameters | Out-Null
 
-                    Write-Output "Copied `"" + $sourceContainer.Name + "/" + $sourceBlob.Name + "`" to `"$destinationContainerName`"."
+                    Write-Output "Copied `"$($sourceContainer.Name)/$($sourceBlob.Name)`" to `"$destinationContainerName`"."
                 }
             }
         }
