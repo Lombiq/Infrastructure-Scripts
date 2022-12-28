@@ -99,13 +99,13 @@ function Copy-AzureWebAppSqlDatabase
 
         if ($null -ne $destinationDatabase)
         {
-            if ($Force.IsPresent -and $null -ne (Remove-AzureWebAppSqlDatabase @{
-                        ResourceGroupName = $DestinationResourceGroupName
-                        WebAppName = $DestinationWebAppName
-                        SlotName = $DestinationSlotName
-                        ConnectionStringName = $DestinationConnectionStringName
-                    }
-                ))
+            $deleteDatabaseParameters = @{
+                ResourceGroupName = $DestinationResourceGroupName
+                WebAppName = $DestinationWebAppName
+                SlotName = $DestinationSlotName
+                ConnectionStringName = $DestinationConnectionStringName
+            }
+            if ($Force.IsPresent -and $null -ne (Remove-AzureWebAppSqlDatabase @deleteDatabaseParameters))
             {
                 Write-Information ("Destination database deleted.")
             }
