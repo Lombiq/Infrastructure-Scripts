@@ -238,6 +238,8 @@ function Set-AzureWebAppStorageContentFromStorage
                 while (!$containerCreated)
             }
 
+            Write-Output ("`n*****`nCopying blobs from `"$($sourceContainer.Name)`" to `"$destinationContainerName`"`n*****")
+
             foreach ($sourceBlob in $sourceContainer | Get-AzStorageBlob)
             {
                 $blobNameElements = $sourceBlob.Name.Split("/", [StringSplitOptions]::RemoveEmptyEntries)
@@ -263,7 +265,7 @@ function Set-AzureWebAppStorageContentFromStorage
                     }
                     Start-AzStorageBlobCopy @copyParameters | Out-Null
 
-                    Write-Output "Copied `"$($sourceContainer.Name)/$($sourceBlob.Name)`" to `"$destinationContainerName`"."
+                    Write-Output $sourceBlob.Name
                 }
             }
         }
