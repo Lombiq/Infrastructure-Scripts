@@ -7,19 +7,21 @@
     script will remove a specific Azure SQL database.
 
 .EXAMPLE
-    Remove-AzureWebAppSqlDatabase @{
+    $removeDatabaseParameters = @{
         ResourceGroupName = "YeahSubscribe"
         WebAppName = "EverythingIsAnApp"
         ConnectionStringName = "Nokia"
     }
+    Remove-AzureWebAppSqlDatabase @removeDatabaseParameters
 
 .EXAMPLE
-    Remove-AzureWebAppSqlDatabase @{
+    $removeDatabaseParameters = @{
         ResourceGroupName = "YeahSubscribe"
         WebAppName = "EverythingIsAnApp"
         SlotName = "Staging"
         ConnectionStringName = "Nokia"
     }
+    Remove-AzureWebAppSqlDatabase @removeDatabaseParameters
 #>
 
 Import-Module Az.Sql
@@ -53,23 +55,25 @@ function Remove-AzureWebAppSqlDatabase
             throw "Deleting the Production database is bad, 'mkay?"
         }
 
-        $database = Get-AzureWebAppSqlDatabase @{
+        $databaseParameters = @{
             ResourceGroupName = $ResourceGroupName
             WebAppName = $WebAppName
             SlotName = $SlotName
             ConnectionStringName = $ConnectionStringName
         }
+        $database = Get-AzureWebAppSqlDatabase @databaseParameters
 
         if ($null -ne $database)
         {
             Write-Warning "`n*****`nDeleting the database named `"$($database.DatabaseName)`" on the server `"$($database.ServerName)`".`n*****`n"
 
-            return Remove-AzSqlDatabase @{
+            $removeDatabaseParameters = @{
                 ResourceGroupName = $ResourceGroupName
                 ServerName = $database.ServerName
                 DatabaseName = $database.DatabaseName
                 Force = $true
             }
+            return Remove-AzSqlDatabase @removeDatabaseParameters
         }
 
         return $null

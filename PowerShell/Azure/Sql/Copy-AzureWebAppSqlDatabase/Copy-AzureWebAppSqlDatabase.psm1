@@ -7,12 +7,13 @@
     specified the source and the destination databases' connection string names and the web app slots that store them.
 
 .EXAMPLE
-    Copy-AzureWebAppSqlDatabase @{
+    $copyParameters = @{
         ResourceGroupName = "YeahSubscribe"
         WebAppName = "EverythingIsAnApp"
         SourceConnectionStringName = "CleverDatabase"
         DestinationConnectionStringName = "NiceDatabase"
     }
+    Copy-AzureWebAppSqlDatabase @copyParameters
 #>
 
 Import-Module Az.Sql
@@ -61,31 +62,34 @@ function Copy-AzureWebAppSqlDatabase
 
     Process
     {
-        $sourceDatabase = Get-AzureWebAppSqlDatabase @{
+        $sourceDatabaseParameters = @{
             ResourceGroupName = $SourceResourceGroupName
             WebAppName = $SourceWebAppName
             SlotName = $SourceSlotName
             ConnectionStringName = $SourceConnectionStringName
         }
+        $sourceDatabase = Get-AzureWebAppSqlDatabase @sourceDatabaseParameters
 
         if ($null -eq $sourceDatabase)
         {
             throw ("The source database doesn't exist!")
         }
 
-        $destinationDatabaseConnection = Get-AzureWebAppSqlDatabaseConnection @{
+        $destinationDatabaseConnectionParameters = @{
             ResourceGroupName = $DestinationResourceGroupName
             WebAppName = $DestinationWebAppName
             SlotName = $DestinationSlotName
             ConnectionStringName = $DestinationConnectionStringName
         }
+        $destinationDatabaseConnection = Get-AzureWebAppSqlDatabaseConnection @destinationDatabaseConnectionParameters
 
-        $destinationDatabase = Get-AzSqlDatabase @{
+        $destinationDatabaseParameters = @{
             ResourceGroupName = $DestinationResourceGroupName
             ServerName = $destinationDatabaseConnection.ServerName
             DatabaseName = $destinationDatabaseConnection.DatabaseName
             ErrorAction = "Ignore"
         }
+        $destinationDatabase = Get-AzSqlDatabase @destinationDatabaseParameters
 
         if ($sourceDatabase.ServerName -eq $destinationDatabaseConnection.ServerName -and
             $sourceDatabase.DatabaseName -eq $destinationDatabaseConnection.DatabaseName)
@@ -116,7 +120,7 @@ function Copy-AzureWebAppSqlDatabase
             # Potential issue here: $DestinationResourceGroupName is the resource group of the web app (slot) that
             # stores the connection string of the destination database. However, it is possible that the destination
             # database's server is in a different resource group (but we don't know that from the connection string).
-            return New-AzSqlDatabaseCopy @{
+            $copyParameters = @{
                 ResourceGroupName = $sourceDatabase.ResourceGroupName
                 ServerName = $sourceDatabase.ServerName
                 DatabaseName = $sourceDatabase.DatabaseName
@@ -124,6 +128,7 @@ function Copy-AzureWebAppSqlDatabase
                 CopyServerName = $destinationDatabaseConnection.ServerName
                 CopyDatabaseName = $destinationDatabaseConnection.DatabaseName
             }
+            return New-AzSqlDatabaseCopy @copyParameters
 
         }
         catch

@@ -7,11 +7,12 @@
     name and key of an Azure Blob Storage.
 
 .EXAMPLE
-    Get-AzureWebAppStorageConnection @{
+    $connectionParameters = @{
         ResourceGroupName = "YeahSubscribe"
         WebAppName = "EverythingIsAnApp"
         ConnectionStringName = "Nokia"
     }
+    Get-AzureWebAppStorageConnection @connectionParameters
 #>
 
 function Get-AzureWebAppStorageConnection
@@ -36,12 +37,13 @@ function Get-AzureWebAppStorageConnection
 
     Process
     {
-        $connectionString = Get-AzureWebAppConnectionString @{
+        $connectionStringParameters = @{
             ResourceGroupName = $ResourceGroupName
             WebAppName = $WebAppName
             SlotName = $SlotName
             ConnectionStringName = $ConnectionStringName
         }
+        $connectionString = Get-AzureWebAppConnectionString @connectionStringParameters
 
         $connectionStringElements = $connectionString.Split(";", [System.StringSplitOptions]::RemoveEmptyEntries)
 

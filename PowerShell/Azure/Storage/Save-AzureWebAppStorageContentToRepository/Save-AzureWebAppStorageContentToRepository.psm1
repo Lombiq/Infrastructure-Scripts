@@ -6,16 +6,17 @@
    Downloads every Container and their Blobs from an Azure Blob Storage specified by a Connection String of a Web App.
 
 .EXAMPLE
-    Save-AzureWebAppStorageContentToRepository @{
+    $saveStorageContentParameters = @{
         ResourceGroupName = "CoolStuffHere"
         WebAppName = "NiceApp"
         ConnectionStringName = "SourceStorage"
         RepositoryPath = "C:\ItsARepo"
         RepositorySubPath = "Database"
     }
+    Save-AzureWebAppStorageContentToRepository @saveStorageContentParameters
 
 .EXAMPLE
-    Save-AzureWebAppStorageContentToRepository @{
+    $saveStorageContentParameters = @{
         ResourceGroupName = "CoolStuffHere"
         WebAppName = "NiceApp"
         ConnectionStringName = "SourceStorage"
@@ -23,19 +24,21 @@
         RepositoryPath = "C:\ItsARepo"
         RepositorySubPath = "Database"
     }
+    Save-AzureWebAppStorageContentToRepository @saveStorageContentParameters
 
 .EXAMPLE
-    Save-AzureWebAppStorageContentToRepository @{
-    ResourceGroupName = "CoolStuffHere"
-    WebAppName = "NiceApp"
-    ConnectionStringName = "SourceStorage"
-    ContainerBlackList = @("stuffidontneed")
-    RepositoryPath = "C:\ItsARepo"
-    RepositorySubPath = "Database"
-}
+    $saveStorageContentParameters = @{
+        ResourceGroupName = "CoolStuffHere"
+        WebAppName = "NiceApp"
+        ConnectionStringName = "SourceStorage"
+        ContainerBlackList = @("stuffidontneed")
+        RepositoryPath = "C:\ItsARepo"
+        RepositorySubPath = "Database"
+    }
+    Save-AzureWebAppStorageContentToRepository @saveStorageContentParameters
 
 .EXAMPLE
-    Save-AzureWebAppStorageContentToRepository @{
+    $saveStorageContentParameters = @{
         ResourceGroupName = "CoolStuffHere"
         WebAppName = "NiceApp"
         ConnectionStringName = "SourceStorage"
@@ -44,9 +47,10 @@
         RepositoryPath = "C:\ItsARepo"
         RepositorySubPath = "Database"
     }
+    Save-AzureWebAppStorageContentToRepository @saveStorageContentParameters
 
 .EXAMPLE
-    Save-AzureWebAppStorageContentToRepository @{
+    $saveStorageContentParameters = @{
         ResourceGroupName = "CoolStuffHere"
         WebAppName = "NiceApp"
         ConnectionStringName = "SourceStorage"
@@ -56,6 +60,7 @@
         RepositoryPath = "C:\ItsARepo"
         RepositorySubPath = "Database"
     }
+    Save-AzureWebAppStorageContentToRepository @saveStorageContentParameters
 #>
 
 function Save-AzureWebAppStorageContentToRepository
@@ -133,7 +138,7 @@ function Save-AzureWebAppStorageContentToRepository
 
 
 
-        Save-AzureWebAppStorageContent @{
+        $saveStorageContentParameters = @{
             ResourceGroupName = $ResourceGroupName
             WebAppName = $WebAppName
             ConnectionStringName = $ConnectionStringName
@@ -143,6 +148,7 @@ function Save-AzureWebAppStorageContentToRepository
             FolderWhiteList = $FolderWhiteList
             FolderBlackList = $FolderBlackList
         }
+        Save-AzureWebAppStorageContent @saveStorageContentParameters
 
 
 

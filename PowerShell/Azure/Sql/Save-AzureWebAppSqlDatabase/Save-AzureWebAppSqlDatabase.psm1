@@ -6,7 +6,7 @@
     Exports a database of an Azure Web App to Blob Storage snychronously and downloads it to a specified destination.
 
 .EXAMPLE
-    Save-AzureWebAppSqlDatabase @{
+    $saveDatabaseParameters = @{
         ResourceGroupName = "CoolStuffHere"
         WebAppName = "NiceApp"
         DatabaseConnectionStringName = "Lombiq.Hosting.ShellManagement.ShellSettings.RootConnectionString"
@@ -15,6 +15,7 @@
         BlobName = "export.bacpac"
         Destination = "C:\backup"
     }
+    Save-AzureWebAppSqlDatabase @saveDatabaseParameters
 #>
 
 Import-Module Az.Storage
@@ -67,7 +68,7 @@ function Save-AzureWebAppSqlDatabase
 
     Process
     {
-        Invoke-AzureWebAppSqlDatabaseExport @{
+        $exportDatabaseParameters = @{
             DatabaseResourceGroupName = $DatabaseResourceGroupName
             DatabaseWebAppName = $DatabaseWebAppName
             DatabaseSlotName = $DatabaseSlotName
@@ -79,22 +80,25 @@ function Save-AzureWebAppSqlDatabase
             ContainerName = $ContainerName
             BlobName = $BlobName
         }
+        Invoke-AzureWebAppSqlDatabaseExport @exportDatabaseParameters
 
-        $storageConnection = Get-AzureWebAppStorageConnection @{
+        $storageConnectionParameters = @{
             ResourceGroupName = $StorageResourceGroupName
             WebAppName = $StorageWebAppName
             SlotName = $StorageSlotName
             ConnectionStringName = $StorageConnectionStringName
         }
+        $storageConnection = Get-AzureWebAppStorageConnection @storageConnectionParameters
 
-        $storageContext = New-AzStorageContext @{
+        $storageContextParameters = @{
             StorageAccountName = $storageConnection.AccountName
             StorageAccountKey = $storageConnection.AccountKey
         }
+        $storageContext = New-AzStorageContext @storageContextParameters
 
         Write-Output ("`n*****`nDownloading exported database...`n*****")
 
-        Get-AzStorageBlobContent @{
+        $blobContentParameters = @{
             Context = $storageContext
             Container = $ContainerName
             Blob = $BlobName
@@ -102,16 +106,18 @@ function Save-AzureWebAppSqlDatabase
             ErrorAction = "Stop"
             Force = $true
         }
+        Get-AzStorageBlobContent @blobContentParameters
 
         Write-Output ("`n*****`nDownloading finished!`n*****")
 
-        Remove-AzStorageBlob @{
+        $removeBlobParameters = @{
             Context = $storageContext
             Container = $ContainerName
             Blob = $BlobName
             ErrorAction = "Stop"
             Force = $true
         }
+        Remove-AzStorageBlob @removeBlobParameters
 
         Write-Output ("`n*****`nBlob deleted!`n*****")
     }

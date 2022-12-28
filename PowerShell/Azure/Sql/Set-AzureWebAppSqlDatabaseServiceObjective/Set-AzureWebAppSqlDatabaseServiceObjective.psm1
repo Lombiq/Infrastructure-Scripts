@@ -7,13 +7,14 @@
     of a Connection String.
 
 .EXAMPLE
-    Set-AzureWebAppSqlDatabaseServiceObjective @{
+    $setServiceObjectiveParameters = @{
         ResourceGroupName = "GreatStuffHere"
         WebAppName = "CloudFirst"
         SlotName = "MobileFirst"
         ConnectionStringName = "DatabaseFirst"
         ServiceObjectiveName = "S2"
     }
+    Set-AzureWebAppSqlDatabaseServiceObjective @setServiceObjectiveParameters
 #>
 
 Import-Module Az.Sql
@@ -48,12 +49,13 @@ function Set-AzureWebAppSqlDatabaseServiceObjective
 
     Process
     {
-        $database = Get-AzureWebAppSqlDatabase @{
+        $databaseParameters = @{
             ResourceGroupName = $ResourceGroupName
             WebAppName = $WebAppName
             SlotName = $SlotName
             ConnectionStringName = $ConnectionStringName
         }
+        $database = Get-AzureWebAppSqlDatabase @databaseParameters
 
         if ($null -eq $database)
         {
@@ -92,7 +94,7 @@ function Set-AzureWebAppSqlDatabaseServiceObjective
                 "the server `"$($database.ServerName)`" from `"$($database.Edition) $($database.CurrentServiceObjectiveName)`" " +
                 "to `"$($Edition) $($ServiceObjectiveName)`"...`n*****")
 
-            return Set-AzSqlDatabase @{
+            $updateDatabaseParameters = @{
                 ResourceGroupName = $ResourceGroupName
                 ServerName = $database.ServerName
                 DatabaseName = $database.DatabaseName
@@ -100,6 +102,7 @@ function Set-AzureWebAppSqlDatabaseServiceObjective
                 Edition = $Edition
                 ErrorAction = "Stop"
             }
+            return Set-AzSqlDatabase @updateDatabaseParameters
         }
         catch
         {

@@ -6,7 +6,7 @@
     Exports a database of an Azure Web App to Blob Storage snychronously.
 
 .EXAMPLE
-    Invoke-AzureWebAppSqlDatabaseExport @{
+    $exportParameters = @{
         ResourceGroupName = "CoolStuffHere"
         WebAppName = "NiceApp"
         DatabaseConnectionStringName = "Lombiq.Hosting.ShellManagement.ShellSettings.RootConnectionString"
@@ -14,6 +14,7 @@
         ContainerName = "database"
         BlobName = "export.bacpac"
     }
+    Invoke-AzureWebAppSqlDatabaseExport @exportParameters
 #>
 
 Import-Module Az.Sql
@@ -66,7 +67,7 @@ function Invoke-AzureWebAppSqlDatabaseExport
     {
         Write-Output ("`n*****`nDatabase export starting...`n*****")
 
-        $exportRequest = Start-AzureWebAppSqlDatabaseExport @{
+        $exportRequestParameters = @{
             DatabaseResourceGroupName = $DatabaseResourceGroupName
             DatabaseWebAppName = $DatabaseWebAppName
             DatabaseSlotName = $DatabaseSlotName
@@ -78,6 +79,7 @@ function Invoke-AzureWebAppSqlDatabaseExport
             ContainerName = $ContainerName
             BlobName = $BlobName
         }
+        $exportRequest = Start-AzureWebAppSqlDatabaseExport @exportRequestParameters
 
         if ($null -eq $exportRequest)
         {

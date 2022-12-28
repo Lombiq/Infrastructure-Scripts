@@ -7,19 +7,21 @@
     script will retrieve the name and server name of a specific Azure SQL database.
 
 .EXAMPLE
-    Get-AzureWebAppSqlDatabaseConnection @{
+    $databaseConnectionParameters = @{
         ResourceGroupName = "YeahSubscribe"
         WebAppName = "EverythingIsAnApp"
         ConnectionStringName = "Nokia"
     }
+    Get-AzureWebAppSqlDatabaseConnection @databaseConnectionParameters
 
 .EXAMPLE
-    Get-AzureWebAppSqlDatabaseConnection @{
+    $databaseConnectionParameters = @{
         ResourceGroupName = "YeahSubscribe"
         WebAppName = "EverythingIsAnApp"
         SlotName = "Staging"
         ConnectionStringName = "Nokia"
     }
+    Get-AzureWebAppSqlDatabaseConnection @databaseConnectionParameters
 #>
 
 function Get-AzureWebAppSqlDatabaseConnection
@@ -44,12 +46,13 @@ function Get-AzureWebAppSqlDatabaseConnection
 
     Process
     {
-        $connectionString = Get-AzureWebAppConnectionString @{
+        $connectionStringParameters = @{
             ResourceGroupName = $ResourceGroupName
             WebAppName = $WebAppName
             SlotName = $SlotName
             ConnectionStringName = $ConnectionStringName
         }
+        $connectionString = Get-AzureWebAppConnectionString @connectionStringParameters
 
         $connectionStringElements = $connectionString.Split(";", [System.StringSplitOptions]::RemoveEmptyEntries)
 

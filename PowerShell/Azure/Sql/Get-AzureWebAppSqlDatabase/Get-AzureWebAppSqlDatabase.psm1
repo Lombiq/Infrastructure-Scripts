@@ -7,19 +7,21 @@
     script will retrieve information about a specific Azure SQL database.
 
 .EXAMPLE
-    Get-AzureWebAppSqlDatabase @{
+    $databaseParameters = @{
         ResourceGroupName = "YeahSubscribe"
         WebAppName = "EverythingIsAnApp"
         ConnectionStringName = "Nokia"
     }
+    Get-AzureWebAppSqlDatabase @databaseParameters
 
 .EXAMPLE
-    Get-AzureWebAppSqlDatabase @{
+    $databaseParameters = @{
         ResourceGroupName = "YeahSubscribe"
         WebAppName = "EverythingIsAnApp"
         SlotName = "Staging"
         ConnectionStringName = "Nokia"
     }
+    Get-AzureWebAppSqlDatabase @databaseParameters
 #>
 
 Import-Module Az.Sql
@@ -46,18 +48,20 @@ function Get-AzureWebAppSqlDatabase
 
     Process
     {
-        $databaseConnection = Get-AzureWebAppSqlDatabaseConnection @{
+        $databaseConnectionParameters = @{
             ResourceGroupName = $ResourceGroupName
             WebAppName = $WebAppName
             SlotName = $SlotName
             ConnectionStringName = $ConnectionStringName
         }
+        $databaseConnection = Get-AzureWebAppSqlDatabaseConnection @databaseConnectionParameters
 
-        return Get-AzSqlDatabase @{
+        $databaseParameters = @{
             ResourceGroupName = $ResourceGroupName
             ServerName = $databaseConnection.ServerName
             DatabaseName = $databaseConnection.DatabaseName
             ErrorAction = "Stop"
         }
+        return Get-AzSqlDatabase @databaseParameters
     }
 }

@@ -7,12 +7,13 @@
     the Connection String name of the database and the contained user.
 
 .EXAMPLE
-    Remove-AzureWebAppSqlDatabaseContainedUser @{
+    $containedUserParameters = @{
         ResourceGroupName = "LikeAndSubscribe"
         WebAppName = "AppsEverywhere"
         ConnectionStringName = "Lombiq.Hosting.ShellManagement.ShellSettings.RootConnectionString.Localhost-master"
         UserConnectionStringName = "Lombiq.Hosting.ShellManagement.ShellSettings.RootConnectionString.Localhost"
     }
+    Remove-AzureWebAppSqlDatabaseContainedUser @containedUserParameters
 #>
 
 function Remove-AzureWebAppSqlDatabaseContainedUser
@@ -56,19 +57,21 @@ function Remove-AzureWebAppSqlDatabaseContainedUser
 
     Process
     {
-        $databaseConnection = Get-AzureWebAppSqlDatabaseConnection @{
+        $databaseConnectionParameters = @{
             ResourceGroupName = $DatabaseResourceGroupName
             WebAppName = $DatabaseWebAppName
             SlotName = $DatabaseSlotName
             ConnectionStringName = $DatabaseConnectionStringName
         }
+        $databaseConnection = Get-AzureWebAppSqlDatabaseConnection @databaseConnectionParameters
 
-        $userDatabaseConnection = Get-AzureWebAppSqlDatabaseConnection @{
+        $userDatabaseConnectionParameters = @{
             ResourceGroupName = $UserResourceGroupName
             WebAppName = $UserWebAppName
             SlotName = $UserSlotName
             ConnectionStringName = $UserConnectionStringName
         }
+        $userDatabaseConnection = Get-AzureWebAppSqlDatabaseConnection @userDatabaseConnectionParameters
 
         if ($databaseConnection.UserName -eq $userDatabaseConnection.UserName)
         {
@@ -77,12 +80,13 @@ function Remove-AzureWebAppSqlDatabaseContainedUser
 
         $query = "DROP USER IF EXISTS [$($userDatabaseConnection.UserName)];"
 
-        return Invoke-AzureWebAppSqlQuery @{
+        $queryParameters = @{
             ResourceGroupName = $DatabaseResourceGroupName
             WebAppName = $DatabaseWebAppName
             SlotName = $DatabaseSlotName
             ConnectionStringName = $DatabaseConnectionStringName
             Query = $query
         }
+        return Invoke-AzureWebAppSqlQuery @queryParameters
     }
 }

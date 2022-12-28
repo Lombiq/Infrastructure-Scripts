@@ -7,12 +7,13 @@
     Connection String name of the database and the contained user.
 
 .EXAMPLE
-    Add-AzureWebAppSqlDatabaseContainedUser @{
+    $containedUserParameters = @{
         ResourceGroupName = "LikeAndSubscribe"
         WebAppName = "AppsEverywhere"
         ConnectionStringName = "Lombiq.Hosting.ShellManagement.ShellSettings.RootConnectionString.Localhost-master"
         UserConnectionStringName = "Lombiq.Hosting.ShellManagement.ShellSettings.RootConnectionString.Localhost
     }
+    Add-AzureWebAppSqlDatabaseContainedUser @containedUserParameters
 #>
 
 
@@ -60,19 +61,21 @@ function Add-AzureWebAppSqlDatabaseContainedUser
 
     Process
     {
-        $databaseConnection = Get-AzureWebAppSqlDatabaseConnection @{
+        $databaseConnectionParameters = @{
             ResourceGroupName = $DatabaseResourceGroupName
             WebAppName = $DatabaseWebAppName
             SlotName = $DatabaseSlotName
             ConnectionStringName = $DatabaseConnectionStringName
         }
+        $databaseConnection = Get-AzureWebAppSqlDatabaseConnection @databaseConnectionParameters
 
-        $userDatabaseConnection = Get-AzureWebAppSqlDatabaseConnection @{
+        $userDatabaseConnectionParameters = @{
             ResourceGroupName = $UserResourceGroupName
             WebAppName = $UserWebAppName
             SlotName = $UserSlotName
             ConnectionStringName = $UserConnectionStringName
         }
+        $userDatabaseConnection = Get-AzureWebAppSqlDatabaseConnection @userDatabaseConnectionParameters
 
         if ($databaseConnection.ServerName -ne $userDatabaseConnection.ServerName -or
             $databaseConnection.DatabaseName -ne $userDatabaseConnection.DatabaseName)
@@ -89,12 +92,13 @@ function Add-AzureWebAppSqlDatabaseContainedUser
         $query = "CREATE USER [$($userDatabaseConnection.UserName)] WITH PASSWORD = '$($userDatabaseConnection.Password)';" +
         "ALTER ROLE [$UserRole] ADD MEMBER [$($userDatabaseConnection.UserName)];"
 
-        return Invoke-AzureWebAppSqlQuery @{
+        $queryParameters = @{
             ResourceGroupName = $DatabaseResourceGroupName
             WebAppName = $DatabaseWebAppName
             SlotName = $DatabaseSlotName
             ConnectionStringName = $DatabaseConnectionStringName
             Query = $query
         }
+        return Invoke-AzureWebAppSqlQuery @queryParameters
     }
 }

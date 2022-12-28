@@ -6,33 +6,36 @@
    Downloads every Container and their Blobs from an Azure Blob Storage specified by a Connection String of a Web App.
 
 .EXAMPLE
-    Save-AzureWebAppStorageContent @{
+    $saveStorageContentParameters = @{
         ResourceGroupName = "CoolStuffHere"
         WebAppName = "NiceApp"
         ConnectionStringName = "SourceStorage"
         Destination = "D:\Backup"
     }
+    Save-AzureWebAppStorageContent @saveStorageContentParameters
 
 .EXAMPLE
-    Save-AzureWebAppStorageContent @{
+    $saveStorageContentParameters = @{
         ResourceGroupName = "CoolStuffHere"
         WebAppName = "NiceApp"
         ConnectionStringName = "SourceStorage"
         Destination = "D:\Backup"
         ContainerWhiteList = @("media", "stuff")
     }
+    Save-AzureWebAppStorageContent @saveStorageContentParameters
 
 .EXAMPLE
-    Save-AzureWebAppStorageContent @{
+    $saveStorageContentParameters = @{
         ResourceGroupName = "CoolStuffHere"
         WebAppName = "NiceApp"
         ConnectionStringName = "SourceStorage"
         Destination = "D:\Backup"
         ContainerBlackList = @("stuffidontneed")
     }
+    Save-AzureWebAppStorageContent @saveStorageContentParameters
 
 .EXAMPLE
-    Save-AzureWebAppStorageContent @{
+    $saveStorageContentParameters = @{
         ResourceGroupName = "CoolStuffHere"
         WebAppName = "NiceApp"
         ConnectionStringName = "SourceStorage"
@@ -40,9 +43,10 @@
         ContainerBlackList = @("stuffidontneed")
         FolderWhiteList = @("usefulfolder")
     }
+    Save-AzureWebAppStorageContent @saveStorageContentParameters
 
 .EXAMPLE
-    Save-AzureWebAppStorageContent @{
+    $saveStorageContentParameters = @{
         ResourceGroupName = "CoolStuffHere"
         WebAppName = "NiceApp"
         ConnectionStringName = "SourceStorage"
@@ -52,6 +56,7 @@
         FolderBlackList = @("uselessfolderintheusefulfolder")
         DestinationContainersAccessType = "Off"
     }
+    Save-AzureWebAppStorageContent @saveStorageContentParameters
 #>
 
 Import-Module Az.Storage
@@ -97,16 +102,18 @@ function Save-AzureWebAppStorageContent
 
     Process
     {
-        $storageConnection = Get-AzureWebAppStorageConnection @{
+        $storageConnectionParameters = @{
             ResourceGroupName = $ResourceGroupName
             WebAppName = $WebAppName
             ConnectionStringName = $ConnectionStringName
         }
+        $storageConnection = Get-AzureWebAppStorageConnection @storageConnectionParameters
 
-        $storageContext = New-AzStorageContext @{
+        $storageContextParameters = @{
             StorageAccountName = $storageConnection.AccountName
             StorageAccountKey = $storageConnection.AccountKey
         }
+        $storageContext = New-AzStorageContext @storageContextParameters
 
         $containerWhiteListValid = $ContainerWhiteList -and $ContainerWhiteList.Count -gt 0
         $containerBlackListValid = $ContainerBlackList -and $ContainerBlackList.Count -gt 0
@@ -168,14 +175,15 @@ function Save-AzureWebAppStorageContent
                             New-Item -ItemType Directory -Path (Split-Path -Path $path -Parent) -Force | Out-Null
                         }
 
-                        Get-AzStorageBlobContent @{
+                        $blobParameters = @{
                             Context = $storageContext
                             Container = $container.Name
                             Blob = $blob.Name
                             Destination = $path
                             ErrorAction = "Stop"
                             Force = $true
-                        } | Out-Null
+                        }
+                        Get-AzStorageBlobContent @blobParameters | Out-Null
 
                         Write-Output ("Downloaded `"" + $container.Name + "/" + $blob.Name + "`".")
 

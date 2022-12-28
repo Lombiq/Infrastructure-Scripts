@@ -8,7 +8,7 @@
     a repository.
 
 .EXAMPLE
-    Save-AzureWebAppSqlDatabaseToRepository @{
+    $saveDatabaseParameters = @{
         ResourceGroupName = "CoolStuffHere"
         WebAppName = "NiceApp"
         DatabaseConnectionStringName = "Lombiq.Hosting.ShellManagement.ShellSettings.RootConnectionString"
@@ -17,6 +17,7 @@
         RepositoryPath = "C:\ItsARepo"
         RepositorySubPath = "Database"
     }
+    Save-AzureWebAppSqlDatabaseToRepository @saveDatabaseParameters
 #>
 
 function Save-AzureWebAppSqlDatabaseToRepository
@@ -102,7 +103,7 @@ function Save-AzureWebAppSqlDatabaseToRepository
         }
 
 
-        Save-AzureWebAppSqlDatabase @{
+        $saveDatabaseParameters = @{
             DatabaseResourceGroupName = $DatabaseResourceGroupName
             DatabaseWebAppName = $DatabaseWebAppName
             DatabaseSlotName = $DatabaseSlotName
@@ -115,6 +116,7 @@ function Save-AzureWebAppSqlDatabaseToRepository
             BlobName = $BlobName
             Destination = $destination
         }
+        Save-AzureWebAppSqlDatabase @saveDatabaseParameters
 
         try
         {

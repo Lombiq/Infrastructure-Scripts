@@ -6,7 +6,7 @@
     Exports a database of an Azure Web App to Blob Storage asnychronously.
 
 .EXAMPLE
-    Start-AzureWebAppSqlDatabaseExport @{
+    $exportDatabaseParameters = @{
         ResourceGroupName = "CoolStuffHere"
         WebAppName = "NiceApp"
         DatabaseConnectionStringName = "Lombiq.Hosting.ShellManagement.ShellSettings.RootConnectionString"
@@ -14,6 +14,7 @@
         ContainerName = "database"
         BlobName = "export.bacpac"
     }
+    Start-AzureWebAppSqlDatabaseExport @exportDatabaseParameters
 #>
 
 Import-Module Az.Storage
@@ -69,47 +70,52 @@ function Start-AzureWebAppSqlDatabaseExport
 
     Process
     {
-        $storageConnection = Get-AzureWebAppStorageConnection @{
+        $storageConnectionParameters = @{
             ResourceGroupName = $StorageResourceGroupName
             WebAppName = $StorageWebAppName
             SlotName = $StorageSlotName
             ConnectionStringName = $StorageConnectionStringName
         }
+        $storageConnection = Get-AzureWebAppStorageConnection @storageConnectionParameters
 
-        $storageContext = New-AzStorageContext @{
+        $storageContextParameters = @{
             StorageAccountName = $storageConnection.AccountName
             StorageAccountKey = $storageConnection.AccountKey
         }
+        $storageContext = New-AzStorageContext @storageContextParameters
 
-        $blob = Get-AzStorageBlob @{
+        $databaseBlobParameters = @{
             Context = $storageContext
             Container = $ContainerName
             Blob = $BlobName
             ErrorAction = "SilentlyContinue"
         }
+        $blob = Get-AzStorageBlob @databaseBlobParameters
 
         if ($null -ne $blob)
         {
             $blob | Remove-AzStorageBlob -ErrorAction Stop -Force
         }
 
-        $databaseConnection = Get-AzureWebAppSqlDatabaseConnection @{
+        $databaseConnectionParameters = @{
             ResourceGroupName = $DatabaseResourceGroupName
             WebAppName = $DatabaseWebAppName
             SlotName = $DatabaseSlotName
             ConnectionStringName = $DatabaseConnectionStringName
         }
+        $databaseConnection = Get-AzureWebAppSqlDatabaseConnection @databaseConnectionParameters
 
-        return (New-AzSqlDatabaseExport @{
-                ResourceGroupName = $DatabaseResourceGroupName
-                ServerName = $databaseConnection.ServerName
-                DatabaseName = $databaseConnection.DatabaseName
-                AdministratorLogin = $databaseConnection.UserName
-                AdministratorLoginPassword = (ConvertTo-SecureString $databaseConnection.PasswordAsPlainTextForce)
-                StorageKeyType = "StorageAccessKey"
-                StorageKey = $storageConnection.AccountKey
-                StorageUri = "https://$($storageConnection.AccountName).blob.core.windows.net/$ContainerName/$BlobName"
-                ErrorAction = "Stop"
-            })
+        $exportParameters = @{
+            ResourceGroupName = $DatabaseResourceGroupName
+            ServerName = $databaseConnection.ServerName
+            DatabaseName = $databaseConnection.DatabaseName
+            AdministratorLogin = $databaseConnection.UserName
+            AdministratorLoginPassword = (ConvertTo-SecureString $databaseConnection.PasswordAsPlainTextForce)
+            StorageKeyType = "StorageAccessKey"
+            StorageKey = $storageConnection.AccountKey
+            StorageUri = "https://$($storageConnection.AccountName).blob.core.windows.net/$ContainerName/$BlobName"
+            ErrorAction = "Stop"
+        }
+        return (New-AzSqlDatabaseExport @exportParameters)
     }
 }

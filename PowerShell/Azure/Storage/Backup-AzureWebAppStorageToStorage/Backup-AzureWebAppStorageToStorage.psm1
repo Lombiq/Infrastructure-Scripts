@@ -6,33 +6,36 @@
     Creates a backup of a specified Storage Account to another Storage Account, specified by their connection string names found on a Web App.
 
 .EXAMPLE
-    Backup-AzureWebAppStorageToStorage @{
+    $backupParameters = @{
         ResourceGroupName = "CoolStuffHere"
         WebAppName = "NiceApp"
         SourceConnectionStringName = "SourceStorage"
         DestinationConnectionStringName = "DestinationStorage"
     }
+    Backup-AzureWebAppStorageToStorage @backupParameters
 
 .EXAMPLE
-    Backup-AzureWebAppStorageToStorage @{
+    $backupParameters = @{
         ResourceGroupName = "CoolStuffHere"
         WebAppName = "NiceApp"
         SourceConnectionStringName = "SourceStorage"
         DestinationConnectionStringName = "DestinationStorage"
         ContainerWhiteList = @("media", "stuff")
     }
+    Backup-AzureWebAppStorageToStorage @backupParameters
 
 .EXAMPLE
-    Backup-AzureWebAppStorageToStorage @{
+    $backupParameters = @{
         ResourceGroupName = "CoolStuffHere"
         WebAppName = "NiceApp"
         SourceConnectionStringName = "SourceStorage"
         DestinationConnectionStringName = "DestinationStorage"
         ContainerBlackList = @("stuffidontneed")
     }
+    Backup-AzureWebAppStorageToStorage @backupParameters
 
 .EXAMPLE
-    Backup-AzureWebAppStorageToStorage @{
+    $backupParameters = @{
         ResourceGroupName = "CoolStuffHere"
         WebAppName = "NiceApp"
         SourceConnectionStringName = "SourceStorage"
@@ -40,9 +43,10 @@
         ContainerBlackList = @("stuffidontneed")
         FolderWhiteList = @("usefulfolder")
     }
+    Backup-AzureWebAppStorageToStorage @backupParameters
 
 .EXAMPLE
-    Backup-AzureWebAppStorageToStorage @{
+    $backupParameters = @{
         ResourceGroupName = "CoolStuffHere"
         WebAppName = "NiceApp"
         SourceConnectionStringName = "SourceStorage"
@@ -52,6 +56,7 @@
         FolderBlackList = @("uselessfolderintheusefulfolder")
         DestinationContainersAccessType = "Off"
     }
+    Backup-AzureWebAppStorageToStorage @backupParameters
 #>
 
 Import-Module Az.Storage
@@ -100,29 +105,34 @@ function Backup-AzureWebAppStorageToStorage
 
         if ($RemoveBackupContainersOlderThanDays -gt 0)
         {
-            $destinationStorageConnection = Get-AzureWebAppStorageConnection @{
+            $destinationStorageConnectionParameters = @{
                 ResourceGroupName = $ResourceGroupName
                 WebAppName = $WebAppName
                 ConnectionStringName = $DestinationConnectionStringName
             }
-            $destinationStorageContext = New-AzStorageContext @{
+            $destinationStorageConnection = Get-AzureWebAppStorageConnection @destinationStorageConnectionParameters
+
+            $destinationStorageContextParameters = @{
                 StorageAccountName = $destinationStorageConnection.AccountName
                 StorageAccountKey = $destinationStorageConnection.AccountKey
             }
+            $destinationStorageContext = New-AzStorageContext @destinationStorageContextParameters
+
             Write-Warning ("Removing backup storage containers older than $RemoveBackupContainersOlderThanDays days!")
             Get-AzStorageContainer -Context $destinationStorageContext |
                 Where-Object { (New-TimeSpan -Start $PSItem.LastModified.UtcDateTime -End $now).Days -gt $RemoveBackupContainersOlderThanDays } |
                 Remove-AzStorageContainer -Force
         }
 
-        $sourceStorageConnection = Get-AzureWebAppStorageConnection @{
+        $sourceStorageConnectionParameters = @{
             ResourceGroupName = $ResourceGroupName
             WebAppName = $WebAppName
             ConnectionStringName = $SourceConnectionStringName
         }
+        $sourceStorageConnection = Get-AzureWebAppStorageConnection @sourceStorageConnectionParameters
         $containerNamePrefix = $sourceStorageConnection.AccountName + "-" + $now.ToString("yyyy-MM-dd-HH-mm-ss") + "-"
-      
-        Set-AzureWebAppStorageContentFromStorage @{
+
+        $copyParameters = @{
             ResourceGroupName = $ResourceGroupName
             WebAppName = $WebAppName
             SourceConnectionStringName = $SourceConnectionStringName
@@ -135,5 +145,6 @@ function Backup-AzureWebAppStorageToStorage
             DestinationContainersAccessType = $DestinationContainersAccessType
             DestinationContainerNamePrefix = $containerNamePrefix
         }
+        Set-AzureWebAppStorageContentFromStorage @copyParameters
     }
 }
