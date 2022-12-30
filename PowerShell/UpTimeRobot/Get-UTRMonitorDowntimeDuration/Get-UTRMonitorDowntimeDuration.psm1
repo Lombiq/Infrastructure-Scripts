@@ -18,7 +18,7 @@
     {
         try
         {
-            $response = Get-UTRMonitors -ApiKey $ApiKey -MonitorIds $MonitorId -StatusIds "9"
+            $response = Get-UTRMonitor -ApiKey $ApiKey -MonitorIds $MonitorId -StatusIds "9"
         }
         catch
         {
