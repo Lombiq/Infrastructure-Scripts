@@ -55,7 +55,7 @@
         {
             0
             {
-                Write-Output "Monitor is UP!"
+                Write-Information "Monitor is UP!"
 
                 return 0
             }
