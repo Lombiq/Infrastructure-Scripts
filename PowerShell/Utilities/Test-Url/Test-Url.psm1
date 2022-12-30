@@ -38,7 +38,7 @@ function Test-Url
 
     Process
     {
-        Write-Output ("`n*****`nAttempting to ping `"$Url`": $Timeout second timeout, $Interval second interval, $RetryCount retries!`n*****`n")
+        Write-Information ("`n*****`nAttempting to ping `"$Url`": $Timeout second timeout, $Interval second interval, $RetryCount retries!`n*****`n") -InformationAction Continue
 
         $success = $false
         $retryCounter = 0
@@ -67,6 +67,6 @@ function Test-Url
         }
         while (!$success)
 
-        return $true
+        return $success
     }
 }

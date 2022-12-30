@@ -90,9 +90,9 @@ function Set-AzureWebAppSqlDatabaseServiceObjective
 
         try
         {
-            Write-Output ("`n*****`nChanging Service Objective of the database named `"$($database.DatabaseName)`" on " +
+            Write-Information ("`n*****`nChanging Service Objective of the database named `"$($database.DatabaseName)`" on " +
                 "the server `"$($database.ServerName)`" from `"$($database.Edition) $($database.CurrentServiceObjectiveName)`" " +
-                "to `"$($Edition) $($ServiceObjectiveName)`"...`n*****")
+                "to `"$($Edition) $($ServiceObjectiveName)`"...`n*****") -InformationAction Continue
 
             $updateDatabaseParameters = @{
                 ResourceGroupName = $ResourceGroupName

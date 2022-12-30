@@ -48,7 +48,7 @@ function Stop-AzureWebAppSlot
                 throw ("COULD NOT STOP $SlotName SLOT OF $WebAppName!" + $PSItem.Exception.Message)
             }
 
-            Write-Output ("`n*****`n$SlotName SLOT OF $WebAppName STOPPED.`n*****`n")
+            Write-Information ("`n*****`n$SlotName SLOT OF $WebAppName STOPPED.`n*****`n") -InformationAction Continue
 
             return $slot
         }

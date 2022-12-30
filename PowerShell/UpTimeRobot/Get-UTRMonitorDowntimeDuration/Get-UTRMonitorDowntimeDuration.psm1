@@ -55,7 +55,7 @@
         {
             0
             {
-                Write-Information "Monitor is UP!"
+                Write-Information "Monitor is UP!" -InformationAction Continue
 
                 return 0
             }

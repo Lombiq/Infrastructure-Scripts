@@ -93,7 +93,5 @@ function Invoke-Maintenance
         while ($progress -ne 100)
 
         Write-Output ("*****`nFinished maintenance `"$MaintenanceName`" at `"$Hostname`"!`n*****`n")
-
-        return
     }
 }
