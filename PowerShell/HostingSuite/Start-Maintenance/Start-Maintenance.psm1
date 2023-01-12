@@ -17,7 +17,7 @@ function Start-Maintenance
         'PSAvoidUsingPlainTextForPassword',
         'Password',
         Justification = 'Password needs to be processed as plain text for Basic authentication.')]
-    [Diagnostics.CodeAnalysis.SuppressMessage('PSAvoidUsingUsernameAndPasswordParams', Justification = 'Same as the above.')]
+    [Diagnostics.CodeAnalysis.SuppressMessage('PSAvoidUsingUsernameAndPasswordParams', '', Justification = 'Same as the above.')]
     [CmdletBinding()]
     [Alias("samt")]
     [OutputType([int])]
