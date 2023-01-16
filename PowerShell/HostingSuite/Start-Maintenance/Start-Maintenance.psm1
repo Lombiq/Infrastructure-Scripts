@@ -42,8 +42,8 @@ function Start-Maintenance
             HelpMessage = "The name of the user to authenticate. Make sure that the user is in a role that is permitted to start maintenances.")]
         [string] $Username = $(throw "You need to specify the username."),
 
-        [Parameter(Mandatory = $true, HelpMessage = "The password of the user.")]
-        [string] $Password = $(throw "You need to specify the password."),
+        [Parameter(Mandatory = $true, HelpMessage = "The password of the user is mandatory.")]
+        [string] $Password,
 
         [Parameter(HelpMessage = "The number of tenants to run the maintenance process in one go.")]
         [int] $BatchSize = 0,
