@@ -12,6 +12,11 @@
 
 function Get-Maintenance
 {
+    [Diagnostics.CodeAnalysis.SuppressMessage(
+        'PSAvoidUsingPlainTextForPassword',
+        'Password',
+        Justification = 'Password needs to be processed as plain text for Basic authentication.')]
+    [Diagnostics.CodeAnalysis.SuppressMessage('PSAvoidUsingUsernameAndPasswordParams', '', Justification = 'Same as the above.')]
     [CmdletBinding()]
     [Alias("gmt")]
     [OutputType([object])]
@@ -36,9 +41,8 @@ function Get-Maintenance
             HelpMessage = "The name of the user to authenticate. Make sure that the user is in a role that is permitted to access maintenances.")]
         [string] $Username = $(throw "You need to specify the username."),
 
-        [Parameter(Mandatory = $true,
-            HelpMessage = "The password of the user.")]
-        [SecureString] $Password = $(throw "You need to specify the password."),
+        [Parameter(Mandatory = $true, HelpMessage = "The password of the user is mandatory.")]
+        [string] $Password,
 
         [Parameter(HelpMessage = "Number of retries for getting the status of the maintenance in case of an error.")]
         [int] $RetryCount = 0,
