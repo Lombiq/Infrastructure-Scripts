@@ -21,40 +21,40 @@ Import-Module Az.Sql
 function Copy-AzureWebAppSqlDatabase
 {
     [CmdletBinding()]
-    [Alias("cawadb")]
+    [Alias('cawadb')]
     [OutputType([Microsoft.Azure.Commands.Sql.Replication.Model.AzureSqlDatabaseCopyModel])]
     Param
     (
-        [Alias("ResourceGroupName")]
+        [Alias('ResourceGroupName')]
         [Parameter(
             Mandatory = $true,
-            HelpMessage = "You need to provide the name of the Resource Group the Source Web App is in.")]
+            HelpMessage = 'You need to provide the name of the Resource Group the Source Web App is in.')]
         [string] $SourceResourceGroupName,
 
-        [Alias("WebAppName")]
-        [Parameter(Mandatory = $true, HelpMessage = "You need to provide the name of the Web App.")]
+        [Alias('WebAppName')]
+        [Parameter(Mandatory = $true, HelpMessage = 'You need to provide the name of the Web App.')]
         [string] $SourceWebAppName,
 
-        [Alias("SlotName")]
-        [Parameter(HelpMessage = "The name of the Source Web App slot.")]
+        [Alias('SlotName')]
+        [Parameter(HelpMessage = 'The name of the Source Web App slot.')]
         [string] $SourceSlotName,
 
-        [Alias("ConnectionStringName")]
+        [Alias('ConnectionStringName')]
         [Parameter(
             Mandatory = $true,
-            HelpMessage = "You need to provide a connection string name for the source database.")]
+            HelpMessage = 'You need to provide a connection string name for the source database.')]
         [string] $SourceConnectionStringName,
 
-        [Parameter(HelpMessage = "The name of the Destination Resource Group if it differs from the Source.")]
+        [Parameter(HelpMessage = 'The name of the Destination Resource Group if it differs from the Source.')]
         [string] $DestinationResourceGroupName = $SourceResourceGroupName,
 
-        [Parameter(HelpMessage = "The name of the Destination Web App if it differs from the Source.")]
+        [Parameter(HelpMessage = 'The name of the Destination Web App if it differs from the Source.')]
         [string] $DestinationWebAppName = $SourceWebAppName,
 
-        [Parameter(HelpMessage = "The name of the Destination Web App Slot if it differs from the Source.")]
+        [Parameter(HelpMessage = 'The name of the Destination Web App Slot if it differs from the Source.')]
         [string] $DestinationSlotName = $SourceSlotName,
 
-        [Parameter(HelpMessage = "The name of the Destination Connection String if it differs from the Source.")]
+        [Parameter(HelpMessage = 'The name of the Destination Connection String if it differs from the Source.')]
         [string] $DestinationConnectionStringName = $SourceConnectionStringName,
 
         [switch] $Force
@@ -87,14 +87,14 @@ function Copy-AzureWebAppSqlDatabase
             ResourceGroupName = $DestinationResourceGroupName
             ServerName = $destinationDatabaseConnection.ServerName
             DatabaseName = $destinationDatabaseConnection.DatabaseName
-            ErrorAction = "Ignore"
+            ErrorAction = 'Ignore'
         }
         $destinationDatabase = Get-AzSqlDatabase @destinationDatabaseParameters
 
         if ($sourceDatabase.ServerName -eq $destinationDatabaseConnection.ServerName -and
             $sourceDatabase.DatabaseName -eq $destinationDatabaseConnection.DatabaseName)
         {
-            throw ("The source and destination databases can not be the same!")
+            throw ('The source and destination databases can not be the same!')
         }
 
         if ($null -ne $destinationDatabase)
@@ -107,11 +107,11 @@ function Copy-AzureWebAppSqlDatabase
             }
             if ($Force.IsPresent -and $null -ne (Remove-AzureWebAppSqlDatabase @deleteDatabaseParameters))
             {
-                Write-Information ("Destination database deleted.")
+                Write-Information ('Destination database deleted.')
             }
             else
             {
-                throw ("The destination database already exists! Use the Force (switch) to delete it before the copy starts.")
+                throw ('The destination database already exists! Use the Force (switch) to delete it before the copy starts.')
             }
         }
 
@@ -133,7 +133,7 @@ function Copy-AzureWebAppSqlDatabase
         }
         catch
         {
-            Write-Error ("Could not start copying the database!")
+            Write-Error ('Could not start copying the database!')
 
             throw
         }

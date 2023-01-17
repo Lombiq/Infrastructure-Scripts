@@ -12,13 +12,13 @@
 
     process
     {
-        $endpoint = "plans"
+        $endpoint = 'plans'
         if ($BareMetal.IsPresent)
         {
-            $endpoint = "plans-metal"
+            $endpoint = 'plans-metal'
         }
 
-        $response = (Invoke-WebRequest -Uri "https://api.vultr.com/v2/$endpoint" -Headers @{"Authorization" = "Bearer $ApiKey" } -UseBasicParsing)
+        $response = (Invoke-WebRequest -Uri "https://api.vultr.com/v2/$endpoint" -Headers @{'Authorization' = "Bearer $ApiKey" } -UseBasicParsing)
         $result = ConvertFrom-Json $response
 
         if ($BareMetal.IsPresent)

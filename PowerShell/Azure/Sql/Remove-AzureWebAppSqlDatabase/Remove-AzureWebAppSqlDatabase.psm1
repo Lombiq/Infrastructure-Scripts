@@ -29,28 +29,28 @@ Import-Module Az.Sql
 function Remove-AzureWebAppSqlDatabase
 {
     [CmdletBinding()]
-    [Alias("radb")]
+    [Alias('radb')]
     [OutputType([Microsoft.Azure.Commands.Sql.Database.Model.AzureSqlDatabaseModel])]
     Param
     (
-        [Parameter(Mandatory = $true, HelpMessage = "You need to provide the name of the Resource Group.")]
+        [Parameter(Mandatory = $true, HelpMessage = 'You need to provide the name of the Resource Group.')]
         [string] $ResourceGroupName,
 
-        [Parameter(Mandatory = $true, HelpMessage = "You need to provide the name of the Web App.")]
+        [Parameter(Mandatory = $true, HelpMessage = 'You need to provide the name of the Web App.')]
         [string] $WebAppName,
 
-        [Parameter(HelpMessage = "The name of the Web App slot.")]
+        [Parameter(HelpMessage = 'The name of the Web App slot.')]
         [string] $SlotName,
 
-        [Parameter(Mandatory = $true, HelpMessage = "You need to provide a connection string name.")]
+        [Parameter(Mandatory = $true, HelpMessage = 'You need to provide a connection string name.')]
         [string] $ConnectionStringName
     )
 
     Process
     {
         # Preventing deleting the Production root database accordint to Orchard 1 conventions.
-        if ($ConnectionStringName -eq "Lombiq.Hosting.ShellManagement.ShellSettings.RootConnectionString" -or
-            $ConnectionStringName.EndsWith(".Production"))
+        if ($ConnectionStringName -eq 'Lombiq.Hosting.ShellManagement.ShellSettings.RootConnectionString' -or
+            $ConnectionStringName.EndsWith('.Production'))
         {
             throw "Deleting the Production database is bad, 'mkay?"
         }

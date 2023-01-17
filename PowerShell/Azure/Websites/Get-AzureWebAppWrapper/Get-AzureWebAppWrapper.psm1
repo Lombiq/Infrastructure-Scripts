@@ -22,20 +22,20 @@ Import-Module Az.Websites
 function Get-AzureWebAppWrapper
 {
     [CmdletBinding()]
-    [Alias("gaw")]
+    [Alias('gaw')]
     [OutputType([Microsoft.Azure.Commands.WebApps.Models.PSSite])]
     Param
     (
-        [Parameter(Mandatory = $true, HelpMessage = "You need to provide the name of the Resource Group.")]
+        [Parameter(Mandatory = $true, HelpMessage = 'You need to provide the name of the Resource Group.')]
         [string] $ResourceGroupName,
 
-        [Parameter(Mandatory = $true, HelpMessage = "You need to provide the name of the Web App.")]
+        [Parameter(Mandatory = $true, HelpMessage = 'You need to provide the name of the Web App.')]
         [string] $WebAppName,
 
-        [Parameter(HelpMessage = "The name of the Web App slot.")]
+        [Parameter(HelpMessage = 'The name of the Web App slot.')]
         [string] $SlotName,
 
-        [Parameter(HelpMessage = "The number of attempts for retrieving the data of the website. The default value is 3.")]
+        [Parameter(HelpMessage = 'The number of attempts for retrieving the data of the website. The default value is 3.')]
         [int] $RetryCount = 3
     )
 
@@ -51,7 +51,7 @@ function Get-AzureWebAppWrapper
                 $parameters = @{
                     ResourceGroupName = $ResourceGroupName
                     Name = $WebAppName
-                    ErrorAction = "Stop"
+                    ErrorAction = 'Stop'
                 }
 
                 if ([string]::IsNullOrEmpty($SlotName))

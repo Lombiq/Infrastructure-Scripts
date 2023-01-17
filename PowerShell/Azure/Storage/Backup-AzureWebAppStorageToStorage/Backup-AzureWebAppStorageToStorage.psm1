@@ -64,19 +64,19 @@ Import-Module Az.Storage
 function Backup-AzureWebAppStorageToStorage
 {
     [CmdletBinding()]
-    [Alias("basts")]
+    [Alias('basts')]
     Param
     (
-        [Parameter(Mandatory = $true, HelpMessage = "The name of the Resource Group the Web App is in.")]
+        [Parameter(Mandatory = $true, HelpMessage = 'The name of the Resource Group the Web App is in.')]
         [string] $ResourceGroupName,
 
         [Parameter(Mandatory = $true, HelpMessage = "The name of the Azure Web App. The script throws exception if the Web App doesn't exist on the given subscription.")]
         [string] $WebAppName,
 
-        [Parameter(Mandatory = $true, HelpMessage = "The name of a connection string that identifies the source Storage Account. The script will exit with error if there is no connection string defined with the name provided for the Production slot of the given Web App.")]
+        [Parameter(Mandatory = $true, HelpMessage = 'The name of a connection string that identifies the source Storage Account. The script will exit with error if there is no connection string defined with the name provided for the Production slot of the given Web App.')]
         [string] $SourceConnectionStringName,
 
-        [Parameter(Mandatory = $true, HelpMessage = "The name of a connection string that identifies the destination Storage Account. The script will exit with error if there is no connection string defined with the name provided for the Production slot of the given Web App.")]
+        [Parameter(Mandatory = $true, HelpMessage = 'The name of a connection string that identifies the destination Storage Account. The script will exit with error if there is no connection string defined with the name provided for the Production slot of the given Web App.')]
         [string] $DestinationConnectionStringName,
 
         [Parameter(HelpMessage = "A list of names of Blob Containers to include. When valid values are provided, it cancels out `"ContainerBlackList`".")]
@@ -91,11 +91,11 @@ function Backup-AzureWebAppStorageToStorage
         [Parameter(HelpMessage = "A list of folder names to exclude. Applied after `"FolderWhiteList`".")]
         [string[]] $FolderBlackList = @(),
 
-        [Parameter(HelpMessage = "Overrides the access level of the containers, but only affects those that are (re-)created.")]
+        [Parameter(HelpMessage = 'Overrides the access level of the containers, but only affects those that are (re-)created.')]
         [Microsoft.WindowsAzure.Storage.Blob.BlobContainerPublicAccessType]
         $DestinationContainersAccessType = [Microsoft.WindowsAzure.Storage.Blob.BlobContainerPublicAccessType]::Off,
 
-        [Parameter(HelpMessage = "The number of days to keep storage backup containers for, with respect to the LastModifiedDate property.")]
+        [Parameter(HelpMessage = 'The number of days to keep storage backup containers for, with respect to the LastModifiedDate property.')]
         [int] $RemoveBackupContainersOlderThanDays = 0
     )
 
@@ -130,7 +130,7 @@ function Backup-AzureWebAppStorageToStorage
             ConnectionStringName = $SourceConnectionStringName
         }
         $sourceStorageConnection = Get-AzureWebAppStorageConnection @sourceStorageConnectionParameters
-        $containerNamePrefix = $sourceStorageConnection.AccountName + "-" + $now.ToString("yyyy-MM-dd-HH-mm-ss") + "-"
+        $containerNamePrefix = $sourceStorageConnection.AccountName + '-' + $now.ToString('yyyy-MM-dd-HH-mm-ss') + '-'
 
         $copyParameters = @{
             ResourceGroupName = $ResourceGroupName

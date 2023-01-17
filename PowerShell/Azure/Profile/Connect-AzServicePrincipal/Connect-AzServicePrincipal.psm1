@@ -6,13 +6,13 @@ function Connect-AzServicePrincipal
     [OutputType([Microsoft.Azure.Commands.Profile.Models.Core.PSAzureProfile])]
     Param
     (
-        [Parameter(Mandatory = $true, HelpMessage = "Please provide the ID of the Azure Active Directory!")]
+        [Parameter(Mandatory = $true, HelpMessage = 'Please provide the ID of the Azure Active Directory!')]
         [string] $TenantId,
 
-        [Parameter(Mandatory = $true, HelpMessage = "Please provide the ID of the Service Principal Application!")]
+        [Parameter(Mandatory = $true, HelpMessage = 'Please provide the ID of the Service Principal Application!')]
         [string] $ApplicationId,
 
-        [Parameter(Mandatory = $true, HelpMessage = "Please provide the thumbprint of the certificate to authenticate with!")]
+        [Parameter(Mandatory = $true, HelpMessage = 'Please provide the thumbprint of the certificate to authenticate with!')]
         [string] $CertificateThumbprint,
 
         [Parameter()]

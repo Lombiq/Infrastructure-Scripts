@@ -1,15 +1,15 @@
 ﻿function Get-UTRMonitorDowntimeDuration
 {
     [CmdletBinding()]
-    [Alias("gutrmdd")]
+    [Alias('gutrmdd')]
     [OutputType([int])]
     Param
     (
-        [Parameter(Mandatory = $true, HelpMessage = "The UpTimeRobot API key to access monitors. When using an API" +
-            " key that is not specific to a monitor, you also need to define the monitor ID as well.")]
+        [Parameter(Mandatory = $true, HelpMessage = 'The UpTimeRobot API key to access monitors. When using an API' +
+            ' key that is not specific to a monitor, you also need to define the monitor ID as well.')]
         [string] $ApiKey,
 
-        [Parameter(HelpMessage = "The monitor ID.")]
+        [Parameter(HelpMessage = 'The monitor ID.')]
         [string] $MonitorId
     )
 
@@ -18,11 +18,11 @@
     {
         try
         {
-            $response = Get-UTRMonitor -ApiKey $ApiKey -MonitorIds $MonitorId -StatusIds "9"
+            $response = Get-UTRMonitor -ApiKey $ApiKey -MonitorIds $MonitorId -StatusIds '9'
         }
         catch
         {
-            Write-Error "Failed to reach UpTimeRobot API!"
+            Write-Error 'Failed to reach UpTimeRobot API!'
 
             Write-Error -Exception $PSItem.Exception
 
@@ -32,21 +32,21 @@
 
         switch ($response.stat)
         {
-            "ok"
+            'ok'
             {
                 break
             }
-            "fail"
+            'fail'
             {
                 Write-Error $response.error
 
-                throw("Failed to retrieve monitor data!")
+                throw('Failed to retrieve monitor data!')
             }
             Default
             {
                 Write-Error $response
 
-                throw("Unknown response status!")
+                throw('Unknown response status!')
             }
         }
 
@@ -55,7 +55,7 @@
         {
             0
             {
-                Write-Information "Monitor is UP!" -InformationAction Continue
+                Write-Information 'Monitor is UP!' -InformationAction Continue
 
                 return 0
             }
@@ -69,7 +69,7 @@
             }
             Default
             {
-                throw("Multiple monitors returned! Please make sure that you use a monitor-specific API key or provide a single monitor ID.")
+                throw('Multiple monitors returned! Please make sure that you use a monitor-specific API key or provide a single monitor ID.')
             }
         }
     }

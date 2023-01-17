@@ -23,30 +23,30 @@ Import-Module Az.Sql
 function Start-AzureWebAppSqlDatabaseExport
 {
     [CmdletBinding()]
-    [Alias("saade")]
+    [Alias('saade')]
     [OutputType([Microsoft.Azure.Commands.Sql.ImportExport.Model.AzureSqlDatabaseImportExportBaseModel])]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute(
-        "PSAvoidUsingConvertToSecureStringWithPlainText",
-        "",
-        Justification = "Password is fetched from Azure in plain text format already.")]
+        'PSAvoidUsingConvertToSecureStringWithPlainText',
+        '',
+        Justification = 'Password is fetched from Azure in plain text format already.')]
     Param
     (
-        [Alias("ResourceGroupName")]
+        [Alias('ResourceGroupName')]
         [Parameter(
             Mandatory = $true,
             HelpMessage = "You need to provide the name of the Resource Group the database's Web App is in.")]
         [string] $DatabaseResourceGroupName,
 
-        [Alias("WebAppName")]
-        [Parameter(Mandatory = $true, HelpMessage = "You need to provide the name of the Web App.")]
+        [Alias('WebAppName')]
+        [Parameter(Mandatory = $true, HelpMessage = 'You need to provide the name of the Web App.')]
         [string] $DatabaseWebAppName,
 
-        [Parameter(HelpMessage = "The name of the Web App slot.")]
+        [Parameter(HelpMessage = 'The name of the Web App slot.')]
         [string] $DatabaseSlotName,
 
         [Parameter(
             Mandatory = $true,
-            HelpMessage = "You need to provide a connection string name for the database.")]
+            HelpMessage = 'You need to provide a connection string name for the database.')]
         [string] $DatabaseConnectionStringName,
 
         [Parameter(HelpMessage = "The name of the storage connection string's Resource Group if it differs from the database's.")]
@@ -58,13 +58,13 @@ function Start-AzureWebAppSqlDatabaseExport
         [Parameter(HelpMessage = "The name of the storage connection string's Web App Slot if it differs from the database's.")]
         [string] $StorageSlotName = $DatabaseSlotName,
 
-        [Parameter(Mandatory = $true, HelpMessage = "You need to provide a connection string name for the storage.")]
+        [Parameter(Mandatory = $true, HelpMessage = 'You need to provide a connection string name for the storage.')]
         [string] $StorageConnectionStringName,
 
-        [Parameter(Mandatory = $true, HelpMessage = "You need to provide the name of the container in the storage to export the database to.")]
+        [Parameter(Mandatory = $true, HelpMessage = 'You need to provide the name of the container in the storage to export the database to.')]
         [string] $ContainerName,
 
-        [Parameter(Mandatory = $true, HelpMessage = "You need to provide a name for the blob in the container to create.")]
+        [Parameter(Mandatory = $true, HelpMessage = 'You need to provide a name for the blob in the container to create.')]
         [string] $BlobName
     )
 
@@ -88,7 +88,7 @@ function Start-AzureWebAppSqlDatabaseExport
             Context = $storageContext
             Container = $ContainerName
             Blob = $BlobName
-            ErrorAction = "SilentlyContinue"
+            ErrorAction = 'SilentlyContinue'
         }
         $blob = Get-AzStorageBlob @databaseBlobParameters
 
@@ -111,10 +111,10 @@ function Start-AzureWebAppSqlDatabaseExport
             DatabaseName = $databaseConnection.DatabaseName
             AdministratorLogin = $databaseConnection.UserName
             AdministratorLoginPassword = (ConvertTo-SecureString $databaseConnection -AsPlainText -Force)
-            StorageKeyType = "StorageAccessKey"
+            StorageKeyType = 'StorageAccessKey'
             StorageKey = $storageConnection.AccountKey
             StorageUri = "https://$($storageConnection.AccountName).blob.core.windows.net/$ContainerName/$BlobName"
-            ErrorAction = "Stop"
+            ErrorAction = 'Stop'
         }
         return (New-AzSqlDatabaseExport @exportParameters)
     }

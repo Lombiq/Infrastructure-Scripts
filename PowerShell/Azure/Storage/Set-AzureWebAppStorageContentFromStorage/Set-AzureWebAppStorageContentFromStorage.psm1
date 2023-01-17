@@ -63,46 +63,46 @@ Import-Module Az.Storage
 function Set-AzureWebAppStorageContentFromStorage
 {
     [CmdletBinding()]
-    [Alias("sascs")]
+    [Alias('sascs')]
     Param
     (
-        [Alias("ResourceGroupName")]
+        [Alias('ResourceGroupName')]
         [Parameter(
             Mandatory = $true,
-            HelpMessage = "You need to provide the name of the Resource Group the Source Web App is in.")]
+            HelpMessage = 'You need to provide the name of the Resource Group the Source Web App is in.')]
         [string] $SourceResourceGroupName,
 
-        [Alias("WebAppName")]
-        [Parameter(Mandatory = $true, HelpMessage = "You need to provide the name of the Web App.")]
+        [Alias('WebAppName')]
+        [Parameter(Mandatory = $true, HelpMessage = 'You need to provide the name of the Web App.')]
         [string] $SourceWebAppName,
 
-        [Alias("SlotName")]
-        [Parameter(HelpMessage = "The name of the Source Web App slot.")]
+        [Alias('SlotName')]
+        [Parameter(HelpMessage = 'The name of the Source Web App slot.')]
         [string] $SourceSlotName,
 
-        [Alias("ConnectionStringName")]
+        [Alias('ConnectionStringName')]
         [Parameter(
             Mandatory = $true,
-            HelpMessage = "You need to provide a connection string name for the source Storage Account.")]
+            HelpMessage = 'You need to provide a connection string name for the source Storage Account.')]
         [string] $SourceConnectionStringName,
 
-        [Parameter(HelpMessage = "The name of the Destination Resource Group if it differs from the Source.")]
+        [Parameter(HelpMessage = 'The name of the Destination Resource Group if it differs from the Source.')]
         [string] $DestinationResourceGroupName = $SourceResourceGroupName,
 
-        [Parameter(HelpMessage = "The name of the Destination Web App if it differs from the Source.")]
+        [Parameter(HelpMessage = 'The name of the Destination Web App if it differs from the Source.')]
         [string] $DestinationWebAppName = $SourceWebAppName,
 
-        [Parameter(HelpMessage = "The name of the Destination Web App Slot if it differs from the Source.")]
+        [Parameter(HelpMessage = 'The name of the Destination Web App Slot if it differs from the Source.')]
         [string] $DestinationSlotName = $SourceSlotName,
 
-        [Parameter(HelpMessage = "The name of the Destination Connection String if it differs from the Source.")]
+        [Parameter(HelpMessage = 'The name of the Destination Connection String if it differs from the Source.')]
         [string] $DestinationConnectionStringName = $SourceConnectionStringName,
 
-        [Parameter(HelpMessage = "A list of names of Blob Containers to include. When valid values are provided, " +
+        [Parameter(HelpMessage = 'A list of names of Blob Containers to include. When valid values are provided, ' +
             "it cancels out `"ContainerBlackList`".")]
         [string[]] $ContainerWhiteList = @(),
 
-        [Parameter(HelpMessage = "A list of names of Blob Containers to exclude. When valid values are provided " +
+        [Parameter(HelpMessage = 'A list of names of Blob Containers to exclude. When valid values are provided ' +
             "for `"ContainerWhiteList`", then `"ContainerBlackList`" is not taken into consideration.")]
         [string[]] $ContainerBlackList = @(),
 
@@ -112,18 +112,18 @@ function Set-AzureWebAppStorageContentFromStorage
         [Parameter(HelpMessage = "A list of folder names to exclude. Applied after `"FolderWhiteList`".")]
         [string[]] $FolderBlackList = @(),
 
-        [Parameter(HelpMessage = "Determines whether the destination containers should be deleted and re-created " +
-            "before copying the blobs from the source containers.")]
+        [Parameter(HelpMessage = 'Determines whether the destination containers should be deleted and re-created ' +
+            'before copying the blobs from the source containers.')]
         [bool] $RemoveExtraFilesOnDestination = $true,
 
-        [Parameter(HelpMessage = "Overrides the access level of the containers, but only affects those that are (re-)created.")]
+        [Parameter(HelpMessage = 'Overrides the access level of the containers, but only affects those that are (re-)created.')]
         [Microsoft.WindowsAzure.Storage.Blob.BlobContainerPublicAccessType] $DestinationContainersAccessType,
 
-        [Parameter(HelpMessage = "Adds a prefix to the name of the containers, but only affects those that are (re-)created.")]
-        [string] $DestinationContainerNamePrefix = "",
+        [Parameter(HelpMessage = 'Adds a prefix to the name of the containers, but only affects those that are (re-)created.')]
+        [string] $DestinationContainerNamePrefix = '',
 
-        [Parameter(HelpMessage = "Adds a suffix to the name of the containers, but only affects those that are (re-)created.")]
-        [string] $DestinationContainerNameSuffix = ""
+        [Parameter(HelpMessage = 'Adds a suffix to the name of the containers, but only affects those that are (re-)created.')]
+        [string] $DestinationContainerNameSuffix = ''
     )
 
     Process
@@ -146,7 +146,7 @@ function Set-AzureWebAppStorageContentFromStorage
 
         if ($sourceStorageConnection.AccountName -eq $destinationStorageConnection.AccountName)
         {
-            throw ("The destination Storage Account can not be the same as the source!")
+            throw ('The destination Storage Account can not be the same as the source!')
         }
 
         $sourceStorageContextParameters = @{
@@ -169,7 +169,7 @@ function Set-AzureWebAppStorageContentFromStorage
                 ((!$containerWhiteListValid -or ($containerWhiteListValid -and $ContainerWhiteList.Contains($PSItem.Name))) -and
                 ($containerWhiteListValid -or (!$containerBlackListValid -or !$ContainerBlackList.Contains($PSItem.Name))))
             }
-        $sourceContainerNames = $sourceContainers | Select-Object -ExpandProperty "Name"
+        $sourceContainerNames = $sourceContainers | Select-Object -ExpandProperty 'Name'
 
         if ($null -eq $sourceContainers)
         {
@@ -181,7 +181,7 @@ function Set-AzureWebAppStorageContentFromStorage
 
             if ($null -ne $notFoundSourceContainerNames)
             {
-                throw "Some of the containers in the source Storage Account were not found: $($notFoundSourceContainerNames -join ", ")!"
+                throw "Some of the containers in the source Storage Account were not found: $($notFoundSourceContainerNames -join ', ')!"
             }
         }
 
@@ -220,7 +220,7 @@ function Set-AzureWebAppStorageContentFromStorage
                             Context = $destinationStorageContext
                             Permission = $containerAccessType
                             Name = $destinationContainerName
-                            ErrorAction = "Stop"
+                            ErrorAction = 'Stop'
                         }
                         New-AzStorageContainer @newContainerParameters
 
@@ -242,7 +242,7 @@ function Set-AzureWebAppStorageContentFromStorage
 
             foreach ($sourceBlob in $sourceContainer | Get-AzStorageBlob)
             {
-                $blobNameElements = $sourceBlob.Name.Split("/", [StringSplitOptions]::RemoveEmptyEntries)
+                $blobNameElements = $sourceBlob.Name.Split('/', [StringSplitOptions]::RemoveEmptyEntries)
                 $comparisonParameters = @{
                     PassThru = $true
                     IncludeEqual = $true

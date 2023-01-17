@@ -22,26 +22,26 @@ Import-Module Az.Sql
 function Invoke-AzureWebAppSqlDatabaseExport
 {
     [CmdletBinding()]
-    [Alias("iade")]
+    [Alias('iade')]
     [OutputType([Microsoft.Azure.Commands.Sql.ImportExport.Model.AzureSqlDatabaseImportExportBaseModel])]
     Param
     (
-        [Alias("ResourceGroupName")]
+        [Alias('ResourceGroupName')]
         [Parameter(
             Mandatory = $true,
             HelpMessage = "You need to provide the name of the Resource Group the database's Web App is in.")]
         [string] $DatabaseResourceGroupName,
 
-        [Alias("WebAppName")]
-        [Parameter(Mandatory = $true, HelpMessage = "You need to provide the name of the Web App.")]
+        [Alias('WebAppName')]
+        [Parameter(Mandatory = $true, HelpMessage = 'You need to provide the name of the Web App.')]
         [string] $DatabaseWebAppName,
 
-        [Parameter(HelpMessage = "The name of the Web App slot.")]
+        [Parameter(HelpMessage = 'The name of the Web App slot.')]
         [string] $DatabaseSlotName,
 
         [Parameter(
             Mandatory = $true,
-            HelpMessage = "You need to provide a connection string name for the database.")]
+            HelpMessage = 'You need to provide a connection string name for the database.')]
         [string] $DatabaseConnectionStringName,
 
         [Parameter(HelpMessage = "The name of the storage connection string's Resource Group if it differs from the database's.")]
@@ -53,13 +53,13 @@ function Invoke-AzureWebAppSqlDatabaseExport
         [Parameter(HelpMessage = "The name of the storage connection string's Web App Slot if it differs from the database's.")]
         [string] $StorageSlotName = $DatabaseSlotName,
 
-        [Parameter(Mandatory = $true, HelpMessage = "You need to provide a connection string name for the storage.")]
+        [Parameter(Mandatory = $true, HelpMessage = 'You need to provide a connection string name for the storage.')]
         [string] $StorageConnectionStringName,
 
-        [Parameter(Mandatory = $true, HelpMessage = "You need to provide the name of the container in the storage to export the database to.")]
+        [Parameter(Mandatory = $true, HelpMessage = 'You need to provide the name of the container in the storage to export the database to.')]
         [string] $ContainerName,
 
-        [Parameter(Mandatory = $true, HelpMessage = "You need to provide a name for the blob in the container to create.")]
+        [Parameter(Mandatory = $true, HelpMessage = 'You need to provide a name for the blob in the container to create.')]
         [string] $BlobName
     )
 
@@ -83,7 +83,7 @@ function Invoke-AzureWebAppSqlDatabaseExport
 
         if ($null -eq $exportRequest)
         {
-            throw ("Could not start database export!")
+            throw ('Could not start database export!')
         }
 
         Write-Information "`n*****`nDatabase export started with the following Status Link:`n$($exportRequest.OperationStatusLink)`n*****" -InformationAction Continue
@@ -96,7 +96,7 @@ function Invoke-AzureWebAppSqlDatabaseExport
 
             $status = Get-AzSqlDatabaseImportExportStatus -OperationStatusLink $exportRequest.OperationStatusLink -ErrorAction Continue
 
-            if ($status.Status -eq "Failed")
+            if ($status.Status -eq 'Failed')
             {
                 throw ("Export operation failed: $($status.ErrorMessage)!")
             }
@@ -108,11 +108,11 @@ function Invoke-AzureWebAppSqlDatabaseExport
 
             $previousStatus = $status
         }
-        while ($status.Status -eq "InProgress")
+        while ($status.Status -eq 'InProgress')
 
-        if ($status.Status -ne "Succeeded")
+        if ($status.Status -ne 'Succeeded')
         {
-            throw ("Database export finished without success!")
+            throw ('Database export finished without success!')
         }
 
         Write-Information ("*****`nDatabase export finished!`n*****`n") -InformationAction Continue

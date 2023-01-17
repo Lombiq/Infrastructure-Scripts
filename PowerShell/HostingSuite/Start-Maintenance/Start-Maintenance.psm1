@@ -19,40 +19,40 @@ function Start-Maintenance
         Justification = 'Password needs to be processed as plain text for Basic authentication.')]
     [Diagnostics.CodeAnalysis.SuppressMessage('PSAvoidUsingUsernameAndPasswordParams', '', Justification = 'Same as the above.')]
     [CmdletBinding()]
-    [Alias("samt")]
+    [Alias('samt')]
     [OutputType([int])]
     Param
     (
         [Parameter(Mandatory = $true,
-            HelpMessage = "The name of the maintenance.",
+            HelpMessage = 'The name of the maintenance.',
             ValueFromPipelineByPropertyName = $true,
             Position = 0)]
         [string] $MaintenanceName,
 
         [Parameter(Mandatory = $true,
-            HelpMessage = "The hostname of the API endpoint that returns the maintenance status. The URL pattern is" +
-            " https://mywebsite.com/api/Lombiq.Hosting.MultiTenancy/Maintenance?maintenanceName=MyMaintenance," +
-            " but you only need to define mywebsite.com.")]
+            HelpMessage = 'The hostname of the API endpoint that returns the maintenance status. The URL pattern is' +
+            ' https://mywebsite.com/api/Lombiq.Hosting.MultiTenancy/Maintenance?maintenanceName=MyMaintenance,' +
+            ' but you only need to define mywebsite.com.')]
         [string] $Hostname,
 
-        [Parameter(HelpMessage = "Optional: The API route on the host for starting a maintenance.")]
-        [string] $APIEndpoint = "api/Lombiq.Hosting.MultiTenancy/Maintenance",
+        [Parameter(HelpMessage = 'Optional: The API route on the host for starting a maintenance.')]
+        [string] $APIEndpoint = 'api/Lombiq.Hosting.MultiTenancy/Maintenance',
 
         [Parameter(Mandatory = $true,
-            HelpMessage = "The name of the user to authenticate. Make sure that the user is in a role that is permitted to start maintenances.")]
-        [string] $Username = $(throw "You need to specify the username."),
+            HelpMessage = 'The name of the user to authenticate. Make sure that the user is in a role that is permitted to start maintenances.')]
+        [string] $Username = $(throw 'You need to specify the username.'),
 
-        [Parameter(Mandatory = $true, HelpMessage = "The password of the user is mandatory.")]
+        [Parameter(Mandatory = $true, HelpMessage = 'The password of the user is mandatory.')]
         [string] $Password,
 
-        [Parameter(HelpMessage = "The number of tenants to run the maintenance process in one go.")]
+        [Parameter(HelpMessage = 'The number of tenants to run the maintenance process in one go.')]
         [int] $BatchSize = 0,
 
-        [Parameter(HelpMessage = "Number of retries for getting the status of the maintenance in case of an error.")]
+        [Parameter(HelpMessage = 'Number of retries for getting the status of the maintenance in case of an error.')]
         [int] $RetryCount = 0,
 
-        [Parameter(HelpMessage = "The request protocol to use (http or https). Https is the default value.")]
-        [string] $Protocol = "https"
+        [Parameter(HelpMessage = 'The request protocol to use (http or https). Https is the default value.')]
+        [string] $Protocol = 'https'
     )
     Process
     {
@@ -66,7 +66,7 @@ function Start-Maintenance
             try
             {
                 $url = "${Protocol}://$Hostname/$APIEndpoint" + "?maintenanceName=$MaintenanceName"
-                $authentication = "Basic " + [System.Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($Username + ":" + $Password))
+                $authentication = 'Basic ' + [System.Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($Username + ':' + $Password))
 
                 if ($BatchSize -lt 1)
                 {
@@ -79,8 +79,8 @@ function Start-Maintenance
 
                 $requestParameters = @{
                     Uri = $url
-                    Method = "Post"
-                    ContentType = "application/json"
+                    Method = 'Post'
+                    ContentType = 'application/json'
                     Headers = @{ Authorization = $authentication }
                     Body = ConvertTo-Json($maintenanceDescriptor)
                 }
@@ -105,7 +105,7 @@ function Start-Maintenance
 
         if ($result.StatusCode -ne 201)
         {
-            throw ("Could not start the maintenance `"$MaintenanceName`" at `"$Hostname`"! Server returned status code " + $result.StatusCode + ".")
+            throw ("Could not start the maintenance `"$MaintenanceName`" at `"$Hostname`"! Server returned status code " + $result.StatusCode + '.')
         }
 
         Write-Output "Successfully started the maintenance `"$MaintenanceName`" at `"$Hostname`"!"

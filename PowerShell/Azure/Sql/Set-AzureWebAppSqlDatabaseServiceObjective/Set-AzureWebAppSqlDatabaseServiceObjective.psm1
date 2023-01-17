@@ -22,29 +22,29 @@ Import-Module Az.Sql
 function Set-AzureWebAppSqlDatabaseServiceObjective
 {
     [CmdletBinding()]
-    [Alias("swadso")]
+    [Alias('swadso')]
     [OutputType([Microsoft.Azure.Commands.Sql.Database.Model.AzureSqlDatabaseModel])]
     Param
     (
-        [Parameter(Mandatory = $true, HelpMessage = "You need to provide the name of the Resource Group.")]
+        [Parameter(Mandatory = $true, HelpMessage = 'You need to provide the name of the Resource Group.')]
         [string] $ResourceGroupName,
 
-        [Parameter(Mandatory = $true, HelpMessage = "You need to provide the name of the Web App.")]
+        [Parameter(Mandatory = $true, HelpMessage = 'You need to provide the name of the Web App.')]
         [string] $WebAppName,
 
-        [Parameter(HelpMessage = "The name of the Web App slot.")]
+        [Parameter(HelpMessage = 'The name of the Web App slot.')]
         [string] $SlotName,
 
-        [Parameter(Mandatory = $true, HelpMessage = "You need to provide a connection string name.")]
+        [Parameter(Mandatory = $true, HelpMessage = 'You need to provide a connection string name.')]
         [string] $ConnectionStringName,
 
-        [Parameter(Mandatory = $true, HelpMessage = "You need to provide the name of the service objective to scale " +
-            "the database to. Examples: B, S1, S4, P4, P6")]
+        [Parameter(Mandatory = $true, HelpMessage = 'You need to provide the name of the service objective to scale ' +
+            'the database to. Examples: B, S1, S4, P4, P6')]
         [string] $ServiceObjectiveName,
 
-        [Parameter(Helpmessage = "The edition of the database pricing tier to scale the database to. It needs to be " +
-            "defined if the target Service Objective is in a different edition than the current one.")]
-        [string] $Edition = "Standard"
+        [Parameter(Helpmessage = 'The edition of the database pricing tier to scale the database to. It needs to be ' +
+            'defined if the target Service Objective is in a different edition than the current one.')]
+        [string] $Edition = 'Standard'
     )
 
     Process
@@ -80,12 +80,12 @@ function Set-AzureWebAppSqlDatabaseServiceObjective
 
         $availableServiceObjectiveNames = $serviceObjectives |
             Where-Object { !$PSItem.IsSystem -and $PSItem.Enabled } |
-            Select-Object -ExpandProperty "ServiceObjectiveName"
+            Select-Object -ExpandProperty 'ServiceObjectiveName'
 
         if (!$availableServiceObjectiveNames.Contains($ServiceObjectiveName))
         {
             throw ("The `"$ServiceObjectiveName`" tier is not available for the server `"$($database.ServerName)`". " +
-                "The available tiers are:`n$([string]::Join(", ", $availableServiceObjectiveNames)).")
+                "The available tiers are:`n$([string]::Join(', ', $availableServiceObjectiveNames)).")
         }
 
         try
@@ -100,13 +100,13 @@ function Set-AzureWebAppSqlDatabaseServiceObjective
                 DatabaseName = $database.DatabaseName
                 RequestedServiceObjectiveName = $ServiceObjectiveName
                 Edition = $Edition
-                ErrorAction = "Stop"
+                ErrorAction = 'Stop'
             }
             return Set-AzSqlDatabase @updateDatabaseParameters
         }
         catch
         {
-            Write-Error ("Changing the Service Objective failed - see the detailed error below. Did you define the " +
+            Write-Error ('Changing the Service Objective failed - see the detailed error below. Did you define the ' +
                 "Edition of the target Service Objective? The current value is `"$Edition`".")
 
             throw

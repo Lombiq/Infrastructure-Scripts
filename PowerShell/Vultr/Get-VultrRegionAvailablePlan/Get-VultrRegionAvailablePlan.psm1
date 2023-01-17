@@ -12,7 +12,7 @@
 
     process
     {
-        $response = (Invoke-WebRequest -Uri "https://api.vultr.com/v2/regions/$RegionId/availability" -Headers @{"Authorization" = "Bearer $ApiKey" } -UseBasicParsing)
+        $response = (Invoke-WebRequest -Uri "https://api.vultr.com/v2/regions/$RegionId/availability" -Headers @{'Authorization' = "Bearer $ApiKey" } -UseBasicParsing)
 
         return (ConvertFrom-Json $response).available_plans
     }
