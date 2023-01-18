@@ -110,7 +110,7 @@ function Start-AzureWebAppSqlDatabaseExport
             ServerName = $databaseConnection.ServerName
             DatabaseName = $databaseConnection.DatabaseName
             AdministratorLogin = $databaseConnection.UserName
-            AdministratorLoginPassword = (ConvertTo-SecureString $databaseConnection -AsPlainText -Force)
+            AdministratorLoginPassword = (ConvertTo-SecureString $databaseConnection.Password -AsPlainText -Force)
             StorageKeyType = "StorageAccessKey"
             StorageKey = $storageConnection.AccountKey
             StorageUri = "https://$($storageConnection.AccountName).blob.core.windows.net/$ContainerName/$BlobName"
