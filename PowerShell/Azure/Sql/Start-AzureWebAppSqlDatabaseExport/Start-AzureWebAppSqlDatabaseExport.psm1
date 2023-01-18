@@ -25,7 +25,7 @@ function Start-AzureWebAppSqlDatabaseExport
     [CmdletBinding()]
     [Alias("saade")]
     [OutputType([Microsoft.Azure.Commands.Sql.ImportExport.Model.AzureSqlDatabaseImportExportBaseModel])]
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute(
+    [Diagnostics.CodeAnalysis.SuppressMessage(
         "PSAvoidUsingConvertToSecureStringWithPlainText",
         "",
         Justification = "Password is fetched from Azure in plain text format already.")]
