@@ -15,25 +15,25 @@ Import-Module Az.Websites
 function Switch-AzureWebAppSlots
 {
     [CmdletBinding()]
-    [Alias("swas")]
+    [Alias('swas')]
     [OutputType([int])]
-    [Diagnostics.CodeAnalysis.SuppressMessage("PSUseSingularNouns", "", Justification = "This operation always involves multiple Slots.")]
+    [Diagnostics.CodeAnalysis.SuppressMessage('PSUseSingularNouns', '', Justification = 'This operation always involves multiple Slots.')]
     Param
     (
-        [Parameter(Mandatory = $true, HelpMessage = "The name of the Resource Group the Web App is in.")]
+        [Parameter(Mandatory = $true, HelpMessage = 'The name of the Resource Group the Web App is in.')]
         [string] $ResourceGroupName,
 
-        [Parameter(Mandatory = $true, HelpMessage = "The name of the Azure Web App. The script throws exception if" +
+        [Parameter(Mandatory = $true, HelpMessage = 'The name of the Azure Web App. The script throws exception if' +
             " the Web App doesn't exist on the given subscription.")]
         [string] $WebAppName,
 
-        [Parameter(Mandatory = $true, HelpMessage = "The name of the Web App slot to swap from.")]
+        [Parameter(Mandatory = $true, HelpMessage = 'The name of the Web App slot to swap from.')]
         [string] $SourceSlotName,
 
-        [Parameter(Mandatory = $true, HelpMessage = "The name of the Web App slot to swap to.")]
+        [Parameter(Mandatory = $true, HelpMessage = 'The name of the Web App slot to swap to.')]
         [string] $DestinationSlotName,
 
-        [Parameter(HelpMessage = "The number of attempts for updating a Web App Slot. The default value is 3.")]
+        [Parameter(HelpMessage = 'The number of attempts for updating a Web App Slot. The default value is 3.')]
         [int] $RetryCount = 3
     )
 
@@ -186,7 +186,7 @@ function Switch-AzureWebAppSlots
                 Name = $WebAppName
                 SourceSlotName = $SourceSlotName
                 DestinationSlotName = $DestinationSlotName
-                ErrorAction = "Stop"
+                ErrorAction = 'Stop'
             }
             Switch-AzWebAppSlot @swapWebAppSlotsParameters
         }

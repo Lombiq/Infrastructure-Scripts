@@ -18,37 +18,37 @@ function Get-Maintenance
         Justification = 'Password needs to be processed as plain text for Basic authentication.')]
     [Diagnostics.CodeAnalysis.SuppressMessage('PSAvoidUsingUsernameAndPasswordParams', '', Justification = 'Same as the above.')]
     [CmdletBinding()]
-    [Alias("gmt")]
+    [Alias('gmt')]
     [OutputType([object])]
     Param
     (
         [Parameter(Mandatory = $true,
-            HelpMessage = "The name of the maintenance.",
+            HelpMessage = 'The name of the maintenance.',
             ValueFromPipelineByPropertyName = $true,
             Position = 0)]
         [string] $MaintenanceName,
 
         [Parameter(Mandatory = $true,
-            HelpMessage = "The hostname of the API endpoint that returns the maintenance status. The URL pattern is" +
-            " https://mywebsite.com/api/Lombiq.Hosting.MultiTenancy/Maintenance?maintenanceName=MyMaintenance," +
-            " but you only need to define mywebsite.com.")]
+            HelpMessage = 'The hostname of the API endpoint that returns the maintenance status. The URL pattern is' +
+            ' https://mywebsite.com/api/Lombiq.Hosting.MultiTenancy/Maintenance?maintenanceName=MyMaintenance,' +
+            ' but you only need to define mywebsite.com.')]
         [string] $Hostname,
 
-        [Parameter(HelpMessage = "Optional: The API route on the host that returns the maintenance status.")]
-        [string] $APIEndpoint = "api/Lombiq.Hosting.MultiTenancy/Maintenance",
+        [Parameter(HelpMessage = 'Optional: The API route on the host that returns the maintenance status.')]
+        [string] $APIEndpoint = 'api/Lombiq.Hosting.MultiTenancy/Maintenance',
 
         [Parameter(Mandatory = $true,
-            HelpMessage = "The name of the user to authenticate. Make sure that the user is in a role that is permitted to access maintenances.")]
-        [string] $Username = $(throw "You need to specify the username."),
+            HelpMessage = 'The name of the user to authenticate. Make sure that the user is in a role that is permitted to access maintenances.')]
+        [string] $Username = $(throw 'You need to specify the username.'),
 
-        [Parameter(Mandatory = $true, HelpMessage = "The password of the user is mandatory.")]
+        [Parameter(Mandatory = $true, HelpMessage = 'The password of the user is mandatory.')]
         [string] $Password,
 
-        [Parameter(HelpMessage = "Number of retries for getting the status of the maintenance in case of an error.")]
+        [Parameter(HelpMessage = 'Number of retries for getting the status of the maintenance in case of an error.')]
         [int] $RetryCount = 0,
 
-        [Parameter(HelpMessage = "The request protocol to use (http or https). Https is the default value.")]
-        [string] $Protocol = "https"
+        [Parameter(HelpMessage = 'The request protocol to use (http or https). Https is the default value.')]
+        [string] $Protocol = 'https'
     )
     Process
     {
@@ -61,9 +61,9 @@ function Get-Maintenance
             try
             {
                 $url = "${Protocol}://$Hostname/$APIEndpoint" + "?maintenanceName=$MaintenanceName"
-                $authentication = "Basic " + [System.Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($Username + ":" + $Password))
+                $authentication = 'Basic ' + [System.Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($Username + ':' + $Password))
 
-                $result = Invoke-WebRequest -Uri $url -Method Get -ContentType "application/json" -Headers @{ Authorization = $authentication }
+                $result = Invoke-WebRequest -Uri $url -Method Get -ContentType 'application/json' -Headers @{ Authorization = $authentication }
 
                 $success = $true
             }
@@ -87,7 +87,7 @@ function Get-Maintenance
         }
         else
         {
-            throw ("Could not retrieve status for the maintenance `"$MaintenanceName`" at `"$Hostname`"! Server returned status code " + $result.StatusCode + ".")
+            throw ("Could not retrieve status for the maintenance `"$MaintenanceName`" at `"$Hostname`"! Server returned status code " + $result.StatusCode + '.')
         }
     }
 }

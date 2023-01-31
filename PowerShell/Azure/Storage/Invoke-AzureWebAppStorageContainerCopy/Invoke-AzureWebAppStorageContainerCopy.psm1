@@ -35,10 +35,10 @@ Import-Module Az.Storage
 function Invoke-AzureWebAppStorageContainerCopy
 {
     [CmdletBinding()]
-    [Alias("iawscc")]
+    [Alias('iawscc')]
     Param
     (
-        [Parameter(Mandatory = $true, HelpMessage = "The name of the Resource Group the Web App is in.")]
+        [Parameter(Mandatory = $true, HelpMessage = 'The name of the Resource Group the Web App is in.')]
         [string] $ResourceGroupName,
 
         [Parameter(
@@ -48,22 +48,22 @@ function Invoke-AzureWebAppStorageContainerCopy
 
         [Parameter(
             Mandatory = $true,
-            HelpMessage = "The name of a connection string that identifies the source Storage Account.")]
+            HelpMessage = 'The name of a connection string that identifies the source Storage Account.')]
         [string] $SourceConnectionStringName,
 
         [Parameter(
             Mandatory = $true,
-            HelpMessage = "The name of the container to copy, under the source Storage Account.")]
+            HelpMessage = 'The name of the container to copy, under the source Storage Account.')]
         [string] $SourceContainerName,
 
         [Parameter(
             Mandatory = $true,
-            HelpMessage = "The name of a connection string that identifies the destination Storage Account.")]
+            HelpMessage = 'The name of a connection string that identifies the destination Storage Account.')]
         [string] $DestinationConnectionStringName,
 
         [Parameter(
             Mandatory = $true,
-            HelpMessage = "The name of the container to copy, under the source Storage Account.")]
+            HelpMessage = 'The name of the container to copy, under the source Storage Account.')]
         [string] $DestinationContainerName,
 
         [switch] $Force
@@ -74,7 +74,7 @@ function Invoke-AzureWebAppStorageContainerCopy
         if ($SourceConnectionStringName -eq $DestinationConnectionStringName -and
             $SourceContainerName -eq $DestinationContainerName)
         {
-            throw ("The destination container cannot be the same as the source!")
+            throw ('The destination container cannot be the same as the source!')
         }
 
         $sourceStorageConnectionParameters = @{
@@ -133,7 +133,7 @@ function Invoke-AzureWebAppStorageContainerCopy
                         Context = $destinationStorageContext
                         Permission = $sourceContainer.PublicAccess
                         Name = $DestinationContainerName
-                        ErrorAction = "Stop"
+                        ErrorAction = 'Stop'
                     }
                     $destinationContainer = New-AzStorageContainer @destinationContainerParameters
 
@@ -160,7 +160,7 @@ function Invoke-AzureWebAppStorageContainerCopy
                     Context = $destinationStorageContext
                     Container = $DestinationContainerName
                     Blob = $blob.Name
-                    ErrorAction = "SilentlyContinue"
+                    ErrorAction = 'SilentlyContinue'
                 }
                 $destinationBlob = Get-AzStorageBlob @destinationBlobParameters
 

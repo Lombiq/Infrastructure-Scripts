@@ -6,19 +6,19 @@ function Invoke-AzureWebAppSqlQuery
     [Alias()]
     Param
     (
-        [Parameter(Mandatory = $true, HelpMessage = "You need to provide the name of the Resource Group.")]
+        [Parameter(Mandatory = $true, HelpMessage = 'You need to provide the name of the Resource Group.')]
         [string] $ResourceGroupName,
 
-        [Parameter(Mandatory = $true, HelpMessage = "You need to provide the name of the Web App.")]
+        [Parameter(Mandatory = $true, HelpMessage = 'You need to provide the name of the Web App.')]
         [string] $WebAppName,
 
-        [Parameter(HelpMessage = "The name of the Web App slot.")]
+        [Parameter(HelpMessage = 'The name of the Web App slot.')]
         [string] $SlotName,
 
-        [Parameter(Mandatory = $true, HelpMessage = "You need to provide a connection string name.")]
+        [Parameter(Mandatory = $true, HelpMessage = 'You need to provide a connection string name.')]
         [string] $ConnectionStringName,
 
-        [Parameter(Mandatory = $true, HelpMessage = "You need to define a query to run.")]
+        [Parameter(Mandatory = $true, HelpMessage = 'You need to define a query to run.')]
         [string] $Query
     )
 

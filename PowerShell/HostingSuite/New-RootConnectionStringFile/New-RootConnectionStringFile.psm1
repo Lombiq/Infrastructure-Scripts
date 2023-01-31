@@ -20,27 +20,27 @@
 function New-RootConnectionStringFile
 {
     [CmdletBinding()]
-    [Alias("nrcs")]
+    [Alias('nrcs')]
     [OutputType([bool])]
     Param
     (
-        [Parameter(Mandatory = $true, HelpMessage = "The path where the root connection string file should be placed.")]
+        [Parameter(Mandatory = $true, HelpMessage = 'The path where the root connection string file should be placed.')]
         [string] $Path,
 
-        [Parameter(Mandatory = $true, HelpMessage = "The extensionless name of the root connection string file to be created.")]
+        [Parameter(Mandatory = $true, HelpMessage = 'The extensionless name of the root connection string file to be created.')]
         [string] $FileName,
 
-        [Parameter(Mandatory = $true, HelpMessage = "The name of the Resource Group the Web App is in.")]
+        [Parameter(Mandatory = $true, HelpMessage = 'The name of the Resource Group the Web App is in.')]
         [string] $ResourceGroupName,
 
         [Parameter(Mandatory = $true, HelpMessage = "The name of the Azure Web App. The script throws exception if the Web App doesn't exist on the given subscription.")]
         [string] $WebAppName,
 
         [Parameter(HelpMessage = "The name of the Web App slot. The default value is `"Production`".")]
-        [string] $SlotName = "Production",
+        [string] $SlotName = 'Production',
 
-        [Parameter(HelpMessage = "The name of a connection string. The script will exit with error if there is no connection string defined with the name provided for the Production slot of the given Web App.")]
-        [string] $ConnectionStringName = $(throw "You need to provide a connection string name")
+        [Parameter(HelpMessage = 'The name of a connection string. The script will exit with error if there is no connection string defined with the name provided for the Production slot of the given Web App.')]
+        [string] $ConnectionStringName = $(throw 'You need to provide a connection string name')
     )
 
     Process

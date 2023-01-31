@@ -19,27 +19,27 @@
 function Remove-AzureWebAppSqlDatabaseContainedUser
 {
     [CmdletBinding()]
-    [Alias("rawasdcu")]
+    [Alias('rawasdcu')]
     Param
     (
-        [Alias("ResourceGroupName")]
+        [Alias('ResourceGroupName')]
         [Parameter(
             Mandatory = $true,
             HelpMessage = "You need to provide the name of the Resource Group the database's Web App is in.")]
         [string] $DatabaseResourceGroupName,
 
-        [Alias("WebAppName")]
-        [Parameter(Mandatory = $true, HelpMessage = "You need to provide the name of the Web App.")]
+        [Alias('WebAppName')]
+        [Parameter(Mandatory = $true, HelpMessage = 'You need to provide the name of the Web App.')]
         [string] $DatabaseWebAppName,
 
-        [Alias("SlotName")]
-        [Parameter(HelpMessage = "The name of the Source Web App slot.")]
+        [Alias('SlotName')]
+        [Parameter(HelpMessage = 'The name of the Source Web App slot.')]
         [string] $DatabaseSlotName,
 
-        [Alias("ConnectionStringName")]
+        [Alias('ConnectionStringName')]
         [Parameter(
             Mandatory = $true,
-            HelpMessage = "You need to provide a connection string name for the executing user.")]
+            HelpMessage = 'You need to provide a connection string name for the executing user.')]
         [string] $DatabaseConnectionStringName,
 
         [Parameter(HelpMessage = "The name of the user connection string's Resource Group if it differs from the Source.")]
@@ -51,7 +51,7 @@ function Remove-AzureWebAppSqlDatabaseContainedUser
         [Parameter(HelpMessage = "The name of the user connection string's Web App Slot if it differs from the Source.")]
         [string] $UserSlotName = $DatabaseSlotName,
 
-        [Parameter(HelpMessage = "The name of the user connection string if it differs from the one for executing.")]
+        [Parameter(HelpMessage = 'The name of the user connection string if it differs from the one for executing.')]
         [string] $UserConnectionStringName = $DatabaseConnectionStringName
     )
 

@@ -19,20 +19,20 @@ Import-Module Az.Websites
 function Get-AzureWebAppConnectionString
 {
     [CmdletBinding()]
-    [Alias("gacs")]
+    [Alias('gacs')]
     [OutputType([string])]
     Param
     (
-        [Parameter(Mandatory = $true, HelpMessage = "You need to provide the name of the Resource Group.")]
+        [Parameter(Mandatory = $true, HelpMessage = 'You need to provide the name of the Resource Group.')]
         [string] $ResourceGroupName,
 
-        [Parameter(Mandatory = $true, HelpMessage = "You need to provide the name of the Web App.")]
+        [Parameter(Mandatory = $true, HelpMessage = 'You need to provide the name of the Web App.')]
         [string] $WebAppName,
 
-        [Parameter(HelpMessage = "The name of the Web App slot.")]
+        [Parameter(HelpMessage = 'The name of the Web App slot.')]
         [string] $SlotName,
 
-        [Parameter(Mandatory = $true, HelpMessage = "You need to provide the name of the connection string.")]
+        [Parameter(Mandatory = $true, HelpMessage = 'You need to provide the name of the connection string.')]
         [string] $ConnectionStringName
     )
 

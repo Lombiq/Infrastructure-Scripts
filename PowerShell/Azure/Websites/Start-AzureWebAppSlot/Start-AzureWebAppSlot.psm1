@@ -15,17 +15,17 @@ Import-Module Az.Websites
 function Start-AzureWebAppSlot
 {
     [CmdletBinding()]
-    [Alias("saas")]
+    [Alias('saas')]
     [OutputType([Microsoft.Azure.Commands.WebApps.Models.PSSite])]
     Param
     (
-        [Parameter(Mandatory = $true, HelpMessage = "The name of the Resource Group the Web App is in.")]
+        [Parameter(Mandatory = $true, HelpMessage = 'The name of the Resource Group the Web App is in.')]
         [string] $ResourceGroupName,
 
         [Parameter(Mandatory = $true, HelpMessage = "The name of the Azure Web App. The script throws exception if the Web App doesn't exist on the given subscription.")]
         [string] $WebAppName,
 
-        [Parameter(Mandatory = $true, HelpMessage = "The name of the Web App slot.")]
+        [Parameter(Mandatory = $true, HelpMessage = 'The name of the Web App slot.')]
         [string] $SlotName
     )
 

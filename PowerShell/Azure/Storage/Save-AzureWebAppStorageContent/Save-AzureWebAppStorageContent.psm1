@@ -64,29 +64,29 @@ Import-Module Az.Storage
 function Save-AzureWebAppStorageContent
 {
     [CmdletBinding()]
-    [Alias("sasc")]
+    [Alias('sasc')]
     Param
     (
-        [Parameter(Mandatory = $true, HelpMessage = "The name of the Resource Group the Web App is in.")]
+        [Parameter(Mandatory = $true, HelpMessage = 'The name of the Resource Group the Web App is in.')]
         [string] $ResourceGroupName,
 
-        [Parameter(Mandatory = $true, HelpMessage = "The name of the Azure Web App. The script throws exception if" +
+        [Parameter(Mandatory = $true, HelpMessage = 'The name of the Azure Web App. The script throws exception if' +
             "the Web App doesn't exist on the given subscription.")]
         [string] $WebAppName,
 
-        [Parameter(Mandatory = $true, HelpMessage = "The name of a connection string that identifies the Storage" +
-            " Account. The script will exit with error if there is no connection string defined with the name" +
-            " provided for the Production slot of the given Web App.")]
+        [Parameter(Mandatory = $true, HelpMessage = 'The name of a connection string that identifies the Storage' +
+            ' Account. The script will exit with error if there is no connection string defined with the name' +
+            ' provided for the Production slot of the given Web App.')]
         [string] $ConnectionStringName,
 
-        [Parameter(Mandatory = $true, HelpMessage = "The path on the local machine where the files will be downloaded.")]
+        [Parameter(Mandatory = $true, HelpMessage = 'The path on the local machine where the files will be downloaded.')]
         [string] $Destination,
 
-        [Parameter(HelpMessage = "A list of names of Blob Containers to include. When valid values are provided," +
+        [Parameter(HelpMessage = 'A list of names of Blob Containers to include. When valid values are provided,' +
             " it cancels out `"ContainerBlackList`".")]
         [string[]] $ContainerWhiteList = @(),
 
-        [Parameter(HelpMessage = "A list of names of Blob Containers to exclude. When valid values are provided for" +
+        [Parameter(HelpMessage = 'A list of names of Blob Containers to exclude. When valid values are provided for' +
             " `"ContainerWhiteList`", then `"ContainerBlackList`" is not taken into consideration.")]
         [string[]] $ContainerBlackList = @(),
 
@@ -96,7 +96,7 @@ function Save-AzureWebAppStorageContent
         [Parameter(HelpMessage = "A list of folder names to exclude. Applied after `"FolderWhiteList`".")]
         [string[]] $FolderBlackList = @(),
 
-        [Parameter(HelpMessage = "The number of attempts for retrieving a specific blob. The default value is 3.")]
+        [Parameter(HelpMessage = 'The number of attempts for retrieving a specific blob. The default value is 3.')]
         [int] $RetryCount = 3
     )
 
@@ -127,11 +127,11 @@ function Save-AzureWebAppStorageContent
         $folderWhiteListValid = $FolderWhiteList -and $FolderWhiteList.Count -gt 0
         $folderBlackListValid = $FolderBlackList -and $FolderBlackList.Count -gt 0
 
-        $illegalCharacters = @("`"", "*", ":", "<", ">", "?", "|")
+        $illegalCharacters = @("`"", '*', ':', '<', '>', '?', '|')
 
         foreach ($container in $containers)
         {
-            $containerPath = $Destination + "\" + $container.Name
+            $containerPath = $Destination + '\' + $container.Name
 
             if (Test-Path $containerPath)
             {
@@ -146,9 +146,9 @@ function Save-AzureWebAppStorageContent
             $blobs = $container | Get-AzStorageBlob |
                 Where-Object {
                 (!$folderWhiteListValid -or ($folderWhiteListValid -and
-                    (Compare-Object $PSItem.Name.Split("/", [StringSplitOptions]::RemoveEmptyEntries) $FolderWhiteList @comparisonParameters))) -and
+                    (Compare-Object $PSItem.Name.Split('/', [StringSplitOptions]::RemoveEmptyEntries) $FolderWhiteList @comparisonParameters))) -and
                 (!$folderBlackListValid -or ($folderBlackListValid -and
-                    (!(Compare-Object $PSItem.Name.Split("/", [StringSplitOptions]::RemoveEmptyEntries) $FolderBlackList @comparisonParameters))))
+                    (!(Compare-Object $PSItem.Name.Split('/', [StringSplitOptions]::RemoveEmptyEntries) $FolderBlackList @comparisonParameters))))
                 }
 
             foreach ($blob in $blobs)
@@ -164,11 +164,11 @@ function Save-AzureWebAppStorageContent
 
                         foreach ($character in $illegalCharacters)
                         {
-                            $blobPath = $blobPath.Replace($character, "_")
-                            $blobPath = $blobPath.Replace("/", "\")
+                            $blobPath = $blobPath.Replace($character, '_')
+                            $blobPath = $blobPath.Replace('/', '\')
                         }
 
-                        $path = $containerPath + "\" + $blobPath
+                        $path = $containerPath + '\' + $blobPath
 
                         if (-not (Test-Path ($path)))
                         {
@@ -180,12 +180,12 @@ function Save-AzureWebAppStorageContent
                             Container = $container.Name
                             Blob = $blob.Name
                             Destination = $path
-                            ErrorAction = "Stop"
+                            ErrorAction = 'Stop'
                             Force = $true
                         }
                         Get-AzStorageBlobContent @blobParameters | Out-Null
 
-                        Write-Output ("Downloaded `"" + $container.Name + "/" + $blob.Name + "`".")
+                        Write-Output ("Downloaded `"" + $container.Name + '/' + $blob.Name + "`".")
 
                         $success = $true
                     }
@@ -202,7 +202,7 @@ function Save-AzureWebAppStorageContent
 
                 if ($retryCounter -gt $RetryCount)
                 {
-                    Write-Error ("Failed to download the blob `"" + $container.Name + "/" + $blob.Name + "`"!")
+                    Write-Error ("Failed to download the blob `"" + $container.Name + '/' + $blob.Name + "`"!")
                 }
             }
         }
