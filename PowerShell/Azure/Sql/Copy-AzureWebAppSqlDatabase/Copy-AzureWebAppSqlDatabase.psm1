@@ -133,6 +133,7 @@ function Copy-AzureWebAppSqlDatabase
         }
         catch
         {
+            Write-Output "Exception: $PSItem"
             Write-Error ('Could not start copying the database!')
 
             throw
