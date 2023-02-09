@@ -117,6 +117,7 @@ function Copy-AzureWebAppSqlDatabase
 
         try
         {
+            Write-Output "Is this running?"
             # Potential issue here: $DestinationResourceGroupName is the resource group of the web app (slot) that
             # stores the connection string of the destination database. However, it is possible that the destination
             # database's server is in a different resource group (but we don't know that from the connection string).
