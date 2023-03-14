@@ -106,7 +106,7 @@ function Start-AzureWebAppSqlDatabaseExport
         $databaseConnection = Get-AzureWebAppSqlDatabaseConnection @databaseConnectionParameters
 
         $exportParameters = @{
-            ResourceGroupName = $DatabaseResourceGroupName
+            ResourceGroupName = $databaseConnection.ResourceGroupName
             ServerName = $databaseConnection.ServerName
             DatabaseName = $databaseConnection.DatabaseName
             AdministratorLogin = $databaseConnection.UserName
