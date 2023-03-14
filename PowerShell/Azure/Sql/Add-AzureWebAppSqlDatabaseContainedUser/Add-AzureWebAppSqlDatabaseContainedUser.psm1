@@ -92,13 +92,14 @@ function Add-AzureWebAppSqlDatabaseContainedUser
         $query = "CREATE USER [$($userDatabaseConnection.UserName)] WITH PASSWORD = '$($userDatabaseConnection.Password)';" +
         "ALTER ROLE [$UserRole] ADD MEMBER [$($userDatabaseConnection.UserName)];"
 
-        $queryParameters = @{
-            ResourceGroupName = $DatabaseResourceGroupName
-            WebAppName = $DatabaseWebAppName
-            SlotName = $DatabaseSlotName
-            ConnectionStringName = $DatabaseConnectionStringName
-            Query = $query
+        $commandParameters = @{
+            ServerInstance = "$($databaseConnection.ServerName).database.windows.net"
+            Database = $databaseConnection.DatabaseName
+            Username = $databaseConnection.UserName
+            Password = $databaseConnection.Password
+            Query = $Query
+            EncryptConnection = $true
         }
-        return Invoke-AzureWebAppSqlQuery @queryParameters
+        return Invoke-Sqlcmd @commandParameters
     }
 }
