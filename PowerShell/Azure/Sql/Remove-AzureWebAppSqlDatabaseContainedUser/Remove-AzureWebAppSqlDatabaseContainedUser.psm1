@@ -80,13 +80,14 @@ function Remove-AzureWebAppSqlDatabaseContainedUser
 
         $query = "DROP USER IF EXISTS [$($userDatabaseConnection.UserName)];"
 
-        $queryParameters = @{
-            ResourceGroupName = $DatabaseResourceGroupName
-            WebAppName = $DatabaseWebAppName
-            SlotName = $DatabaseSlotName
-            ConnectionStringName = $DatabaseConnectionStringName
-            Query = $query
+        $commandParameters = @{
+            ServerInstance = "$($databaseConnection.ServerName).database.windows.net"
+            Database = $databaseConnection.DatabaseName
+            Username = $databaseConnection.UserName
+            Password = $databaseConnection.Password
+            Query = $Query
+            EncryptConnection = $true
         }
-        return Invoke-AzureWebAppSqlQuery @queryParameters
+        return Invoke-Sqlcmd @commandParameters
     }
 }
