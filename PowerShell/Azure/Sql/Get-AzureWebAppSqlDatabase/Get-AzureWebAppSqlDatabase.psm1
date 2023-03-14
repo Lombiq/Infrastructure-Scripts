@@ -57,7 +57,7 @@ function Get-AzureWebAppSqlDatabase
         $databaseConnection = Get-AzureWebAppSqlDatabaseConnection @databaseConnectionParameters
 
         $databaseParameters = @{
-            ResourceGroupName = $ResourceGroupName
+            ResourceGroupName = $databaseConnection.ResourceGroupName
             ServerName = $databaseConnection.ServerName
             DatabaseName = $databaseConnection.DatabaseName
             ErrorAction = 'Stop'

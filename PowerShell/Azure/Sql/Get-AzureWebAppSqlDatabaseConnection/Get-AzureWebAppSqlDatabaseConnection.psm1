@@ -122,6 +122,8 @@ function Get-AzureWebAppSqlDatabaseConnection
 
 
         return @{
+            # Fetching the name of the Database Server's Resource Group, just in case it's not the same as the App's.
+            ResourceGroupName = (Get-AzSqlServer -ServerName $serverName).ResourceGroupName
             ServerName = $serverName
             DatabaseName = $databaseName
             UserId = $userId
