@@ -8,10 +8,10 @@
 
 .EXAMPLE
     $containedUserParameters = @{
-        ResourceGroupName = "LikeAndSubscribe"
-        WebAppName = "AppsEverywhere"
-        ConnectionStringName = "Lombiq.Hosting.ShellManagement.ShellSettings.RootConnectionString.Localhost-master"
-        UserConnectionStringName = "Lombiq.Hosting.ShellManagement.ShellSettings.RootConnectionString.Localhost
+        ResourceGroupName = 'LikeAndSubscribe'
+        WebAppName = 'AppsEverywhere'
+        ConnectionStringName = 'Lombiq.Hosting.ShellManagement.ShellSettings.RootConnectionString.Localhost-master'
+        UserConnectionStringName = 'Lombiq.Hosting.ShellManagement.ShellSettings.RootConnectionString.Localhost'
     }
     Add-AzureWebAppSqlDatabaseContainedUser @containedUserParameters
 #>
