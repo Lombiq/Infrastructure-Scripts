@@ -76,7 +76,7 @@ function Set-AzureWebAppSqlDatabaseServiceObjective
             return $null
         }
 
-        $serviceObjectives = Get-AzSqlServerServiceObjective -ResourceGroupName $ResourceGroupName -ServerName $database.ServerName
+        $serviceObjectives = Get-AzSqlServerServiceObjective -ResourceGroupName $database.ResourceGroupName -ServerName $database.ServerName
 
         $availableServiceObjectiveNames = $serviceObjectives |
             Where-Object { !$PSItem.IsSystem -and $PSItem.Enabled } |
@@ -95,7 +95,7 @@ function Set-AzureWebAppSqlDatabaseServiceObjective
                 "to `"$($Edition) $($ServiceObjectiveName)`"...`n*****") -InformationAction Continue
 
             $updateDatabaseParameters = @{
-                ResourceGroupName = $ResourceGroupName
+                ResourceGroupName = $database.ResourceGroupName
                 ServerName = $database.ServerName
                 DatabaseName = $database.DatabaseName
                 RequestedServiceObjectiveName = $ServiceObjectiveName
