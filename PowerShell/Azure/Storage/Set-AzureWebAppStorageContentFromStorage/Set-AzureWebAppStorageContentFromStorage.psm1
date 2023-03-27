@@ -164,7 +164,7 @@ function Set-AzureWebAppStorageContentFromStorage
         $containerWhiteListValid = $ContainerWhiteList -and $ContainerWhiteList.Count -gt 0
         $containerBlackListValid = $ContainerBlackList -and $ContainerBlackList.Count -gt 0
 
-        $sourceContainers = Get-AzStorageContainer -Context $sourceStorageContext |
+        $sourceContainers = $sourceStorageContext | Get-AzStorageContainer |
             Where-Object {
                 ((!$containerWhiteListValid -or ($containerWhiteListValid -and $ContainerWhiteList.Contains($PSItem.Name))) -and
                 ($containerWhiteListValid -or (!$containerBlackListValid -or !$ContainerBlackList.Contains($PSItem.Name))))
@@ -263,9 +263,9 @@ function Set-AzureWebAppStorageContentFromStorage
                         DestBlob = $sourceBlob.Name
                         Force = $true
                     }
-                    Start-AzStorageBlobCopy @copyParameters | Out-Null
 
                     Write-Output $sourceBlob.Name
+                    Start-AzStorageBlobCopy @copyParameters | Out-Null
                 }
             }
         }
