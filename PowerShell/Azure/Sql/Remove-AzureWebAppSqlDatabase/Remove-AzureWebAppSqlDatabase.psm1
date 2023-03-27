@@ -48,13 +48,6 @@ function Remove-AzureWebAppSqlDatabase
 
     Process
     {
-        # Preventing deleting the Production root database according to Orchard 1 conventions.
-        if ($ConnectionStringName -eq 'Lombiq.Hosting.ShellManagement.ShellSettings.RootConnectionString' -or
-            $ConnectionStringName.EndsWith('.Production'))
-        {
-            throw "Deleting the Production database is bad, 'mkay?"
-        }
-
         $databaseParameters = @{
             ResourceGroupName = $ResourceGroupName
             WebAppName = $WebAppName
@@ -77,7 +70,5 @@ function Remove-AzureWebAppSqlDatabase
         }
 
         Write-Warning "`n*****`nThe database named `"$($database.DatabaseName)`" on the server `"$($database.ServerName)`" doesn't exist!`n*****`n"
-
-        return $null
     }
 }
