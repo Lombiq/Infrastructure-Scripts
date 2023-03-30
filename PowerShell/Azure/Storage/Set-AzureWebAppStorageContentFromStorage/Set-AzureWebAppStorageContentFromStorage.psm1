@@ -195,6 +195,8 @@ function Set-AzureWebAppStorageContentFromStorage
 
         $folderWhiteListValid = $FolderWhiteList -and $FolderWhiteList.Count -gt 0
         $folderBlackListValid = $FolderBlackList -and $FolderBlackList.Count -gt 0
+        # If the Azure CLI is available and we don't need to filter blobs, then use "az" to copy containers as a whole.
+        $useAzureCli = ($null -ne (Get-Command az -ErrorAction SilentlyContinue)) -and -not $folderWhiteListValid -and -not $folderBlackListValid
 
         foreach ($sourceContainer in $sourceContainers)
         {
@@ -240,32 +242,39 @@ function Set-AzureWebAppStorageContentFromStorage
 
             Write-Output ("`n*****`nCopying blobs from `"$($sourceContainer.Name)`" to `"$destinationContainerName`"`n*****")
 
-            foreach ($sourceBlob in $sourceContainer | Get-AzStorageBlob)
+            if ($useAzureCli)
             {
-                $blobNameElements = $sourceBlob.Name.Split('/', [StringSplitOptions]::RemoveEmptyEntries)
-                $comparisonParameters = @{
-                    PassThru = $true
-                    IncludeEqual = $true
-                    ExcludeDifferent = $true
-                }
+                az storage blob copy start-batch --source-account-name $sourceStorageConnection.AccountName --source-account-key $sourceStorageConnection.AccountKey --source-container $sourceContainer.Name --account-name $destinationStorageConnection.AccountName --account-key $destinationStorageConnection.AccountKey --destination-container $destinationContainerName
+            }
+            else
+            {
+                foreach ($sourceBlob in $sourceContainer | Get-AzStorageBlob)
+                {
+                    $blobNameElements = $sourceBlob.Name.Split('/', [StringSplitOptions]::RemoveEmptyEntries)
+                    $comparisonParameters = @{
+                        PassThru = $true
+                        IncludeEqual = $true
+                        ExcludeDifferent = $true
+                    }
 
-                if ((!$folderWhiteListValid -or
+                    if ((!$folderWhiteListValid -or
                         ($folderWhiteListValid -and (Compare-Object $blobNameElements $FolderWhiteList @comparisonParameters))) -and
                     (!$folderBlackListValid -or
                         ($folderBlackListValid -and (!(Compare-Object $blobNameElements $FolderBlackList @comparisonParameters)))))
-                {
-                    $copyParameters = @{
-                        Context = $sourceStorageContext
-                        SrcContainer = $sourceContainer.Name
-                        SrcBlob = $sourceBlob.Name
-                        DestContext = $destinationStorageContext
-                        DestContainer = $destinationContainerName
-                        DestBlob = $sourceBlob.Name
-                        Force = $true
-                    }
+                    {
+                        $copyParameters = @{
+                            Context = $sourceStorageContext
+                            SrcContainer = $sourceContainer.Name
+                            SrcBlob = $sourceBlob.Name
+                            DestContext = $destinationStorageContext
+                            DestContainer = $destinationContainerName
+                            DestBlob = $sourceBlob.Name
+                            Force = $true
+                        }
 
-                    Write-Output $sourceBlob.Name
-                    Start-AzStorageBlobCopy @copyParameters | Out-Null
+                        Write-Output $sourceBlob.Name
+                        Start-AzStorageBlobCopy @copyParameters | Out-Null
+                    }
                 }
             }
         }
