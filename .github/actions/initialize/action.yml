@@ -16,8 +16,8 @@ runs:
         $destinationPath = ($env:PSModulePath -split [IO.Path]::PathSeparator)[0]
         foreach ($modulePath in (Get-ChildItem $sourcePath -Recurse -Include "*.psm1"))
         {
-            New-Item -ItemType Directory -Path $destinationPath -Name $modulePath.Directory.Name
-            Copy-Item $modulePath -Destination (Join-Path -Path $destinationPath -ChildPath $modulePath.Directory.Name)
+          New-Item -ItemType Directory -Path $destinationPath -Name $modulePath.Directory.Name
+          Copy-Item $modulePath -Destination (Join-Path -Path $destinationPath -ChildPath $modulePath.Directory.Name)
         }
 
     - name: Install and Import Modules
@@ -30,8 +30,8 @@ runs:
 
         foreach ($moduleName in (Get-ChildItem -Directory | select Name))
         {
-            if (Test-Path -Path $moduleName/$moduleName.psm1)
-            {
-                Import-Module $moduleName.Name
-            }
+          if (Test-Path -Path $moduleName/$moduleName.psm1)
+          {
+            Import-Module $moduleName.Name
+          }
         }
