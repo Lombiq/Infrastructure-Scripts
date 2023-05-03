@@ -1,3 +1,19 @@
+<#
+.Synopsis
+    Finds the Azure datacenter with the lowest latency.
+
+.DESCRIPTION
+    Starting from a list of predetermined Azure datacenters and a Blob Storage account with the same file in each of
+    them (under Lombiq's subscription), this script measures the time to download that file from each datacenter to find
+    the one with the lowest latency. Use the "Region" parameter for running against a specific geography group.
+
+.EXAMPLE
+    Find-NearestAzureDatacenter
+
+.EXAMPLE
+    Find-NearestAzureDatacenter -Region Europe
+#>
+
 # Measure latency 10 times, ignore the smallest and largest 2 measurements and average the rest.
 function Measure-Latency($Url)
 {
