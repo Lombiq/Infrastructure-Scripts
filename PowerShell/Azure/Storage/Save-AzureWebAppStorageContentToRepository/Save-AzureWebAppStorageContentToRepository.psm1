@@ -76,6 +76,9 @@ function Save-AzureWebAppStorageContentToRepository
             "the Web App doesn't exist on the given subscription.")]
         [string] $WebAppName,
 
+        [Parameter(HelpMessage = 'The name of the Web App Slot.')]
+        [string] $SlotName,
+
         [Parameter(Mandatory = $true, HelpMessage = 'The name of a connection string that identifies the Storage' +
             ' Account. The script will exit with error if there is no connection string defined with the name' +
             ' provided for the Production slot of the given Web App.')]
@@ -141,6 +144,7 @@ function Save-AzureWebAppStorageContentToRepository
         $saveStorageContentParameters = @{
             ResourceGroupName = $ResourceGroupName
             WebAppName = $WebAppName
+            SlotName = $SlotName
             ConnectionStringName = $ConnectionStringName
             Destination = $destination
             ContainerWhiteList = $ContainerWhiteList

@@ -36,6 +36,7 @@ function Save-AzureWebAppSqlDatabase
         [Parameter(Mandatory = $true, HelpMessage = 'You need to provide the name of the Web App.')]
         [string] $DatabaseWebAppName,
 
+        [Alias('SlotName')]
         [Parameter(HelpMessage = 'The name of the Web App slot.')]
         [string] $DatabaseSlotName,
 
