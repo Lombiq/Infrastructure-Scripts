@@ -30,7 +30,6 @@
         WebAppName = "NiceApp"
         SourceConnectionStringName = "SourceStorage"
         DestinationConnectionStringName = "DestinationStorage"
-        ContainerBlackList = @("stuffidontneed")
     }
     Set-AzureWebAppStorageContentFromStorageWithAzCopy @setStorageContentParameters
 
@@ -40,7 +39,6 @@
         WebAppName = "NiceApp"
         SourceConnectionStringName = "SourceStorage"
         DestinationConnectionStringName = "DestinationStorage"
-        ContainerBlackList = @("stuffidontneed")
         FolderWhiteList = @("usefulfolder")
     }
     Set-AzureWebAppStorageContentFromStorageWithAzCopy @setStorageContentParameters
@@ -51,7 +49,6 @@
         WebAppName = "NiceApp"
         SourceConnectionStringName = "SourceStorage"
         DestinationConnectionStringName = "DestinationStorage"
-        ContainerBlackList = @("stuffidontneed")
         FolderWhiteList = @("usefulfolder")
         FolderBlackList = @("uselessfolderintheusefulfolder")
     }
@@ -98,19 +95,8 @@ function Set-AzureWebAppStorageContentFromStorageWithAzCopy
         [Parameter(HelpMessage = 'The name of the Destination Connection String if it differs from the Source.')]
         [string] $DestinationConnectionStringName = $SourceConnectionStringName,
 
-        [Parameter(HelpMessage = 'A list of names of Blob Containers to include. When valid values are provided, ' +
-            "it cancels out `"ContainerBlackList`".")]
+        [Parameter(HelpMessage = 'A list of names of Blob Containers to include.')]
         [string[]] $ContainerWhiteList = @(),
-
-        [Parameter(HelpMessage = 'A list of names of Blob Containers to exclude. When valid values are provided ' +
-            "for `"ContainerWhiteList`", then `"ContainerBlackList`" is not taken into consideration.")]
-        [string[]] $ContainerBlackList = @(),
-
-        [Parameter(HelpMessage = "A list of folder names to include. Applied before `"FolderBlackList`".")]
-        [string[]] $FolderWhiteList = @(),
-
-        [Parameter(HelpMessage = "A list of folder names to exclude. Applied after `"FolderWhiteList`".")]
-        [string[]] $FolderBlackList = @(),
 
         [Parameter(HelpMessage = 'Determines whether the destination containers should be deleted and re-created ' +
             'before copying the blobs from the source containers.')]
@@ -128,31 +114,14 @@ function Set-AzureWebAppStorageContentFromStorageWithAzCopy
 
     Process
     {
+        # Check if azcopy command is available.
         $azcopy = Get-Command azcopy -ErrorAction SilentlyContinue
         if ($null -eq $azcopy)
         {
-            Write-Warning 'AzCopy executable not found! Falling back to use "Set-AzureWebAppStorageContentFromStorage" with the available parameters.'
-
-            $setStorageContentParameters = @{
-                SourceResourceGroupName = $SourceResourceGroupName
-                SourceWebAppName = $SourceWebAppName
-                SourceSlotName = $SourceSlotName
-                SourceConnectionStringName = $SourceConnectionStringName
-                DestinationResourceGroupName = $DestinationResourceGroupName
-                DestinationWebAppName = $DestinationWebAppName
-                DestinationSlotName = $DestinationSlotName
-                DestinationConnectionStringName = $DestinationConnectionStringName
-                ContainerWhiteList = $ContainerWhiteList
-                FolderWhiteList = $FolderWhiteList
-                FolderBlackList = $FolderBlackList
-                RemoveExtraFilesOnDestination = $RemoveExtraFilesOnDestination
-                DestinationContainersAccessType = $DestinationContainersAccessType
-                DestinationContainerNamePrefix = $DestinationContainerNamePrefix
-                DestinationContainerNameSuffix = $DestinationContainerNameSuffix
-            }
-            Set-AzureWebAppStorageContentFromStorage @setStorageContentParameters
+            throw 'AzCopy executable not found! Falling back to use "Set-AzureWebAppStorageContentFromStorage" with the available parameters.'
         }
 
+        # Grab the source storage account's connection details.
         $sourceStorageConnectionParameters = @{
             ResourceGroupName = $SourceResourceGroupName
             WebAppName = $SourceWebAppName
@@ -161,6 +130,7 @@ function Set-AzureWebAppStorageContentFromStorageWithAzCopy
         }
         $sourceStorageConnection = Get-AzureWebAppStorageConnection @sourceStorageConnectionParameters
 
+        # Grab the destination storage account's connection details.
         $destinationStorageConnectionParameters = @{
             ResourceGroupName = $DestinationResourceGroupName
             WebAppName = $DestinationWebAppName
@@ -169,17 +139,21 @@ function Set-AzureWebAppStorageContentFromStorageWithAzCopy
         }
         $destinationStorageConnection = Get-AzureWebAppStorageConnection @destinationStorageConnectionParameters
 
+        # Stop if the source and destination storage accounts are the same. We could improve this by allowing when a
+        # destination container name prefix and/or suffix is applied.
         if ($sourceStorageConnection.AccountName -eq $destinationStorageConnection.AccountName)
         {
             throw ('The destination Storage Account can not be the same as the source!')
         }
 
+        # Construct the source storage context.
         $sourceStorageContextParameters = @{
             StorageAccountName = $sourceStorageConnection.AccountName
             StorageAccountKey = $sourceStorageConnection.AccountKey
         }
         $sourceStorageContext = New-AzStorageContext @sourceStorageContextParameters
 
+        # Construct the destination storage context.
         $destinationStorageContextParameters = @{
             StorageAccountName = $destinationStorageConnection.AccountName
             StorageAccountKey = $destinationStorageConnection.AccountKey
@@ -187,13 +161,9 @@ function Set-AzureWebAppStorageContentFromStorageWithAzCopy
         $destinationStorageContext = New-AzStorageContext @destinationStorageContextParameters
 
         $containerWhiteListValid = $ContainerWhiteList -and $ContainerWhiteList.Count -gt 0
-        $containerBlackListValid = $ContainerBlackList -and $ContainerBlackList.Count -gt 0
 
         $sourceContainers = $sourceStorageContext | Get-AzStorageContainer |
-            Where-Object {
-                ((!$containerWhiteListValid -or ($containerWhiteListValid -and $ContainerWhiteList.Contains($PSItem.Name))) -and
-                ($containerWhiteListValid -or (!$containerBlackListValid -or !$ContainerBlackList.Contains($PSItem.Name))))
-            }
+            Where-Object { !$containerWhiteListValid -or ($containerWhiteListValid -and $ContainerWhiteList.Contains($PSItem.Name)) }
         $sourceContainerNames = $sourceContainers | Select-Object -ExpandProperty 'Name'
 
         if ($null -eq $sourceContainers)
@@ -217,11 +187,6 @@ function Set-AzureWebAppStorageContentFromStorageWithAzCopy
                 Where-Object { $sourceContainerNames.Contains($PSItem.Name) } |
                 Remove-AzStorageContainer -Force
         }
-
-        $folderWhiteListValid = $FolderWhiteList -and $FolderWhiteList.Count -gt 0
-        $folderBlackListValid = $FolderBlackList -and $FolderBlackList.Count -gt 0
-        # If the Azure CLI is available and we don't need to filter blobs, then use "az" to copy containers as a whole.
-        $useAzureCli = ($null -ne (Get-Command az -ErrorAction SilentlyContinue)) -and -not $folderWhiteListValid -and -not $folderBlackListValid
 
         foreach ($sourceContainer in $sourceContainers)
         {
@@ -266,42 +231,6 @@ function Set-AzureWebAppStorageContentFromStorageWithAzCopy
             }
 
             Write-Output ("`n*****`nCopying blobs from `"$($sourceContainer.Name)`" to `"$destinationContainerName`"`n*****")
-
-            if ($useAzureCli)
-            {
-                az storage blob copy start-batch --source-account-name $sourceStorageConnection.AccountName --source-account-key $sourceStorageConnection.AccountKey --source-container $sourceContainer.Name --account-name $destinationStorageConnection.AccountName --account-key $destinationStorageConnection.AccountKey --destination-container $destinationContainerName
-            }
-            else
-            {
-                foreach ($sourceBlob in $sourceContainer | Get-AzStorageBlob)
-                {
-                    $blobNameElements = $sourceBlob.Name.Split('/', [StringSplitOptions]::RemoveEmptyEntries)
-                    $comparisonParameters = @{
-                        PassThru = $true
-                        IncludeEqual = $true
-                        ExcludeDifferent = $true
-                    }
-
-                    if ((!$folderWhiteListValid -or
-                        ($folderWhiteListValid -and (Compare-Object $blobNameElements $FolderWhiteList @comparisonParameters))) -and
-                    (!$folderBlackListValid -or
-                        ($folderBlackListValid -and (!(Compare-Object $blobNameElements $FolderBlackList @comparisonParameters)))))
-                    {
-                        $copyParameters = @{
-                            Context = $sourceStorageContext
-                            SrcContainer = $sourceContainer.Name
-                            SrcBlob = $sourceBlob.Name
-                            DestContext = $destinationStorageContext
-                            DestContainer = $destinationContainerName
-                            DestBlob = $sourceBlob.Name
-                            Force = $true
-                        }
-
-                        Write-Output $sourceBlob.Name
-                        Start-AzStorageBlobCopy @copyParameters | Out-Null
-                    }
-                }
-            }
         }
     }
 }
