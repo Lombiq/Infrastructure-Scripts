@@ -23,36 +23,6 @@
         ContainerWhiteList = @("media", "stuff")
     }
     Set-AzureWebAppStorageContentFromStorageWithAzCopy @setStorageContentParameters
-
-.EXAMPLE
-    $setStorageContentParameters = @{
-        ResourceGroupName = "CoolStuffHere"
-        WebAppName = "NiceApp"
-        SourceConnectionStringName = "SourceStorage"
-        DestinationConnectionStringName = "DestinationStorage"
-    }
-    Set-AzureWebAppStorageContentFromStorageWithAzCopy @setStorageContentParameters
-
-.EXAMPLE
-    $setStorageContentParameters = @{
-        ResourceGroupName = "CoolStuffHere"
-        WebAppName = "NiceApp"
-        SourceConnectionStringName = "SourceStorage"
-        DestinationConnectionStringName = "DestinationStorage"
-        FolderWhiteList = @("usefulfolder")
-    }
-    Set-AzureWebAppStorageContentFromStorageWithAzCopy @setStorageContentParameters
-
-.EXAMPLE
-    $setStorageContentParameters = @{
-        ResourceGroupName = "CoolStuffHere"
-        WebAppName = "NiceApp"
-        SourceConnectionStringName = "SourceStorage"
-        DestinationConnectionStringName = "DestinationStorage"
-        FolderWhiteList = @("usefulfolder")
-        FolderBlackList = @("uselessfolderintheusefulfolder")
-    }
-    Set-AzureWebAppStorageContentFromStorageWithAzCopy @setStorageContentParameters
 #>
 
 Import-Module Az.Storage
@@ -160,16 +130,18 @@ function Set-AzureWebAppStorageContentFromStorageWithAzCopy
         }
         $destinationStorageContext = New-AzStorageContext @destinationStorageContextParameters
 
+        # Preparing to validate the list of source containers.
         $containerWhiteListValid = $ContainerWhiteList -and $ContainerWhiteList.Count -gt 0
-
         $sourceContainers = $sourceStorageContext | Get-AzStorageContainer |
             Where-Object { !$containerWhiteListValid -or ($containerWhiteListValid -and $ContainerWhiteList.Contains($PSItem.Name)) }
         $sourceContainerNames = $sourceContainers | Select-Object -ExpandProperty 'Name'
 
+        # Throwing error if none of the source containers exist.
         if ($null -eq $sourceContainers)
         {
-            throw "Couldn't find any of the specified containers in the source Storage Account!"
+            throw 'Couldn''t find any of the specified containers in the source Storage Account!'
         }
+        # Throwing error if some of the source containers don't exist.
         elseif ($containerWhiteListValid)
         {
             $notFoundSourceContainerNames = $ContainerWhiteList | Where-Object { $sourceContainerNames -notcontains $PSItem }
@@ -180,21 +152,14 @@ function Set-AzureWebAppStorageContentFromStorageWithAzCopy
             }
         }
 
-        # Removing containers on the destination, if necessary.
-        if ($RemoveExtraFilesOnDestination)
-        {
-            Get-AzStorageContainer -Context $destinationStorageContext |
-                Where-Object { $sourceContainerNames.Contains($PSItem.Name) } |
-                Remove-AzStorageContainer -Force
-        }
-
+        # Iterating through the source containers.
         foreach ($sourceContainer in $sourceContainers)
         {
+            # Constructing the destination container name.
             $destinationContainerName = $DestinationContainerNamePrefix + $sourceContainer.Name + $DestinationContainerNameSuffix
 
-            # Creating the container on the destination if it was removed or it doesn't exist yet.
-            if ($RemoveExtraFilesOnDestination -or
-                $null -eq (Get-AzStorageContainer -Context $destinationStorageContext | Where-Object { $PSItem.Name -eq $destinationContainerName }))
+            # Creating the container on the destination account if it doesn't exist yet.
+            if ($null -eq (Get-AzStorageContainer -Context $destinationStorageContext | Where-Object { $PSItem.Name -eq $destinationContainerName }))
             {
                 $containerCreated = $false
 
@@ -230,7 +195,20 @@ function Set-AzureWebAppStorageContentFromStorageWithAzCopy
                 while (!$containerCreated)
             }
 
-            Write-Output ("`n*****`nCopying blobs from `"$($sourceContainer.Name)`" to `"$destinationContainerName`"`n*****")
+            $destinationAccessToken = New-AzStorageAccountSASToken -Context $destinationStorageContext -Service Blob -ResourceType 'Container,Object' -Permission 'lrwd' -ExpiryTime (Get-Date).AddMinutes(2) -Protocol HttpsOnly
+            $destinationContainerUrl = "https://$($destinationStorageConnection.AccountName).blob.core.windows.net/$($destinationContainerName + $destinationAccessToken)"
+
+            if ($RemoveExtraFilesOnDestination)
+            {
+                azcopy remove $destinationContainerUrl --recursive=true
+            }
+
+            $sourceAccessToken = New-AzStorageAccountSASToken -Context $sourceStorageContext -Service Blob -ResourceType 'Container,Object' -Permission 'lr' -ExpiryTime (Get-Date).AddMinutes(1) -Protocol HttpsOnly
+            $sourceContainerUrl = "https://$($sourceStorageConnection.AccountName).blob.core.windows.net/$($sourceContainer.Name + $sourceAccessToken)"
+            $preserveAccessTierOnDestination = $null -ne (Get-AzStorageAccount -ResourceGroupName $DestinationResourceGroupName -Name $destinationStorageConnection.AccountName).AccessTier
+
+            # WARNING: The first two unnamed parameters are the source and the destination in this order.
+            azcopy copy $sourceContainerUrl $destinationContainerUrl --recursive=true --s2s-preserve-access-tier=$preserveAccessTierOnDestination
         }
     }
 }
