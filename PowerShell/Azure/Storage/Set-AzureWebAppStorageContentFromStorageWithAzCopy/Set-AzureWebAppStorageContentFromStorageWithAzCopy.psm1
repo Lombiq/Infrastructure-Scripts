@@ -63,7 +63,7 @@ Import-Module Az.Storage
 function Set-AzureWebAppStorageContentFromStorageWithAzCopy
 {
     [CmdletBinding()]
-    [Alias('sascs')]
+    [Alias('sascsazc')]
     Param
     (
         [Alias('ResourceGroupName')]
@@ -128,6 +128,31 @@ function Set-AzureWebAppStorageContentFromStorageWithAzCopy
 
     Process
     {
+        $azcopy = Get-Command azcopy -ErrorAction SilentlyContinue
+        if ($null -eq $azcopy)
+        {
+            Write-Warning 'AzCopy executable not found! Falling back to use "Set-AzureWebAppStorageContentFromStorage" with the available parameters.'
+
+            $setStorageContentParameters = @{
+                SourceResourceGroupName = $SourceResourceGroupName
+                SourceWebAppName = $SourceWebAppName
+                SourceSlotName = $SourceSlotName
+                SourceConnectionStringName = $SourceConnectionStringName
+                DestinationResourceGroupName = $DestinationResourceGroupName
+                DestinationWebAppName = $DestinationWebAppName
+                DestinationSlotName = $DestinationSlotName
+                DestinationConnectionStringName = $DestinationConnectionStringName
+                ContainerWhiteList = $ContainerWhiteList
+                FolderWhiteList = $FolderWhiteList
+                FolderBlackList = $FolderBlackList
+                RemoveExtraFilesOnDestination = $RemoveExtraFilesOnDestination
+                DestinationContainersAccessType = $DestinationContainersAccessType
+                DestinationContainerNamePrefix = $DestinationContainerNamePrefix
+                DestinationContainerNameSuffix = $DestinationContainerNameSuffix
+            }
+            Set-AzureWebAppStorageContentFromStorage @setStorageContentParameters
+        }
+
         $sourceStorageConnectionParameters = @{
             ResourceGroupName = $SourceResourceGroupName
             WebAppName = $SourceWebAppName
