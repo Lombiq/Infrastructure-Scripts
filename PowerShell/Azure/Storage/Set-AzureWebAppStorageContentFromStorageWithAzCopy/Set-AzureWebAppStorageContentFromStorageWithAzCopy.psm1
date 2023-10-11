@@ -177,38 +177,19 @@ function Set-AzureWebAppStorageContentFromStorageWithAzCopy
             # Creating the container on the destination account if it doesn't exist yet.
             if ($null -eq (Get-AzStorageContainer -Context $destinationStorageContext | Where-Object { $PSItem.Name -eq $destinationContainerName }))
             {
-                $containerCreated = $false
-
-                do
+                $containerAccessType = $DestinationContainersAccessType
+                if ($null -eq $containerAccessType)
                 {
-                    try
-                    {
-                        $containerAccessType = $DestinationContainersAccessType
-                        if ($null -eq $containerAccessType)
-                        {
-                            $containerAccessType = $sourceContainer.PublicAccess
-                        }
-
-                        $newContainerParameters = @{
-                            Context = $destinationStorageContext
-                            Permission = $containerAccessType
-                            Name = $destinationContainerName
-                            ErrorAction = 'Stop'
-                        }
-                        New-AzStorageContainer @newContainerParameters
-
-                        $containerCreated = $true
-                    }
-                    # Catching [Microsoft.WindowsAzure.Storage.StorageException] is not sufficient for some reason...
-                    catch [System.Net.WebException], [System.Exception]
-                    {
-                        Write-Warning ("Error during re-creating the container `"$($sourceContainer.Name)`". Retrying in a few seconds...`n" +
-                            $PSItem.Exception.Message + "`n")
-
-                        Start-Sleep 5
-                    }
+                    $containerAccessType = $sourceContainer.PublicAccess
                 }
-                while (!$containerCreated)
+
+                $newContainerParameters = @{
+                    Context = $destinationStorageContext
+                    Permission = $containerAccessType
+                    Name = $destinationContainerName
+                    ErrorAction = 'Stop'
+                }
+                New-AzStorageContainer @newContainerParameters
             }
 
             $destinationAccessToken = New-AzStorageAccountSASToken -Context $destinationStorageContext -Service Blob -ResourceType 'Container,Object' -Permission 'lrwd' -ExpiryTime (Get-Date).AddMinutes($SasLifetimeMinutes) -Protocol HttpsOnly
