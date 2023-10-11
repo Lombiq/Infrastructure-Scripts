@@ -196,6 +196,7 @@ function Set-AzureWebAppStorageContentFromStorageWithAzCopy
             }
 
             $destinationAccessToken = New-AzStorageAccountSASToken -Context $destinationStorageContext -Service Blob -ResourceType 'Container,Object' -Permission 'lrwd' -ExpiryTime (Get-Date).AddMinutes(2) -Protocol HttpsOnly
+            if ($destinationAccessToken -notlike '?*') { $destinationAccessToken = "?$destinationAccessToken" }
             $destinationContainerUrl = "https://$($destinationStorageConnection.AccountName).blob.core.windows.net/$($destinationContainerName + $destinationAccessToken)"
 
             if ($RemoveExtraFilesOnDestination)
@@ -204,6 +205,7 @@ function Set-AzureWebAppStorageContentFromStorageWithAzCopy
             }
 
             $sourceAccessToken = New-AzStorageAccountSASToken -Context $sourceStorageContext -Service Blob -ResourceType 'Container,Object' -Permission 'lr' -ExpiryTime (Get-Date).AddMinutes(1) -Protocol HttpsOnly
+            if ($sourceAccessToken -notlike '?*') { $sourceAccessToken = "?$sourceAccessToken" }
             $sourceContainerUrl = "https://$($sourceStorageConnection.AccountName).blob.core.windows.net/$($sourceContainer.Name + $sourceAccessToken)"
             $preserveAccessTierOnDestination = $null -ne (Get-AzStorageAccount -ResourceGroupName $DestinationResourceGroupName -Name $destinationStorageConnection.AccountName).AccessTier
 
