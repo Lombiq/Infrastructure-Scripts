@@ -207,6 +207,9 @@ function Set-AzureWebAppStorageContentFromStorageWithAzCopy
             $sourceAccessToken = New-AzStorageAccountSASToken -Context $sourceStorageContext -Service Blob -ResourceType 'Container,Object' -Permission 'lr' -ExpiryTime (Get-Date).AddMinutes($SasLifetimeMinutes) -Protocol HttpsOnly
             if ($sourceAccessToken -notlike '?*') { $sourceAccessToken = "?$sourceAccessToken" }
             $sourceContainerUrl = "https://$($sourceStorageConnection.AccountName).blob.core.windows.net/$($sourceContainer.Name + $sourceAccessToken)"
+
+            # This requires the Read role assignment on the Storage Account, whereas Storage Blob Data Contributor is
+            # sufficient for CRUD operations on blobs.
             $preserveAccessTierOnDestination = $null -ne (Get-AzStorageAccount -ResourceGroupName $DestinationResourceGroupName -Name $destinationStorageConnection.AccountName).AccessTier
 
             # And finally, the actual copy operation.
