@@ -23,6 +23,17 @@
         ContainerWhiteList = @("media", "stuff")
     }
     Set-AzureWebAppStorageContentFromStorageWithAzCopy @setStorageContentParameters
+
+.EXAMPLE
+    $setStorageContentParameters = @{
+        ResourceGroupName = "CoolStuffHere"
+        WebAppName = "NiceApp"
+        SourceConnectionStringName = "SourceStorage"
+        DestinationConnectionStringName = "DestinationStorage"
+        ContainerWhiteList = @("media", "stuff")
+        SasLifetimeMinutes = 10
+    }
+    Set-AzureWebAppStorageContentFromStorageWithAzCopy @setStorageContentParameters
 #>
 
 Import-Module Az.Storage
@@ -71,6 +82,11 @@ function Set-AzureWebAppStorageContentFromStorageWithAzCopy
         [Parameter(HelpMessage = 'Determines whether the destination containers should be deleted and re-created ' +
             'before copying the blobs from the source containers.')]
         [bool] $RemoveExtraFilesOnDestination = $true,
+
+        [Parameter(HelpMessage = 'The number of minutes the generated Shared Access Signature ' +
+            '(https://learn.microsoft.com/en-us/azure/storage/common/storage-sas-overview) used for blob storage ' +
+            'operations is valid for.')]
+        [int] $SasLifetimeMinutes = 5,
 
         [Parameter(HelpMessage = 'Overrides the access level of the containers, but only affects those that are (re-)created.')]
         [Microsoft.WindowsAzure.Storage.Blob.BlobContainerPublicAccessType] $DestinationContainersAccessType,
@@ -195,7 +211,7 @@ function Set-AzureWebAppStorageContentFromStorageWithAzCopy
                 while (!$containerCreated)
             }
 
-            $destinationAccessToken = New-AzStorageAccountSASToken -Context $destinationStorageContext -Service Blob -ResourceType 'Container,Object' -Permission 'lrwd' -ExpiryTime (Get-Date).AddMinutes(2) -Protocol HttpsOnly
+            $destinationAccessToken = New-AzStorageAccountSASToken -Context $destinationStorageContext -Service Blob -ResourceType 'Container,Object' -Permission 'lrwd' -ExpiryTime (Get-Date).AddMinutes($SasLifetimeMinutes) -Protocol HttpsOnly
             if ($destinationAccessToken -notlike '?*') { $destinationAccessToken = "?$destinationAccessToken" }
             $destinationContainerUrl = "https://$($destinationStorageConnection.AccountName).blob.core.windows.net/$($destinationContainerName + $destinationAccessToken)"
 
@@ -204,7 +220,7 @@ function Set-AzureWebAppStorageContentFromStorageWithAzCopy
                 azcopy remove $destinationContainerUrl --recursive=true
             }
 
-            $sourceAccessToken = New-AzStorageAccountSASToken -Context $sourceStorageContext -Service Blob -ResourceType 'Container,Object' -Permission 'lr' -ExpiryTime (Get-Date).AddMinutes(1) -Protocol HttpsOnly
+            $sourceAccessToken = New-AzStorageAccountSASToken -Context $sourceStorageContext -Service Blob -ResourceType 'Container,Object' -Permission 'lr' -ExpiryTime (Get-Date).AddMinutes($SasLifetimeMinutes) -Protocol HttpsOnly
             if ($sourceAccessToken -notlike '?*') { $sourceAccessToken = "?$sourceAccessToken" }
             $sourceContainerUrl = "https://$($sourceStorageConnection.AccountName).blob.core.windows.net/$($sourceContainer.Name + $sourceAccessToken)"
             $preserveAccessTierOnDestination = $null -ne (Get-AzStorageAccount -ResourceGroupName $DestinationResourceGroupName -Name $destinationStorageConnection.AccountName).AccessTier
