@@ -83,9 +83,9 @@ function Set-AzureWebAppStorageContentFromStorageWithAzCopy
             'before copying the blobs from the source containers.')]
         [bool] $RemoveExtraFilesOnDestination = $true,
 
-        [Parameter(HelpMessage = 'The number of minutes the generated Shared Access Signature ' +
+        [Parameter(HelpMessage = 'The number of minutes defining how long the generated Shared Access Signatures ' +
             '(https://learn.microsoft.com/en-us/azure/storage/common/storage-sas-overview) used for blob storage ' +
-            'operations is valid for.')]
+            'operations are valid for. Default value is 5.')]
         [int] $SasLifetimeMinutes = 5,
 
         [Parameter(HelpMessage = 'Overrides the access level of the containers, but only affects those that are (re-)created.')]
