@@ -104,7 +104,7 @@ function Set-AzureWebAppStorageContentFromStorageWithAzCopy
         $azcopy = Get-Command azcopy -ErrorAction SilentlyContinue
         if ($null -eq $azcopy)
         {
-            throw 'AzCopy executable not found! Falling back to use "Set-AzureWebAppStorageContentFromStorage" with the available parameters.'
+            throw 'AzCopy executable not found! You can use "Set-AzureWebAppStorageContentFromStorage" instead.'
         }
 
         # Grab the source storage account's connection details.
@@ -129,7 +129,7 @@ function Set-AzureWebAppStorageContentFromStorageWithAzCopy
         # destination container name prefix and/or suffix is applied.
         if ($sourceStorageConnection.AccountName -eq $destinationStorageConnection.AccountName)
         {
-            throw ('The destination Storage Account can not be the same as the source!')
+            throw 'The destination Storage Account can not be the same as the source!'
         }
 
         # Construct the source storage context.
