@@ -20,7 +20,7 @@
         WebAppName = "NiceApp"
         SourceConnectionStringName = "SourceStorage"
         DestinationConnectionStringName = "DestinationStorage"
-        ContainerWhiteList = @("media", "stuff")
+        ContainerIncludeList = @("media", "stuff")
     }
     Set-AzureWebAppStorageContentFromStorageWithAzCopy @setStorageContentParameters
 
@@ -30,7 +30,7 @@
         WebAppName = "NiceApp"
         SourceConnectionStringName = "SourceStorage"
         DestinationConnectionStringName = "DestinationStorage"
-        ContainerWhiteList = @("media", "stuff")
+        ContainerIncludeList = @("media", "stuff")
         SasLifetimeMinutes = 10
     }
     Set-AzureWebAppStorageContentFromStorageWithAzCopy @setStorageContentParameters
@@ -77,7 +77,7 @@ function Set-AzureWebAppStorageContentFromStorageWithAzCopy
         [string] $DestinationConnectionStringName = $SourceConnectionStringName,
 
         [Parameter(HelpMessage = 'A list of names of Blob Containers to include.')]
-        [string[]] $ContainerWhiteList = @(),
+        [string[]] $ContainerIncludeList = @(),
 
         [Parameter(HelpMessage = 'Determines whether the destination containers should be deleted and re-created ' +
             'before copying the blobs from the source containers.')]
@@ -147,9 +147,9 @@ function Set-AzureWebAppStorageContentFromStorageWithAzCopy
         $destinationStorageContext = New-AzStorageContext @destinationStorageContextParameters
 
         # Preparing to validate the list of source containers.
-        $containerWhiteListValid = $ContainerWhiteList -and $ContainerWhiteList.Count -gt 0
+        $containerIncludeListValid = $ContainerIncludeList -and $ContainerIncludeList.Count -gt 0
         $sourceContainers = $sourceStorageContext | Get-AzStorageContainer |
-            Where-Object { !$containerWhiteListValid -or ($containerWhiteListValid -and $ContainerWhiteList.Contains($PSItem.Name)) }
+            Where-Object { !$containerIncludeListValid -or ($containerIncludeListValid -and $ContainerIncludeList.Contains($PSItem.Name)) }
         $sourceContainerNames = $sourceContainers | Select-Object -ExpandProperty 'Name'
 
         # Throwing error if none of the source containers exist.
@@ -158,9 +158,9 @@ function Set-AzureWebAppStorageContentFromStorageWithAzCopy
             throw 'Couldn''t find any of the specified containers in the source Storage Account!'
         }
         # Throwing error if some of the source containers don't exist.
-        elseif ($containerWhiteListValid)
+        elseif ($containerIncludeListValid)
         {
-            $notFoundSourceContainerNames = $ContainerWhiteList | Where-Object { $sourceContainerNames -notcontains $PSItem }
+            $notFoundSourceContainerNames = $ContainerIncludeList | Where-Object { $sourceContainerNames -notcontains $PSItem }
 
             if ($null -ne $notFoundSourceContainerNames)
             {
