@@ -193,7 +193,17 @@ function Set-AzureWebAppStorageContentFromStorageWithAzCopy
             }
 
             # Requesting access token for the destination container and constructing the copy URL.
-            $destinationAccessToken = New-AzStorageAccountSASToken -Context $destinationStorageContext -Service Blob -ResourceType 'Container,Object' -Permission 'lrwd' -ExpiryTime (Get-Date).AddMinutes($SasLifetimeMinutes) -Protocol HttpsOnly
+            $accessTokenCommonParameters = @{
+                Service = 'Blob'
+                ResourceType = 'Container,Object'
+                Protocol = 'HttpsOnly'
+            }
+            $destinationAccessTokenParameters = @{
+                Context = $destinationStorageContext
+                Permission = 'lrwd'
+                ExpiryTime = (Get-Date).AddMinutes($SasLifetimeMinutes)
+            }
+            $destinationAccessToken = New-AzStorageAccountSASToken @accessTokenCommonParameters @destinationAccessTokenParameters
             if ($destinationAccessToken -notlike '?*') { $destinationAccessToken = "?$destinationAccessToken" }
             $destinationContainerUrl = "https://$($destinationStorageConnection.AccountName).blob.core.windows.net/$($destinationContainerName + $destinationAccessToken)"
 
@@ -204,7 +214,12 @@ function Set-AzureWebAppStorageContentFromStorageWithAzCopy
             }
 
             # Requesting access token for the source container and constructing the copy URL.
-            $sourceAccessToken = New-AzStorageAccountSASToken -Context $sourceStorageContext -Service Blob -ResourceType 'Container,Object' -Permission 'lr' -ExpiryTime (Get-Date).AddMinutes($SasLifetimeMinutes) -Protocol HttpsOnly
+            $sourceAccessTokenParameters = @{
+                Context = $sourceStorageContext
+                Permission = 'lr'
+                ExpiryTime = (Get-Date).AddMinutes($SasLifetimeMinutes)
+            }
+            $sourceAccessToken = New-AzStorageAccountSASToken @accessTokenCommonParameters @sourceAccessTokenParameters
             if ($sourceAccessToken -notlike '?*') { $sourceAccessToken = "?$sourceAccessToken" }
             $sourceContainerUrl = "https://$($sourceStorageConnection.AccountName).blob.core.windows.net/$($sourceContainer.Name + $sourceAccessToken)"
 
