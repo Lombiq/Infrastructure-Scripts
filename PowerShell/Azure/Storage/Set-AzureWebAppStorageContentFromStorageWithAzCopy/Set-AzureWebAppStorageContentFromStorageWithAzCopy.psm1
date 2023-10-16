@@ -207,12 +207,6 @@ function Set-AzureWebAppStorageContentFromStorageWithAzCopy
             if ($destinationAccessToken -notlike '?*') { $destinationAccessToken = "?$destinationAccessToken" }
             $destinationContainerUrl = "https://$($destinationStorageConnection.AccountName).blob.core.windows.net/$($destinationContainerName + $destinationAccessToken)"
 
-            # Clearing out the destination container, if necessary.
-            if ($RemoveExtraFilesOnDestination)
-            {
-                azcopy remove $destinationContainerUrl --recursive=true
-            }
-
             # Requesting access token for the source container and constructing the copy URL.
             $sourceAccessTokenParameters = @{
                 Context = $sourceStorageContext
@@ -229,7 +223,7 @@ function Set-AzureWebAppStorageContentFromStorageWithAzCopy
 
             # And finally, the actual copy operation.
             # WARNING: The first two unnamed parameters are the source and the destination in this order.
-            azcopy copy $sourceContainerUrl $destinationContainerUrl --recursive=true --s2s-preserve-access-tier=$preserveAccessTierOnDestination
+            azcopy sync $sourceContainerUrl $destinationContainerUrl --recursive=true --s2s-preserve-access-tier=$preserveAccessTierOnDestination --delete-destination=$RemoveExtraFilesOnDestination
         }
     }
 }
