@@ -260,8 +260,8 @@ function Invoke-AzureWebAppStorageAzCopy
                 if ($destinationAccessToken -notlike '?*') { $destinationAccessToken = "?$destinationAccessToken" }
                 $currentContainerDestination = "https://$($destinationStorageConnection.AccountName).blob.core.windows.net/$($destinationContainerName + $destinationAccessToken)"
             }
-            # If the destination path is overriden and is a valid local path, then create the destination folder, if it
-            # doesn't exist yet.
+            # If the destination path is overriden and is a valid local path, then create the destination folder for the
+            # container, if it doesn't exist yet.
             elseif ($DestinationAbsolutePath -and [System.IO.Path]::IsPathRooted($DestinationAbsolutePath) -and (Test-Path $DestinationAbsolutePath -IsValid))
             {
                 $currentContainerDestination = Join-Path $DestinationAbsolutePath $sourceContainer.Name
@@ -273,7 +273,7 @@ function Invoke-AzureWebAppStorageAzCopy
             }
             else
             {
-                throw 'DestinationAbsolutePath is not a valid local path!'
+                throw "'$DestinationAbsolutePath' is not a valid local path for DestinationAbsolutePath!"
             }
 
             # Requesting access token for the source container and constructing the copy URL.
