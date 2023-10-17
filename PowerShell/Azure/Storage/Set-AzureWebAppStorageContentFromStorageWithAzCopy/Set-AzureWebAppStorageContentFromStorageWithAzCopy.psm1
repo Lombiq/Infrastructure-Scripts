@@ -95,7 +95,11 @@ function Set-AzureWebAppStorageContentFromStorageWithAzCopy
         [string] $DestinationContainerNamePrefix = '',
 
         [Parameter(HelpMessage = 'Adds a suffix to the name of the containers, but only affects those that are (re-)created.')]
-        [string] $DestinationContainerNameSuffix = ''
+        [string] $DestinationContainerNameSuffix = '',
+
+        [string] $CustomDestinationUrl = $null,
+        [string[]] $IncludeRegexes,
+        [string[]] $ExcludeRegexes
     )
 
     Process
@@ -192,20 +196,33 @@ function Set-AzureWebAppStorageContentFromStorageWithAzCopy
                 New-AzStorageContainer @newContainerParameters
             }
 
-            # Requesting access token for the destination container and constructing the copy URL.
             $accessTokenCommonParameters = @{
                 Service = 'Blob'
                 ResourceType = 'Container,Object'
                 Protocol = 'HttpsOnly'
             }
-            $destinationAccessTokenParameters = @{
-                Context = $destinationStorageContext
-                Permission = 'lrwd'
-                ExpiryTime = (Get-Date).AddMinutes($SasLifetimeMinutes)
+
+            # Requesting access token for the destination container and constructing the copy URL.
+            if ($CustomDestinationUrl)
+            {
+                $destinationContainerUrl = Join-Path $CustomDestinationUrl $destinationContainerName
+
+                if (-not (Test-Path $destinationContainerUrl -PathType Container))
+                {
+                    New-Item -Path $destinationContainerUrl -ItemType Directory
+                }
             }
-            $destinationAccessToken = New-AzStorageAccountSASToken @accessTokenCommonParameters @destinationAccessTokenParameters
-            if ($destinationAccessToken -notlike '?*') { $destinationAccessToken = "?$destinationAccessToken" }
-            $destinationContainerUrl = "https://$($destinationStorageConnection.AccountName).blob.core.windows.net/$($destinationContainerName + $destinationAccessToken)"
+            else
+            {
+                $destinationAccessTokenParameters = @{
+                    Context = $destinationStorageContext
+                    Permission = 'lrwd'
+                    ExpiryTime = (Get-Date).AddMinutes($SasLifetimeMinutes)
+                }
+                $destinationAccessToken = New-AzStorageAccountSASToken @accessTokenCommonParameters @destinationAccessTokenParameters
+                if ($destinationAccessToken -notlike '?*') { $destinationAccessToken = "?$destinationAccessToken" }
+                $destinationContainerUrl = "https://$($destinationStorageConnection.AccountName).blob.core.windows.net/$($destinationContainerName + $destinationAccessToken)"
+            }
 
             # Requesting access token for the source container and constructing the copy URL.
             $sourceAccessTokenParameters = @{
@@ -223,7 +240,7 @@ function Set-AzureWebAppStorageContentFromStorageWithAzCopy
 
             # And finally, the actual copy operation.
             # WARNING: The first two unnamed parameters are the source and the destination in this order.
-            azcopy sync $sourceContainerUrl $destinationContainerUrl --recursive=true --s2s-preserve-access-tier=$preserveAccessTierOnDestination --delete-destination=$RemoveExtraFilesOnDestination
+            azcopy sync $sourceContainerUrl $destinationContainerUrl --recursive=true --s2s-preserve-access-tier=$preserveAccessTierOnDestination --delete-destination=$RemoveExtraFilesOnDestination --include-regex="$($IncludeRegexes -join ';')" --exclude-regex="$($ExcludeRegexes -join ';')"
         }
     }
 }
