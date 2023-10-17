@@ -12,7 +12,7 @@
         SourceConnectionStringName = "SourceStorage"
         DestinationConnectionStringName = "DestinationStorage"
     }
-    Set-AzureWebAppStorageContentFromStorageWithAzCopy @setStorageContentParameters
+    Invoke-AzureWebAppStorageAzCopy @setStorageContentParameters
 
 .EXAMPLE
     $setStorageContentParameters = @{
@@ -22,7 +22,7 @@
         DestinationConnectionStringName = "DestinationStorage"
         ContainerIncludeList = @("media", "stuff")
     }
-    Set-AzureWebAppStorageContentFromStorageWithAzCopy @setStorageContentParameters
+    Invoke-AzureWebAppStorageAzCopy @setStorageContentParameters
 
 .EXAMPLE
     $setStorageContentParameters = @{
@@ -33,12 +33,12 @@
         ContainerIncludeList = @("media", "stuff")
         SasLifetimeMinutes = 10
     }
-    Set-AzureWebAppStorageContentFromStorageWithAzCopy @setStorageContentParameters
+    Invoke-AzureWebAppStorageAzCopy @setStorageContentParameters
 #>
 
 Import-Module Az.Storage
 
-function Set-AzureWebAppStorageContentFromStorageWithAzCopy
+function Invoke-AzureWebAppStorageAzCopy
 {
     [CmdletBinding(DefaultParameterSetName = 'FromAzureToAzure')]
     [Alias('sascsazc')]
