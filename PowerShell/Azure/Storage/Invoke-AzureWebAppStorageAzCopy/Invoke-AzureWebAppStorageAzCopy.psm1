@@ -47,25 +47,25 @@ function Invoke-AzureWebAppStorageAzCopy
         # Source storage parameters.
         [Alias('ResourceGroupName')]
         [Parameter(Mandatory, ParameterSetName = 'FromAzureToAzure')]
-        [Parameter(Mandatory, ParameterSetName = 'FromAzureToCustom')]
+        [Parameter(Mandatory, ParameterSetName = 'FromAzureToLocal')]
         [Parameter(HelpMessage = 'You need to provide the name of the Resource Group the Source Web App is in.')]
         [string] $SourceResourceGroupName,
 
         [Alias('WebAppName')]
         [Parameter(Mandatory, ParameterSetName = 'FromAzureToAzure')]
-        [Parameter(Mandatory, ParameterSetName = 'FromAzureToCustom')]
+        [Parameter(Mandatory, ParameterSetName = 'FromAzureToLocal')]
         [Parameter(HelpMessage = 'You need to provide the name of the Web App.')]
         [string] $SourceWebAppName,
 
         [Alias('SlotName')]
         [Parameter(Mandatory, ParameterSetName = 'FromAzureToAzure')]
-        [Parameter(Mandatory, ParameterSetName = 'FromAzureToCustom')]
+        [Parameter(Mandatory, ParameterSetName = 'FromAzureToLocal')]
         [Parameter(HelpMessage = 'The name of the Source Web App slot.')]
         [string] $SourceSlotName,
 
         [Alias('ConnectionStringName')]
         [Parameter(Mandatory, ParameterSetName = 'FromAzureToAzure')]
-        [Parameter(Mandatory, ParameterSetName = 'FromAzureToCustom')]
+        [Parameter(Mandatory, ParameterSetName = 'FromAzureToLocal')]
         [Parameter(HelpMessage = 'You need to provide a connection string name for the source Storage Account.')]
         [string] $SourceConnectionStringName,
 
@@ -99,37 +99,37 @@ function Invoke-AzureWebAppStorageAzCopy
         [Parameter(HelpMessage = 'Adds a suffix to the name of the containers, but only affects those that are (re-)created.')]
         [string] $DestinationContainerNameSuffix = '',
 
-        # Destination configuration parameters for custom URL.
-        [Parameter(Mandatory, ParameterSetName = 'FromAzureToCustom')]
-        [Parameter(HelpMessage = 'Custom destination path or URL with the latter possibly still being a blob storage container.')]
-        [string] $DestinationPathOrUrl,
+        # Destination configuration parameters for downloading to local path.
+        [Parameter(Mandatory, ParameterSetName = 'FromAzureToLocal')]
+        [Parameter(HelpMessage = 'The absolute path to download the blobs to.')]
+        [string] $DestinationAbsolutePath,
 
         # Common configuration parameters.
         [Parameter(ParameterSetName = 'FromAzureToAzure')]
-        [Parameter(ParameterSetName = 'FromAzureToCustom')]
+        [Parameter(ParameterSetName = 'FromAzureToLocal')]
         [Parameter(HelpMessage = 'A list of names of Blob Containers to include.')]
         [string[]] $ContainerIncludeList = @(),
 
         [Parameter(ParameterSetName = 'FromAzureToAzure')]
-        [Parameter(ParameterSetName = 'FromAzureToCustom')]
+        [Parameter(ParameterSetName = 'FromAzureToLocal')]
         [Parameter(HelpMessage = 'Determines whether the destination containers should be deleted and re-created ' +
             'before copying the blobs from the source containers.')]
         [bool] $RemoveExtraFilesOnDestination = $true,
 
         [Parameter(ParameterSetName = 'FromAzureToAzure')]
-        [Parameter(ParameterSetName = 'FromAzureToCustom')]
+        [Parameter(ParameterSetName = 'FromAzureToLocal')]
         [Parameter(HelpMessage = 'The number of minutes defining how long the generated Shared Access Signatures ' +
             '(https://learn.microsoft.com/en-us/azure/storage/common/storage-sas-overview) used for blob storage ' +
             'operations are valid for. Default value is 5.')]
         [int] $SasLifetimeMinutes = 5,
 
         [Parameter(ParameterSetName = 'FromAzureToAzure')]
-        [Parameter(ParameterSetName = 'FromAzureToCustom')]
+        [Parameter(ParameterSetName = 'FromAzureToLocal')]
         [Parameter(HelpMessage = 'The list of individiual regexes that will be matched against the path of the blobs to be included.')]
         [string[]] $IncludePathRegexes,
 
         [Parameter(ParameterSetName = 'FromAzureToAzure')]
-        [Parameter(ParameterSetName = 'FromAzureToCustom')]
+        [Parameter(ParameterSetName = 'FromAzureToLocal')]
         [Parameter(HelpMessage = 'The list of individiual regexes that will be matched against the path of the blobs to be excluded.')]
         [string[]] $ExcludePathRegexes
     )
@@ -224,7 +224,7 @@ function Invoke-AzureWebAppStorageAzCopy
                 Protocol = 'HttpsOnly'
             }
 
-            $currentContainerDestinationPathOrUrl = $null
+            $currentContainerDestination = $null
 
             # Setting up the destination in Azure before the copy operation.
             if ($destinationIsAzure)
@@ -258,18 +258,22 @@ function Invoke-AzureWebAppStorageAzCopy
                 }
                 $destinationAccessToken = New-AzStorageAccountSASToken @accessTokenCommonParameters @destinationAccessTokenParameters
                 if ($destinationAccessToken -notlike '?*') { $destinationAccessToken = "?$destinationAccessToken" }
-                $currentContainerDestinationPathOrUrl = "https://$($destinationStorageConnection.AccountName).blob.core.windows.net/$($destinationContainerName + $destinationAccessToken)"
+                $currentContainerDestination = "https://$($destinationStorageConnection.AccountName).blob.core.windows.net/$($destinationContainerName + $destinationAccessToken)"
             }
             # If the destination path is overriden and is a valid local path, then create the destination folder, if it
             # doesn't exist yet.
-            elseif ($DestinationPathOrUrl -and [System.IO.Path]::IsPathRooted($DestinationPathOrUrl) -and (Test-Path $DestinationPathOrUrl -IsValid))
+            elseif ($DestinationAbsolutePath -and [System.IO.Path]::IsPathRooted($DestinationAbsolutePath) -and (Test-Path $DestinationAbsolutePath -IsValid))
             {
-                $currentContainerDestinationPathOrUrl = Join-Path $DestinationPathOrUrl $sourceContainer.Name
+                $currentContainerDestination = Join-Path $DestinationAbsolutePath $sourceContainer.Name
 
-                if (-not (Test-Path $currentContainerDestinationPathOrUrl -PathType Container))
+                if (-not (Test-Path $currentContainerDestination -PathType Container))
                 {
-                    New-Item -Path $currentContainerDestinationPathOrUrl -ItemType Directory
+                    New-Item -Path $currentContainerDestination -ItemType Directory
                 }
+            }
+            else
+            {
+                throw 'DestinationAbsolutePath is not a valid local path!'
             }
 
             # Requesting access token for the source container and constructing the copy URL.
@@ -284,7 +288,7 @@ function Invoke-AzureWebAppStorageAzCopy
 
             # And finally, the actual copy operation.
             # WARNING: The first two unnamed parameters are the source and the destination in this order.
-            azcopy sync $sourceContainerUrl $currentContainerDestinationPathOrUrl --recursive=true --s2s-preserve-access-tier=$preserveAccessTierOnDestination --delete-destination=$RemoveExtraFilesOnDestination --include-regex="$($IncludePathRegexes -join ';')" --exclude-regex="$($ExcludePathRegexes -join ';')"
+            azcopy sync $sourceContainerUrl $currentContainerDestination --recursive=true --s2s-preserve-access-tier=$preserveAccessTierOnDestination --delete-destination=$RemoveExtraFilesOnDestination --include-regex="$($IncludePathRegexes -join ';')" --exclude-regex="$($ExcludePathRegexes -join ';')"
         }
     }
 }
