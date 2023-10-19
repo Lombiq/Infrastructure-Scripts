@@ -1,37 +1,97 @@
 ﻿<#
 .Synopsis
-    Downloads every Container and their Blobs from an Azure Blob Storage.
+    Copies blobs between storage accounts or downloads blobs from one using AzCopy.
 
 .DESCRIPTION
-    Downloads every Container and their Blobs from an Azure Blob Storage specified by a Connection String of a Web App.
+    Copies blobs between storage accounts or downloads blobs from one using AzCopy specified by a connection string of
+    an Azure Web App.
 
 .EXAMPLE
     $setStorageContentParameters = @{
-        ResourceGroupName = "CoolStuffHere"
-        WebAppName = "NiceApp"
-        SourceConnectionStringName = "SourceStorage"
-        DestinationConnectionStringName = "DestinationStorage"
+        ResourceGroupName = 'CoolStuffHere'
+        WebAppName = 'NiceApp'
+        SlotName = 'Production'
+        SourceConnectionStringName = 'SourceStorage'
+        DestinationConnectionStringName = 'DestinationStorage'
     }
     Invoke-AzureWebAppStorageAzCopy @setStorageContentParameters
 
 .EXAMPLE
     $setStorageContentParameters = @{
-        ResourceGroupName = "CoolStuffHere"
-        WebAppName = "NiceApp"
-        SourceConnectionStringName = "SourceStorage"
-        DestinationConnectionStringName = "DestinationStorage"
-        ContainerIncludeList = @("media", "stuff")
+        ResourceGroupName = 'CoolStuffHere'
+        WebAppName = 'NiceApp'
+        SlotName = 'Production'
+        ConnectionStringName = 'DownloadFromStorage'
+        DestinationAbsolutePath = 'C:/_homeWork'
     }
     Invoke-AzureWebAppStorageAzCopy @setStorageContentParameters
 
 .EXAMPLE
     $setStorageContentParameters = @{
-        ResourceGroupName = "CoolStuffHere"
-        WebAppName = "NiceApp"
-        SourceConnectionStringName = "SourceStorage"
-        DestinationConnectionStringName = "DestinationStorage"
-        ContainerIncludeList = @("media", "stuff")
+        ResourceGroupName = 'CoolStuffHere'
+        WebAppName = 'NiceApp'
+        SlotName = 'Production'
+        SourceConnectionStringName = 'SourceStorage'
+        DestinationConnectionStringName = 'DestinationStorage'
+        ContainerIncludeList = @('media', 'stuff')
+    }
+    Invoke-AzureWebAppStorageAzCopy @setStorageContentParameters
+
+.EXAMPLE
+    $setStorageContentParameters = @{
+        ResourceGroupName = 'CoolStuffHere'
+        WebAppName = 'NiceApp'
+        SlotName = 'Production'
+        SourceConnectionStringName = 'SourceStorage'
+        DestinationConnectionStringName = 'DestinationStorage'
+        ContainerIncludeList = @('media', 'stuff')
         SasLifetimeMinutes = 10
+    }
+    Invoke-AzureWebAppStorageAzCopy @setStorageContentParameters
+
+.EXAMPLE
+    $setStorageContentParameters = @{
+        ResourceGroupName = 'CoolStuffHere'
+        WebAppName = 'NiceApp'
+        SlotName = 'Production'
+        SourceConnectionStringName = 'SourceStorage'
+        DestinationConnectionStringName = 'DestinationStorage'
+        ContainerIncludeList = @('media', 'stuff')
+        SasLifetimeMinutes = 10
+        ExcludePathRegexes = @(
+            '^temp\/' # Ignore the "temp" folder in the root of the container.
+            '\/skip\/' # Ignore the "skip" folder anywhere, except the root.
+        )
+    }
+    Invoke-AzureWebAppStorageAzCopy @setStorageContentParameters
+
+.EXAMPLE
+    $setStorageContentParameters = @{
+        ResourceGroupName = 'CoolStuffHere'
+        WebAppName = 'NiceApp'
+        SlotName = 'Production'
+        SourceConnectionStringName = 'SourceStorage'
+        DestinationConnectionStringName = 'DestinationStorage'
+        ContainerIncludeList = @('media', 'stuff')
+        SasLifetimeMinutes = 10
+        IncludePathRegexes = @('^important\/') # Only copy the contents of the "important" root folder.
+    }
+    Invoke-AzureWebAppStorageAzCopy @setStorageContentParameters
+
+.EXAMPLE
+    $setStorageContentParameters = @{
+        ResourceGroupName = 'CoolStuffHere'
+        WebAppName = 'NiceApp'
+        SlotName = 'Production'
+        SourceConnectionStringName = 'SourceStorage'
+        DestinationConnectionStringName = 'DestinationStorage'
+        ContainerIncludeList = @('media', 'stuff')
+        SasLifetimeMinutes = 10
+        IncludePathRegexes = @(
+            '^important\/', # Only copy the contents of the "important" root folder,
+            '\/useful\/' # and "useful" subfolders,
+        )
+        ExcludePathRegexes = @('\/skip\/', '\/skip\.txt') # except from the "skip" subfolders and except "skip.txt" files.
     }
     Invoke-AzureWebAppStorageAzCopy @setStorageContentParameters
 #>
