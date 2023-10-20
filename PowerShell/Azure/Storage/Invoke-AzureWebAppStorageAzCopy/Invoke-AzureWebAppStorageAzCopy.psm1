@@ -348,7 +348,17 @@ function Invoke-AzureWebAppStorageAzCopy
 
             # And finally, the actual copy operation.
             # WARNING: The first two unnamed parameters are the source and the destination in this order.
-            azcopy sync $sourceContainerUrl $currentContainerDestination --recursive=true --s2s-preserve-access-tier=$preserveAccessTierOnDestination --delete-destination=$RemoveExtraFilesOnDestination --include-regex="$($IncludePathRegexes -join ';')" --exclude-regex="$($ExcludePathRegexes -join ';')"
+            $azCopyParameters = @(
+                $sourceContainerUrl
+                $currentContainerDestination
+                '--recursive=true'
+                "--s2s-preserve-access-tier=$preserveAccessTierOnDestination"
+                "--delete-destination=$RemoveExtraFilesOnDestination"
+                "--include-regex=$($IncludePathRegexes -join ';')"
+                "--exclude-regex=$($ExcludePathRegexes -join ';')"
+            )
+
+            azcopy sync @azCopyParameters
         }
     }
 }
