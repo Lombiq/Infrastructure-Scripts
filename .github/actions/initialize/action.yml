@@ -23,10 +23,8 @@ runs:
     - name: Install and Import Modules
       shell: pwsh
       run: |
-        Install-Module Az.Storage -RequiredVersion 5.10.1 -AllowClobber -Force
-        Install-Module Az.Sql -RequiredVersion 4.10.0 -AllowClobber -Force
-        Install-Module Az.Websites -RequiredVersion 3.1.1 -AllowClobber -Force
-        Install-Module SqlServer -AllowClobber -Force
+        Install-Module Az -RequiredVersion 10.4.1 -AllowClobber -Force
+        Install-Module SqlServer -RequiredVersion 22.1.1 -AllowClobber -Force
 
         foreach ($moduleName in (Get-ChildItem -Directory | select Name))
         {
