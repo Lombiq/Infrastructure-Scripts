@@ -343,7 +343,7 @@ function Invoke-AzureWebAppStorageAzCopy
                 ExpiryTime = (Get-Date).AddMinutes($SasLifetimeMinutes)
             }
             $sourceAccessToken = New-AzStorageAccountSASToken @accessTokenCommonParameters @sourceAccessTokenParameters
-            if ($sourceAccessToken -notlike '?*') { $sourceAccessToken = "?$sourceAccessToken" }
+            if (-not $sourceAccessToken.StartsWith('?')) { $sourceAccessToken = "?$sourceAccessToken" }
             $sourceContainerUrl = "https://$($sourceStorageConnection.AccountName).blob.core.windows.net/$($sourceContainer.Name + $sourceAccessToken)"
 
             # And finally, the actual copy operation.
