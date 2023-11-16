@@ -33,3 +33,5 @@ runs:
             Import-Module $moduleName.Name
           }
         }
+
+        Get-Module -ListAvailable
