@@ -10,5 +10,3 @@ on:
 jobs:
   powershell-static-code-analysis:
     uses: Lombiq/PowerShell-Analyzers/.github/workflows/static-code-analysis.yml@issue/OSOE-743
-    with:
-      cancel-in-progress-for-this-pr: 'true'
