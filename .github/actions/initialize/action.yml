@@ -9,6 +9,12 @@ description: >
 runs:
   using: "composite"
   steps:
+    - name: Init Info
+      shell: pwsh
+      run: |
+        Write-Output "Current Powershell environment:"
+        Get-Host
+
     - name: Copy Modules
       shell: pwsh
       run: |
