@@ -9,7 +9,7 @@ description: >
 runs:
   using: "composite"
   steps:
-    - name: Init Info
+    - name: Display PowerShell Host Properties
       shell: pwsh
       run: |
         Write-Output "Current Powershell environment:"
