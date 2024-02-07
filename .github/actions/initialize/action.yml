@@ -9,6 +9,12 @@ description: >
 runs:
   using: "composite"
   steps:
+    - name: Display PowerShell Host Properties
+      shell: pwsh
+      run: |
+        Write-Output "Current PowerShell host:"
+        Get-Host
+
     - name: Copy Modules
       shell: pwsh
       run: |
