@@ -124,8 +124,8 @@ function Save-AzureWebAppStorageContent
 
         $containers = Get-AzStorageContainer -Context $storageContext |
             Where-Object {
-            ((!$containerWhiteListValid -or ($containerWhiteListValid -and $ContainerWhiteList.Contains($PSItem.Name))) -and
-                ($containerWhiteListValid -or (!$containerBlackListValid -or !$ContainerBlackList.Contains($PSItem.Name))))
+            ((-not $containerWhiteListValid -or ($containerWhiteListValid -and $ContainerWhiteList.Contains($PSItem.Name))) -and
+                ($containerWhiteListValid -or (-not $containerBlackListValid -or -not $ContainerBlackList.Contains($PSItem.Name))))
             }
 
         $folderWhiteListValid = $FolderWhiteList -and $FolderWhiteList.Count -gt 0
@@ -149,10 +149,10 @@ function Save-AzureWebAppStorageContent
             }
             $blobs = $container | Get-AzStorageBlob |
                 Where-Object {
-                (!$folderWhiteListValid -or ($folderWhiteListValid -and
+                (-not $folderWhiteListValid -or ($folderWhiteListValid -and
                     (Compare-Object $PSItem.Name.Split('/', [StringSplitOptions]::RemoveEmptyEntries) $FolderWhiteList @comparisonParameters))) -and
-                (!$folderBlackListValid -or ($folderBlackListValid -and
-                    (!(Compare-Object $PSItem.Name.Split('/', [StringSplitOptions]::RemoveEmptyEntries) $FolderBlackList @comparisonParameters))))
+                (-not $folderBlackListValid -or ($folderBlackListValid -and
+                    (-not (Compare-Object $PSItem.Name.Split('/', [StringSplitOptions]::RemoveEmptyEntries) $FolderBlackList @comparisonParameters))))
                 }
 
             foreach ($blob in $blobs)

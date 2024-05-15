@@ -79,10 +79,10 @@ function Set-AzureWebAppSqlDatabaseServiceObjective
         $serviceObjectives = Get-AzSqlServerServiceObjective -ResourceGroupName $database.ResourceGroupName -ServerName $database.ServerName
 
         $availableServiceObjectiveNames = $serviceObjectives |
-            Where-Object { !$PSItem.IsSystem -and $PSItem.Enabled } |
+            Where-Object { -not $PSItem.IsSystem -and $PSItem.Enabled } |
             Select-Object -ExpandProperty 'ServiceObjectiveName'
 
-        if (!$availableServiceObjectiveNames.Contains($ServiceObjectiveName))
+        if (-not $availableServiceObjectiveNames.Contains($ServiceObjectiveName))
         {
             throw ("The `"$ServiceObjectiveName`" tier is not available for the server `"$($database.ServerName)`". " +
                 "The available tiers are:`n$([string]::Join(', ', $availableServiceObjectiveNames)).")

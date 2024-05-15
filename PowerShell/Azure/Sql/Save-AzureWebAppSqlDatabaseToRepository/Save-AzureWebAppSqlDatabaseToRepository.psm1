@@ -74,18 +74,18 @@ function Save-AzureWebAppSqlDatabaseToRepository
 
     Process
     {
-        if (!(Test-Path $RepositoryPath))
+        if (-not (Test-Path $RepositoryPath))
         {
             throw ("The folder `"$RepositoryPath`" can not be found!")
         }
 
         $destination = $RepositoryPath
 
-        if (!([string]::IsNullOrEmpty($RepositorySubPath)))
+        if (-not [string]::IsNullOrEmpty($RepositorySubPath))
         {
             $destination += "\$RepositorySubPath"
 
-            if (!(Test-Path $destination))
+            if (-not (Test-Path $destination))
             {
                 New-Item -ItemType Directory -Path $destination -Force
             }

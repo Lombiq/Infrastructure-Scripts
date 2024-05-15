@@ -222,7 +222,7 @@ function Invoke-AzureWebAppStorageAzCopy
         # Preparing to validate the list of source containers.
         $containerIncludeListValid = $ContainerIncludeList -and $ContainerIncludeList.Count -gt 0
         $sourceContainers = $sourceStorageContext | Get-AzStorageContainer |
-            Where-Object { !$containerIncludeListValid -or ($containerIncludeListValid -and $ContainerIncludeList.Contains($PSItem.Name)) }
+            Where-Object { -not $containerIncludeListValid -or ($containerIncludeListValid -and $ContainerIncludeList.Contains($PSItem.Name)) }
         $sourceContainerNames = $sourceContainers | Select-Object -ExpandProperty 'Name'
 
         # Throwing error if none of the source containers exist.

@@ -47,7 +47,7 @@
                 Write-Warning "Triggering `"$BuildId`" failed. Retrying..."
             }
         }
-        while (!$success)
+        while (-not $success)
 
         Write-Output "Successfully triggered `"$BuildId`"!"
     }
