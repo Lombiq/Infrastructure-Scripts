@@ -166,8 +166,8 @@ function Set-AzureWebAppStorageContentFromStorage
 
         $sourceContainers = $sourceStorageContext | Get-AzStorageContainer |
             Where-Object {
-                ((!$containerWhiteListValid -or ($containerWhiteListValid -and $ContainerWhiteList.Contains($PSItem.Name))) -and
-                ($containerWhiteListValid -or (!$containerBlackListValid -or !$ContainerBlackList.Contains($PSItem.Name))))
+                ((-not $containerWhiteListValid -or ($containerWhiteListValid -and $ContainerWhiteList.Contains($PSItem.Name))) -and
+                ($containerWhiteListValid -or (-not $containerBlackListValid -or -not $ContainerBlackList.Contains($PSItem.Name))))
             }
         $sourceContainerNames = $sourceContainers | Select-Object -ExpandProperty 'Name'
 
@@ -237,7 +237,7 @@ function Set-AzureWebAppStorageContentFromStorage
                         Start-Sleep 5
                     }
                 }
-                while (!$containerCreated)
+                while (-not $containerCreated)
             }
 
             Write-Output ("`n*****`nCopying blobs from `"$($sourceContainer.Name)`" to `"$destinationContainerName`"`n*****")
@@ -257,10 +257,10 @@ function Set-AzureWebAppStorageContentFromStorage
                         ExcludeDifferent = $true
                     }
 
-                    if ((!$folderWhiteListValid -or
+                    if ((-not $folderWhiteListValid -or
                         ($folderWhiteListValid -and (Compare-Object $blobNameElements $FolderWhiteList @comparisonParameters))) -and
-                    (!$folderBlackListValid -or
-                        ($folderBlackListValid -and (!(Compare-Object $blobNameElements $FolderBlackList @comparisonParameters)))))
+                    (-not $folderBlackListValid -or
+                        ($folderBlackListValid -and (-not (Compare-Object $blobNameElements $FolderBlackList @comparisonParameters)))))
                     {
                         $copyParameters = @{
                             Context = $sourceStorageContext

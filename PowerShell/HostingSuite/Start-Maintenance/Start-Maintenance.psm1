@@ -101,7 +101,7 @@ function Start-Maintenance
                 Write-Warning "Starting the maintenance `"$MaintenanceName`" at `"$Hostname`" failed. Retrying..."
             }
         }
-        while (!$success)
+        while (-not $success)
 
         if ($result.StatusCode -ne 201)
         {

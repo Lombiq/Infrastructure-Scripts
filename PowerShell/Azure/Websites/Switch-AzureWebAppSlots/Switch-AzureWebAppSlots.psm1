@@ -491,7 +491,7 @@ function UpdateWebAppSlotAppSettingsAndConnectionStrings
                 Write-Warning "Attempt #$retryCounter to update the `"$SlotName`" Slot of `"$WebAppName`" failed. Retrying..."
             }
         }
-        while (!$success)
+        while (-not $success)
 
         return $slot
     }
@@ -533,7 +533,7 @@ function VerifyAppSettingsValidity
             }
         }
 
-        if (!$appSettingsValid)
+        if (-not $appSettingsValid)
         {
             Write-Error ("`n*****`nERROR: THE `"$SlotName`" SLOT'S APP SETTINGS ARE INVALID!`n*****`n")
         }
@@ -585,7 +585,7 @@ function VerifyConnectionStringsValidity
             }
         }
 
-        if (!$connectionStringsValid)
+        if (-not $connectionStringsValid)
         {
             Write-Error ("`n*****`nERROR: THE `"$SlotName`" SLOT'S CONNECTION STRINGS ARE INVALID!`n*****`n")
         }
