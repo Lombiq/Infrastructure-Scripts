@@ -85,7 +85,7 @@ function Remove-AzureWebAppSqlDatabaseContainedUser
             Database = $databaseConnection.DatabaseName
             Username = $databaseConnection.UserName
             Password = $databaseConnection.Password
-            Query = $Query
+            Query = $query
             EncryptConnection = $true
         }
         return Invoke-Sqlcmd @commandParameters
