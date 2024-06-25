@@ -60,7 +60,7 @@ function Get-Maintenance
         {
             try
             {
-                $url = "${Protocol}://$Hostname/$APIEndpoint" + "?maintenanceName=$MaintenanceName"
+                $url = "$($Protocol)://$Hostname/$APIEndpoint" + "?maintenanceName=$MaintenanceName"
                 $authentication = 'Basic ' + [System.Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($Username + ':' + $Password))
 
                 $result = Invoke-WebRequest -Uri $url -Method Get -ContentType 'application/json' -Headers @{ Authorization = $authentication }

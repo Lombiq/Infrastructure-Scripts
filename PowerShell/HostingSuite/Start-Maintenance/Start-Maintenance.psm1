@@ -65,7 +65,7 @@ function Start-Maintenance
         {
             try
             {
-                $url = "${Protocol}://$Hostname/$APIEndpoint" + "?maintenanceName=$MaintenanceName"
+                $url = "$($Protocol)://$Hostname/$APIEndpoint" + "?maintenanceName=$MaintenanceName"
                 $authentication = 'Basic ' + [System.Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($Username + ':' + $Password))
 
                 if ($BatchSize -lt 1)
