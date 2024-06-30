@@ -47,7 +47,7 @@ function Test-AzureWebApp
         $webApp = Get-AzureWebAppWrapper -ResourceGroupName $ResourceGroupName -WebAppName $WebAppName -Slot $SlotName
 
         # Enforcing the result to be an array so it can be indexed even if there's only one matching hostname.
-        $url = "${Protocol}://" + ([array]($webApp.EnabledHostNames | Where-Object { $PSItem.EndsWith('.azurewebsites.net') }))[0]
+        $url = "$($Protocol)://" + ([array]($webApp.EnabledHostNames | Where-Object { $PSItem.EndsWith('.azurewebsites.net') }))[0]
 
         Write-Output ("Testing the `"$SlotName`" Slot of the Web App `"$WebAppName`" through the URL `"$url`".")
 
