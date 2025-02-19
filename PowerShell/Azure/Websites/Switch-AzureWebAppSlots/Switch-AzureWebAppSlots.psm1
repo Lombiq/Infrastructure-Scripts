@@ -116,7 +116,7 @@ function Switch-AzureWebAppSlots
         }
         $updatedSourceSlotData = UpdateWebAppSlotAppSettingsAndConnectionStrings @updateSourceSlotDataParameters
 
-        # Verifying App Settings vailidity in the Source environment against Destination settings.
+        # Verifying App Settings validity in the Source environment against Destination settings.
         $appSettingsValidityParameters = @{
             SlotName = $DestinationSlotName
             OriginalAppSettings = $originalAppSettings
@@ -128,7 +128,7 @@ function Switch-AzureWebAppSlots
             Write-Error "Failed to upload the transformed App Settings to the `"$SourceSlotName`" Slot!"
         }
 
-        # Verifying Connection Strings vailidity in the Source environment against Destination settings.
+        # Verifying Connection Strings validity in the Source environment against Destination settings.
         $connectionStringsValidityParameters = @{
             SlotName = $DestinationSlotName
             OriginalConnectionStrings = $originalConnectionStrings
@@ -263,7 +263,7 @@ function Switch-AzureWebAppSlots
         }
         $updatedSourceSlotData = UpdateWebAppSlotAppSettingsAndConnectionStrings @updateSourceSlotDataParameters
 
-        # Verifying App Settings vailidity in the Source environment against SourceSlotName settings.
+        # Verifying App Settings validity in the Source environment against SourceSlotName settings.
         $appSettingsValidityParameters = @{
             SlotName = $SourceSlotName
             OriginalAppSettings = $originalAppSettings
@@ -275,7 +275,7 @@ function Switch-AzureWebAppSlots
             Write-Error "Failed to upload the transformed App Settings to the `"$SourceSlotName`" Slot!"
         }
 
-        # Verifying Connection Strings vailidity in the Source environment against SourceSlotName settings.
+        # Verifying Connection Strings validity in the Source environment against SourceSlotName settings.
         $connectionStringsValidityParameters = @{
             SlotName = $SourceSlotName
             OriginalConnectionStrings = $originalConnectionStrings
@@ -400,7 +400,7 @@ function TransformAppSettings
         {
             $destinationSlotAppSettingName = "$appSettingName.$SlotName"
 
-            # Cheking if there's a matching Destination App Setting for the current one.
+            # Checking if there's a matching Destination App Setting for the current one.
             if (-not $AppSettings.ContainsKey($destinationSlotAppSettingName))
             {
                 throw ("`"$SlotName`" App Setting counterpart of `"$appSettingName`" is missing!")
@@ -424,7 +424,7 @@ function TransformConnectionStrings
         {
             $destinationSlotConnectionString = $ConnectionStrings["$connectionStringName.$SlotName"]
 
-            # Cheking if there's a matching Destination Connection String for the current one.
+            # Checking if there's a matching Destination Connection String for the current one.
             if ($null -eq $destinationSlotConnectionString)
             {
                 throw ("`"$SlotName`" Connection String counterpart of `"$connectionStringName`" is missing!")
