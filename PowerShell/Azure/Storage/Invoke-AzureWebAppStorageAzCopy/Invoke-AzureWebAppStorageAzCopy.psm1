@@ -185,12 +185,12 @@ function Invoke-AzureWebAppStorageAzCopy
 
         [Parameter(ParameterSetName = 'FromAzureToAzure')]
         [Parameter(ParameterSetName = 'FromAzureToLocal')]
-        [Parameter(HelpMessage = 'The list of individiual regexes that will be matched against the path of the blobs to be included.')]
+        [Parameter(HelpMessage = 'The list of individual regexes that will be matched against the path of the blobs to be included.')]
         [string[]] $IncludePathRegexes,
 
         [Parameter(ParameterSetName = 'FromAzureToAzure')]
         [Parameter(ParameterSetName = 'FromAzureToLocal')]
-        [Parameter(HelpMessage = 'The list of individiual regexes that will be matched against the path of the blobs to be excluded.')]
+        [Parameter(HelpMessage = 'The list of individual regexes that will be matched against the path of the blobs to be excluded.')]
         [string[]] $ExcludePathRegexes
     )
 
@@ -320,7 +320,7 @@ function Invoke-AzureWebAppStorageAzCopy
                 if (-not $destinationAccessToken.StartsWith('?')) { $destinationAccessToken = "?$sourceAccessToken" }
                 $currentContainerDestination = "https://$($destinationStorageConnection.AccountName).blob.core.windows.net/$($destinationContainerName + $destinationAccessToken)"
             }
-            # If the destination path is overriden and is a valid local path, then create the destination folder for the
+            # If the destination path is overridden and is a valid local path, then create the destination folder for the
             # container, if it doesn't exist yet.
             elseif ($DestinationAbsolutePath -and [System.IO.Path]::IsPathRooted($DestinationAbsolutePath) -and (Test-Path $DestinationAbsolutePath -IsValid))
             {

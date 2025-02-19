@@ -1,9 +1,9 @@
 ﻿<#
 .Synopsis
-    Exports a database of an Azure Web App to Blob Storage asnychronously.
+    Exports a database of an Azure Web App to Blob Storage asynchronously.
 
 .DESCRIPTION
-    Exports a database of an Azure Web App to Blob Storage asnychronously.
+    Exports a database of an Azure Web App to Blob Storage asynchronously.
 
 .EXAMPLE
     $exportDatabaseParameters = @{
