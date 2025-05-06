@@ -257,13 +257,19 @@ function Set-AzureWebAppStorageContentFromStorage
                         ExcludeDifferent = $true
                     }
 
-                    $whiteListAllows =
+                    $whiteListAllows = 
                         -not $folderWhiteListValid -or
-                        ($folderWhiteListValid -and (Compare-Object $blobNameElements $FolderWhiteList @comparisonParameters))
-
-                    $blackListAllows =
+                        (
+                            $folderWhiteListValid -and 
+                            (Compare-Object $blobNameElements $FolderWhiteList @comparisonParameters)
+                        )
+                
+                    $blackListAllows = 
                         -not $folderBlackListValid -or
-                        ($folderBlackListValid -and (-not (Compare-Object $blobNameElements $FolderBlackList @comparisonParameters)))
+                        (
+                            $folderBlackListValid -and 
+                            (-not (Compare-Object $blobNameElements $FolderBlackList @comparisonParameters))
+                        )
 
                     if ($whiteListAllows -and $blackListAllows)
                     {
