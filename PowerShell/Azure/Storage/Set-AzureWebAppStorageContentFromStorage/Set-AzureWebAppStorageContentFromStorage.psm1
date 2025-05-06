@@ -258,9 +258,9 @@ function Set-AzureWebAppStorageContentFromStorage
                     }
 
                     if ((-not $folderWhiteListValid -or
-                        ($folderWhiteListValid -and (Compare-Object $blobNameElements $FolderWhiteList @comparisonParameters))) -and
-                    (-not $folderBlackListValid -or
-                        ($folderBlackListValid -and (-not (Compare-Object $blobNameElements $FolderBlackList @comparisonParameters)))))
+                            ($folderWhiteListValid -and (Compare-Object $blobNameElements $FolderWhiteList @comparisonParameters))) -and
+                        (-not $folderBlackListValid -or
+                            ($folderBlackListValid -and (-not (Compare-Object $blobNameElements $FolderBlackList @comparisonParameters)))))
                     {
                         $copyParameters = @{
                             Context = $sourceStorageContext
