@@ -257,19 +257,14 @@ function Set-AzureWebAppStorageContentFromStorage
                         ExcludeDifferent = $true
                     }
 
-                    $whiteListAllows = 
-                        -not $folderWhiteListValid -or
-                        (
-                            $folderWhiteListValid -and 
-                            (Compare-Object $blobNameElements $FolderWhiteList @comparisonParameters)
-                        )
-                
-                    $blackListAllows = 
-                        -not $folderBlackListValid -or
-                        (
-                            $folderBlackListValid -and 
-                            (-not (Compare-Object $blobNameElements $FolderBlackList @comparisonParameters))
-                        )
+                    # The assignments need to be indented like this, not to trip PSUseConsistentIndentation.
+                    $whiteListAllows =
+                    -not $folderWhiteListValid -or
+                    ($folderWhiteListValid -and (Compare-Object $blobNameElements $FolderWhiteList @comparisonParameters))
+            
+                    $blackListAllows =
+                    -not $folderBlackListValid -or
+                    ($folderBlackListValid -and (-not (Compare-Object $blobNameElements $FolderBlackList @comparisonParameters)))
 
                     if ($whiteListAllows -and $blackListAllows)
                     {
