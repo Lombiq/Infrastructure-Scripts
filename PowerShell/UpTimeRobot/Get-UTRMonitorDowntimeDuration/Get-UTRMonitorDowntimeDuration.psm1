@@ -42,7 +42,7 @@
 
                 throw('Failed to retrieve monitor data!')
             }
-            Default
+            default
             {
                 Write-Error $response
 
@@ -67,7 +67,7 @@
 
                 return $monitor.logs[0].duration
             }
-            Default
+            default
             {
                 throw('Multiple monitors returned! Please make sure that you use a monitor-specific API key or provide a single monitor ID.')
             }
