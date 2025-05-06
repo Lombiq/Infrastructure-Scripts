@@ -257,10 +257,13 @@ function Set-AzureWebAppStorageContentFromStorage
                         ExcludeDifferent = $true
                     }
 
-                    if ((-not $folderWhiteListValid -or
+                    $shouldCopy = 
+                        (-not $folderWhiteListValid -or
                             ($folderWhiteListValid -and (Compare-Object $blobNameElements $FolderWhiteList @comparisonParameters))) -and
                         (-not $folderBlackListValid -or
-                            ($folderBlackListValid -and (-not (Compare-Object $blobNameElements $FolderBlackList @comparisonParameters)))))
+                            ($folderBlackListValid -and (-not (Compare-Object $blobNameElements $FolderBlackList @comparisonParameters))))
+
+                    if ($shouldCopy)
                     {
                         $copyParameters = @{
                             Context = $sourceStorageContext
