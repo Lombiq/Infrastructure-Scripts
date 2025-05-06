@@ -31,7 +31,7 @@ function Remove-AzureWebAppSqlDatabase
     [CmdletBinding()]
     [Alias('radb')]
     [OutputType([Microsoft.Azure.Commands.Sql.Database.Model.AzureSqlDatabaseModel])]
-    Param
+    param
     (
         [Parameter(Mandatory = $true, HelpMessage = 'You need to provide the name of the Resource Group.')]
         [string] $ResourceGroupName,
@@ -46,7 +46,7 @@ function Remove-AzureWebAppSqlDatabase
         [string] $ConnectionStringName
     )
 
-    Process
+    process
     {
         $databaseParameters = @{
             ResourceGroupName = $ResourceGroupName

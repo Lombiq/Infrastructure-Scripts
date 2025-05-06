@@ -4,7 +4,7 @@ function Connect-AzServicePrincipal
 {
     [CmdletBinding()]
     [OutputType([Microsoft.Azure.Commands.Profile.Models.Core.PSAzureProfile])]
-    Param
+    param
     (
         [Parameter(Mandatory = $true, HelpMessage = 'Please provide the ID of the Azure Active Directory!')]
         [string] $TenantId,
@@ -19,7 +19,7 @@ function Connect-AzServicePrincipal
         [string] $SubscriptionId
     )
 
-    Process
+    process
     {
         $azureConnectionParameters = @{
             ServicePrincipal = $true

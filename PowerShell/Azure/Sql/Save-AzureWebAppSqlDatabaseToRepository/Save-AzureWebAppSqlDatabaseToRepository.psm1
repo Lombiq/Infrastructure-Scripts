@@ -24,7 +24,7 @@ function Save-AzureWebAppSqlDatabaseToRepository
 {
     [CmdletBinding()]
     [Alias('iader')]
-    Param
+    param
     (
         [Alias('ResourceGroupName')]
         [Parameter(
@@ -72,7 +72,7 @@ function Save-AzureWebAppSqlDatabaseToRepository
         [string] $CommitMessage = ''
     )
 
-    Process
+    process
     {
         if (-not (Test-Path $RepositoryPath))
         {

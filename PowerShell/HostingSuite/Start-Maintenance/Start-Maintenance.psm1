@@ -21,7 +21,7 @@ function Start-Maintenance
     [CmdletBinding()]
     [Alias('samt')]
     [OutputType([int])]
-    Param
+    param
     (
         [Parameter(Mandatory = $true,
             HelpMessage = 'The name of the maintenance.',
@@ -54,7 +54,7 @@ function Start-Maintenance
         [Parameter(HelpMessage = 'The request protocol to use (http or https). Https is the default value.')]
         [string] $Protocol = 'https'
     )
-    Process
+    process
     {
         $result = @()
         $success = $false

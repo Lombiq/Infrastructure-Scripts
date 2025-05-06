@@ -20,7 +20,7 @@ function Get-AzureWebAppStorageConnection
     [CmdletBinding()]
     [Alias('gasc')]
     [OutputType([System.Collections.Hashtable])]
-    Param
+    param
     (
         [Parameter(Mandatory = $true, HelpMessage = 'You need to provide the name of the Resource Group.')]
         [string] $ResourceGroupName,
@@ -35,7 +35,7 @@ function Get-AzureWebAppStorageConnection
         [string] $ConnectionStringName
     )
 
-    Process
+    process
     {
         $connectionStringParameters = @{
             ResourceGroupName = $ResourceGroupName

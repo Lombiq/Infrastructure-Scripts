@@ -24,7 +24,7 @@ function Set-AzureWebAppSqlDatabaseServiceObjective
     [CmdletBinding()]
     [Alias('swadso')]
     [OutputType([Microsoft.Azure.Commands.Sql.Database.Model.AzureSqlDatabaseModel])]
-    Param
+    param
     (
         [Parameter(Mandatory = $true, HelpMessage = 'You need to provide the name of the Resource Group.')]
         [string] $ResourceGroupName,
@@ -47,7 +47,7 @@ function Set-AzureWebAppSqlDatabaseServiceObjective
         [string] $Edition = 'Standard'
     )
 
-    Process
+    process
     {
         $databaseParameters = @{
             ResourceGroupName = $ResourceGroupName

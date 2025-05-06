@@ -18,7 +18,7 @@ function Switch-AzureWebAppSlots
     [Alias('swas')]
     [OutputType([int])]
     [Diagnostics.CodeAnalysis.SuppressMessage('PSUseSingularNouns', '', Justification = 'This operation always involves multiple Slots.')]
-    Param
+    param
     (
         [Parameter(Mandatory = $true, HelpMessage = 'The name of the Resource Group the Web App is in.')]
         [string] $ResourceGroupName,
@@ -37,7 +37,7 @@ function Switch-AzureWebAppSlots
         [int] $RetryCount = 3
     )
 
-    Process
+    process
     {
         # Checking and fetching Source and Destination Slots of the Web App.
         if ($SourceSlotName -eq $DestinationSlotName)

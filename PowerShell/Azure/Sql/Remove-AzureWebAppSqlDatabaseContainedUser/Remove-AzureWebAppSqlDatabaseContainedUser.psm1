@@ -20,7 +20,7 @@ function Remove-AzureWebAppSqlDatabaseContainedUser
 {
     [CmdletBinding()]
     [Alias('rawasdcu')]
-    Param
+    param
     (
         [Alias('ResourceGroupName')]
         [Parameter(
@@ -55,7 +55,7 @@ function Remove-AzureWebAppSqlDatabaseContainedUser
         [string] $UserConnectionStringName = $DatabaseConnectionStringName
     )
 
-    Process
+    process
     {
         $databaseConnectionParameters = @{
             ResourceGroupName = $DatabaseResourceGroupName

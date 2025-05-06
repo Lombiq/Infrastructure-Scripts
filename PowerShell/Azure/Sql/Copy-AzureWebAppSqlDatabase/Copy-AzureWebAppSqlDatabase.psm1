@@ -23,7 +23,7 @@ function Copy-AzureWebAppSqlDatabase
     [CmdletBinding()]
     [Alias('cawadb')]
     [OutputType([Microsoft.Azure.Commands.Sql.Replication.Model.AzureSqlDatabaseCopyModel])]
-    Param
+    param
     (
         [Alias('ResourceGroupName')]
         [Parameter(
@@ -60,7 +60,7 @@ function Copy-AzureWebAppSqlDatabase
         [switch] $Force
     )
 
-    Process
+    process
     {
         $sourceDatabaseParameters = @{
             ResourceGroupName = $SourceResourceGroupName

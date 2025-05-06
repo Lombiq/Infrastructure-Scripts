@@ -102,7 +102,7 @@ function Invoke-AzureWebAppStorageAzCopy
 {
     [CmdletBinding(DefaultParameterSetName = 'FromAzureToAzure')]
     [Alias('sascsazc')]
-    Param
+    param
     (
         # Source storage parameters.
         [Alias('ResourceGroupName')]
@@ -194,7 +194,7 @@ function Invoke-AzureWebAppStorageAzCopy
         [string[]] $ExcludePathRegexes
     )
 
-    Process
+    process
     {
         # Check if azcopy command is available.
         if ($null -eq (Get-Command azcopy -ErrorAction SilentlyContinue))

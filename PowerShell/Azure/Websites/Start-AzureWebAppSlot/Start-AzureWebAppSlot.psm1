@@ -17,7 +17,7 @@ function Start-AzureWebAppSlot
     [CmdletBinding()]
     [Alias('saas')]
     [OutputType([Microsoft.Azure.Commands.WebApps.Models.PSSite])]
-    Param
+    param
     (
         [Parameter(Mandatory = $true, HelpMessage = 'The name of the Resource Group the Web App is in.')]
         [string] $ResourceGroupName,
@@ -29,7 +29,7 @@ function Start-AzureWebAppSlot
         [string] $SlotName
     )
 
-    Process
+    process
     {
         $slot = Get-AzureWebAppWrapper -ResourceGroupName $ResourceGroupName -WebAppName $WebAppName -SlotName $SlotName
 

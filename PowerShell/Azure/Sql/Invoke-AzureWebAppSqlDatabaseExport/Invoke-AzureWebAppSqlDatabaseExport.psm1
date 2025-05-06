@@ -24,7 +24,7 @@ function Invoke-AzureWebAppSqlDatabaseExport
     [CmdletBinding()]
     [Alias('iade')]
     [OutputType([Microsoft.Azure.Commands.Sql.ImportExport.Model.AzureSqlDatabaseImportExportBaseModel])]
-    Param
+    param
     (
         [Alias('ResourceGroupName')]
         [Parameter(
@@ -63,7 +63,7 @@ function Invoke-AzureWebAppSqlDatabaseExport
         [string] $BlobName
     )
 
-    Process
+    process
     {
         Write-Information "`n*****`nDatabase export starting...`n*****" -InformationAction Continue
 

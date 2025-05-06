@@ -4,13 +4,13 @@ function Set-AzContextWrapper
 {
     [CmdletBinding()]
     [OutputType([Microsoft.Azure.Commands.Profile.Models.Core.PSAzureContext])]
-    Param
+    param
     (
         [Parameter(Mandatory = $true)]
         [string] $SubscriptionId
     )
 
-    Process
+    process
     {
         $azContext = Get-AzContext
 

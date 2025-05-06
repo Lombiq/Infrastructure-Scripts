@@ -2,7 +2,7 @@
 {
     [CmdletBinding()]
     [Alias('satcb')]
-    Param
+    param
     (
         [Parameter(Mandatory = $true, HelpMessage = 'The fully qualified URL of the TeamCity server.')]
         [string] $ServerUrl,
@@ -18,7 +18,7 @@
         [Parameter(HelpMessage = 'Number of retries for triggering the build in case of an error. Default value is 3.')]
         [int] $RetryCount = 3
     )
-    Process
+    process
     {
         $success = $false
         $retryCounter = 0

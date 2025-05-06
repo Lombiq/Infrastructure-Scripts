@@ -3,7 +3,7 @@
     [CmdletBinding()]
     [Alias('gutrm')]
     [OutputType([object])]
-    Param
+    param
     (
         [Parameter(Mandatory = $true, HelpMessage = 'The UpTimeRobot API key to access monitors.')]
         [string] $ApiKey,
@@ -16,7 +16,7 @@
     )
 
 
-    Process
+    process
     {
         $headers = @{
             'cache-control' = 'no-cache'

@@ -3,7 +3,7 @@
     [CmdletBinding()]
     [Alias('gutrmdd')]
     [OutputType([int])]
-    Param
+    param
     (
         [Parameter(Mandatory = $true, HelpMessage = 'The UpTimeRobot API key to access monitors. When using an API' +
             ' key that is not specific to a monitor, you also need to define the monitor ID as well.')]
@@ -14,7 +14,7 @@
     )
 
 
-    Process
+    process
     {
         try
         {

@@ -21,7 +21,7 @@ function Add-AzureWebAppSqlDatabaseContainedUser
 {
     [CmdletBinding()]
     [Alias('aawasdcu')]
-    Param
+    param
     (
         [Alias('ResourceGroupName')]
         [Parameter(
@@ -59,7 +59,7 @@ function Add-AzureWebAppSqlDatabaseContainedUser
         [string] $UserRole = 'db_owner'
     )
 
-    Process
+    process
     {
         $databaseConnectionParameters = @{
             ResourceGroupName = $DatabaseResourceGroupName

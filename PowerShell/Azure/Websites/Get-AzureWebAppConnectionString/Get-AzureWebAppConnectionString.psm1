@@ -21,7 +21,7 @@ function Get-AzureWebAppConnectionString
     [CmdletBinding()]
     [Alias('gacs')]
     [OutputType([string])]
-    Param
+    param
     (
         [Parameter(Mandatory = $true, HelpMessage = 'You need to provide the name of the Resource Group.')]
         [string] $ResourceGroupName,
@@ -36,7 +36,7 @@ function Get-AzureWebAppConnectionString
         [string] $ConnectionStringName
     )
 
-    Process
+    process
     {
         $webApp = Get-AzureWebAppWrapper -ResourceGroupName $ResourceGroupName -WebAppName $WebAppName -SlotName $SlotName
 

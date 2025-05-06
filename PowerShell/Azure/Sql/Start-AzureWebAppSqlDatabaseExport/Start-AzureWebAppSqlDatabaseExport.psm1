@@ -29,7 +29,7 @@ function Start-AzureWebAppSqlDatabaseExport
         'PSAvoidUsingConvertToSecureStringWithPlainText',
         '',
         Justification = 'Password is fetched from Azure in plain text format already.')]
-    Param
+    param
     (
         [Alias('ResourceGroupName')]
         [Parameter(
@@ -68,7 +68,7 @@ function Start-AzureWebAppSqlDatabaseExport
         [string] $BlobName
     )
 
-    Process
+    process
     {
         $storageConnectionParameters = @{
             ResourceGroupName = $StorageResourceGroupName

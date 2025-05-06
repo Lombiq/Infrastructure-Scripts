@@ -29,7 +29,7 @@ function Get-AzureWebAppSqlDatabaseConnection
     [CmdletBinding()]
     [Alias('gasdc')]
     [OutputType([System.Collections.Hashtable])]
-    Param
+    param
     (
         [Parameter(Mandatory = $true, HelpMessage = 'You need to provide the name of the Resource Group.')]
         [string] $ResourceGroupName,
@@ -44,7 +44,7 @@ function Get-AzureWebAppSqlDatabaseConnection
         [string] $ConnectionStringName
     )
 
-    Process
+    process
     {
         $connectionStringParameters = @{
             ResourceGroupName = $ResourceGroupName

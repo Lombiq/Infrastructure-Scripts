@@ -65,7 +65,7 @@ function Save-AzureWebAppStorageContent
 {
     [CmdletBinding()]
     [Alias('sasc')]
-    Param
+    param
     (
         [Parameter(Mandatory = $true, HelpMessage = 'The name of the Resource Group the Web App is in.')]
         [string] $ResourceGroupName,
@@ -103,7 +103,7 @@ function Save-AzureWebAppStorageContent
         [int] $RetryCount = 3
     )
 
-    Process
+    process
     {
         $storageConnectionParameters = @{
             ResourceGroupName = $ResourceGroupName

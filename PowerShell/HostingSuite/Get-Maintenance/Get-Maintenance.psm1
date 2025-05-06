@@ -20,7 +20,7 @@ function Get-Maintenance
     [CmdletBinding()]
     [Alias('gmt')]
     [OutputType([object])]
-    Param
+    param
     (
         [Parameter(Mandatory = $true,
             HelpMessage = 'The name of the maintenance.',
@@ -50,7 +50,7 @@ function Get-Maintenance
         [Parameter(HelpMessage = 'The request protocol to use (http or https). Https is the default value.')]
         [string] $Protocol = 'https'
     )
-    Process
+    process
     {
         $result = @()
         $success = $false

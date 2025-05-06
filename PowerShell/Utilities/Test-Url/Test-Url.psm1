@@ -18,7 +18,7 @@ function Test-Url
     [CmdletBinding()]
     [Alias('turl')]
     [OutputType([bool])]
-    Param
+    param
     (
         [Parameter(Mandatory = $true,
             ValueFromPipelineByPropertyName = $true,
@@ -36,7 +36,7 @@ function Test-Url
         [int] $RetryCount = 3
     )
 
-    Process
+    process
     {
         Write-Information ("`n*****`nAttempting to ping `"$Url`": $Timeout second timeout, $Interval second interval, $RetryCount retries!`n*****`n") -InformationAction Continue
 

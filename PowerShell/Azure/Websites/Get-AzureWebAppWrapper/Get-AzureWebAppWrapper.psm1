@@ -24,7 +24,7 @@ function Get-AzureWebAppWrapper
     [CmdletBinding()]
     [Alias('gaw')]
     [OutputType([Microsoft.Azure.Commands.WebApps.Models.PSSite])]
-    Param
+    param
     (
         [Parameter(Mandatory = $true, HelpMessage = 'You need to provide the name of the Resource Group.')]
         [string] $ResourceGroupName,
@@ -39,7 +39,7 @@ function Get-AzureWebAppWrapper
         [int] $RetryCount = 3
     )
 
-    Process
+    process
     {
         $webAppSlot = $null
         $retryCounter = 0

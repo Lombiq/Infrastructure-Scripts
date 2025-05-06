@@ -18,7 +18,7 @@ function Test-AzureWebApp
     [CmdletBinding()]
     [Alias('taw')]
     [OutputType([object])]
-    Param
+    param
     (
         [Parameter(Mandatory = $true, HelpMessage = 'The name of the Resource Group the Web App is in.')]
         [string] $ResourceGroupName,
@@ -42,7 +42,7 @@ function Test-AzureWebApp
         [int] $RetryCount = 3
     )
 
-    Process
+    process
     {
         $webApp = Get-AzureWebAppWrapper -ResourceGroupName $ResourceGroupName -WebAppName $WebAppName -Slot $SlotName
 

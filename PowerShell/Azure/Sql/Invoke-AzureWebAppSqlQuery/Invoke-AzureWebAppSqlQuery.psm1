@@ -4,7 +4,7 @@ function Invoke-AzureWebAppSqlQuery
 {
     [CmdletBinding()]
     [Alias()]
-    Param
+    param
     (
         [Parameter(Mandatory = $true, HelpMessage = 'You need to provide the name of the Resource Group.')]
         [string] $ResourceGroupName,
@@ -22,7 +22,7 @@ function Invoke-AzureWebAppSqlQuery
         [string] $Query
     )
 
-    Process
+    process
     {
         $databaseConnectionParameters = @{
             ResourceGroupName = $ResourceGroupName

@@ -24,7 +24,7 @@ function Save-AzureWebAppSqlDatabase
 {
     [CmdletBinding()]
     [Alias('sawadb')]
-    Param
+    param
     (
         [Alias('ResourceGroupName')]
         [Parameter(
@@ -67,7 +67,7 @@ function Save-AzureWebAppSqlDatabase
         [string] $Destination
     )
 
-    Process
+    process
     {
         $exportDatabaseParameters = @{
             DatabaseResourceGroupName = $DatabaseResourceGroupName

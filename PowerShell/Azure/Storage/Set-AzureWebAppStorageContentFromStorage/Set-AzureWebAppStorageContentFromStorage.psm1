@@ -64,7 +64,7 @@ function Set-AzureWebAppStorageContentFromStorage
 {
     [CmdletBinding()]
     [Alias('sascs')]
-    Param
+    param
     (
         [Alias('ResourceGroupName')]
         [Parameter(
@@ -126,7 +126,7 @@ function Set-AzureWebAppStorageContentFromStorage
         [string] $DestinationContainerNameSuffix = ''
     )
 
-    Process
+    process
     {
         $sourceStorageConnectionParameters = @{
             ResourceGroupName = $SourceResourceGroupName

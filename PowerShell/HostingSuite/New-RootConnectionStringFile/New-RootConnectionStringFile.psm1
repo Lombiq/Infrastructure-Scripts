@@ -22,7 +22,7 @@ function New-RootConnectionStringFile
     [CmdletBinding()]
     [Alias('nrcs')]
     [OutputType([bool])]
-    Param
+    param
     (
         [Parameter(Mandatory = $true, HelpMessage = 'The path where the root connection string file should be placed.')]
         [string] $Path,
@@ -43,7 +43,7 @@ function New-RootConnectionStringFile
         [string] $ConnectionStringName = $(throw 'You need to provide a connection string name')
     )
 
-    Process
+    process
     {
         $connectionStringParameters = @{
             ResourceGroupName = $ResourceGroupName

@@ -17,7 +17,7 @@ function Stop-AzureWebAppSlot
     [CmdletBinding()]
     [Alias('spas')]
     [OutputType([Microsoft.Azure.Commands.WebApps.Models.PSSite])]
-    Param
+    param
     (
         [Parameter(Mandatory = $true, HelpMessage = 'The name of the Resource Group the Web App is in.')]
         [string] $ResourceGroupName,
@@ -29,7 +29,7 @@ function Stop-AzureWebAppSlot
         [string] $SlotName
     )
 
-    Process
+    process
     {
         $slot = Get-AzureWebAppWrapper -ResourceGroupName $ResourceGroupName -WebAppName $WebAppName -SlotName $SlotName
 
