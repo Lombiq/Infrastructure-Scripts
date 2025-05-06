@@ -261,7 +261,7 @@ function Set-AzureWebAppStorageContentFromStorage
                     $whiteListAllows =
                     -not $folderWhiteListValid -or
                     ($folderWhiteListValid -and (Compare-Object $blobNameElements $FolderWhiteList @comparisonParameters))
-            
+
                     $blackListAllows =
                     -not $folderBlackListValid -or
                     ($folderBlackListValid -and (-not (Compare-Object $blobNameElements $FolderBlackList @comparisonParameters)))
