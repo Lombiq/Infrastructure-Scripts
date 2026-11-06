@@ -43,34 +43,34 @@ runs:
         # "enable-AzPSSession: true". Add the latest one here too, for this and the subsequent steps.
         $preinstalledAzRoot = if ($IsWindows) { 'C:\Modules' } else { '/usr/share' }
         $preinstalledAzPath = Get-ChildItem -Path $preinstalledAzRoot -Directory -Filter 'az_*' -ErrorAction Ignore |
-          Sort-Object { [version]($PSItem.Name -replace '^az_', '') } -Descending |
-          Select-Object -First 1 -ExpandProperty FullName
+            Sort-Object { [version]($PSItem.Name -replace '^az_', '') } -Descending |
+            Select-Object -First 1 -ExpandProperty FullName
 
         $modulePaths = $env:PSModulePath -split [IO.Path]::PathSeparator
         if ($preinstalledAzPath -and $modulePaths -notcontains $preinstalledAzPath)
         {
-          Write-Output "Using the preinstalled Az modules from $preinstalledAzPath."
-          $env:PSModulePath = $env:PSModulePath + [IO.Path]::PathSeparator + $preinstalledAzPath
-          "PSModulePath=$env:PSModulePath" >> $env:GITHUB_ENV
+            Write-Output "Using the preinstalled Az modules from $preinstalledAzPath."
+            $env:PSModulePath = $env:PSModulePath + [IO.Path]::PathSeparator + $preinstalledAzPath
+            "PSModulePath=$env:PSModulePath" >> $env:GITHUB_ENV
         }
 
         foreach ($azModule in $requiredAzModules)
         {
-          if (-not (Get-Module -ListAvailable -Name $azModule))
-          {
-            Write-Output "The $azModule module is not available, installing it from the PowerShell Gallery."
-            Install-PSResource -Name $azModule -TrustRepository -AcceptLicense -ErrorAction Stop
-          }
+            if (-not (Get-Module -ListAvailable -Name $azModule))
+            {
+                Write-Output "The $azModule module is not available, installing it from the PowerShell Gallery."
+                Install-PSResource -Name $azModule -TrustRepository -AcceptLicense -ErrorAction Stop
+            }
         }
 
         Install-PSResource -Name SqlServer -Version 22.1.1 -TrustRepository -AcceptLicense -ErrorAction Stop
 
         foreach ($moduleName in (Get-ChildItem -Path . -Directory | Select-Object Name))
         {
-          if (Test-Path -Path $moduleName/$moduleName.psm1)
-          {
-            Import-Module $moduleName.Name
-          }
+            if (Test-Path -Path $moduleName/$moduleName.psm1)
+            {
+                Import-Module $moduleName.Name
+            }
         }
 
         Get-Module -ListAvailable
