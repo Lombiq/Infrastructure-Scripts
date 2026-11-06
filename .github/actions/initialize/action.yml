@@ -2,9 +2,11 @@ name: Initialize
 
 description: >
   Copies the PowerShell modules to a location defined in PSModulePath (since GHA doesn't allow manipulating
-  environment variables) and also installs and imports them. If you are using this action and the "azure/login" action
-  with "enable-AzPSSession: true" in the same workflow, make sure to run this action before "azure/login" otherwise
-  login can fail.
+  environment variables) and also installs and imports them. The Az PowerShell modules preinstalled on GitHub-hosted
+  runners are used if available, and only the Az modules these scripts need are installed from the PowerShell Gallery
+  otherwise, with Install-PSResource. If you are using this action and the "azure/login" action with
+  "enable-AzPSSession: true" in the same workflow, make sure to run this action before "azure/login" otherwise login
+  can fail.
 
 runs:
   using: "composite"
@@ -29,15 +31,46 @@ runs:
     - name: Install and Import Modules
       shell: pwsh
       run: |
-        Install-Module Az -RequiredVersion 10.4.1 -AllowClobber -Force
-        Install-Module SqlServer -RequiredVersion 22.1.1 -AllowClobber -Force
+        # Installing the whole Az module pulls ~80 sub-modules from the PowerShell Gallery, and Install-Module
+        # intermittently gets broken download links for one of them, failing the whole workflow (see
+        # https://github.com/PowerShell/PowerShellGallery/issues/357). So we only use the Az modules these scripts need,
+        # take them from the runner image if it has them, and install anything else with Install-PSResource
+        # (PSResourceGet, included in PowerShell 7.4+), which isn't affected.
+        $requiredAzModules = @('Az.Accounts', 'Az.Websites', 'Az.Storage', 'Az.Sql')
 
-        foreach ($moduleName in (Get-ChildItem -Directory | select Name))
+        # GitHub-hosted runners have the Az modules preinstalled under /usr/share/az_<version> (Linux) or
+        # C:\Modules\az_<version> (Windows), but that folder is only added to PSModulePath by "azure/login" with
+        # "enable-AzPSSession: true". Add the latest one here too, for this and the subsequent steps.
+        $preinstalledAzRoot = if ($IsWindows) { 'C:\Modules' } else { '/usr/share' }
+        $preinstalledAzPath = Get-ChildItem -Path $preinstalledAzRoot -Directory -Filter 'az_*' -ErrorAction Ignore |
+            Sort-Object { [version]($PSItem.Name -replace '^az_', '') } -Descending |
+            Select-Object -First 1 -ExpandProperty FullName
+
+        $modulePaths = $env:PSModulePath -split [IO.Path]::PathSeparator
+        if ($preinstalledAzPath -and $modulePaths -notcontains $preinstalledAzPath)
         {
-          if (Test-Path -Path $moduleName/$moduleName.psm1)
-          {
-            Import-Module $moduleName.Name
-          }
+            Write-Output "Using the preinstalled Az modules from $preinstalledAzPath."
+            $env:PSModulePath = $env:PSModulePath + [IO.Path]::PathSeparator + $preinstalledAzPath
+            "PSModulePath=$env:PSModulePath" >> $env:GITHUB_ENV
+        }
+
+        foreach ($azModule in $requiredAzModules)
+        {
+            if (-not (Get-Module -ListAvailable -Name $azModule))
+            {
+                Write-Output "The $azModule module is not available, installing it from the PowerShell Gallery."
+                Install-PSResource -Name $azModule -TrustRepository -AcceptLicense -ErrorAction Stop
+            }
+        }
+
+        Install-PSResource -Name SqlServer -Version 22.1.1 -TrustRepository -AcceptLicense -ErrorAction Stop
+
+        foreach ($moduleName in (Get-ChildItem -Path . -Directory | Select-Object Name))
+        {
+            if (Test-Path -Path $moduleName/$moduleName.psm1)
+            {
+                Import-Module $moduleName.Name
+            }
         }
 
         Get-Module -ListAvailable
