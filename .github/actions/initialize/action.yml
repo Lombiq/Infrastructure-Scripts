@@ -2,9 +2,10 @@ name: Initialize
 
 description: >
   Copies the PowerShell modules to a location defined in PSModulePath (since GHA doesn't allow manipulating
-  environment variables) and also installs and imports them. If you are using this action and the "azure/login" action
-  with "enable-AzPSSession: true" in the same workflow, make sure to run this action before "azure/login" otherwise
-  login can fail.
+  environment variables) and also installs and imports them. The Az PowerShell modules preinstalled on GitHub-hosted
+  runners are used if available, and only the Az modules these scripts need are installed from the PowerShell Gallery
+  otherwise. If you are using this action and the "azure/login" action with "enable-AzPSSession: true" in the same
+  workflow, make sure to run this action before "azure/login" otherwise login can fail.
 
 runs:
   using: "composite"
@@ -29,8 +30,61 @@ runs:
     - name: Install and Import Modules
       shell: pwsh
       run: |
-        Install-Module Az -RequiredVersion 10.4.1 -AllowClobber -Force
-        Install-Module SqlServer -RequiredVersion 22.1.1 -AllowClobber -Force
+        # Installing the whole Az module pulls ~80 sub-modules from the PowerShell Gallery, and the Gallery intermittently
+        # fails to serve one of them, failing the whole workflow (see
+        # https://github.com/PowerShell/PowerShellGallery/issues/357). So we only use the Az modules these scripts need,
+        # take them from the runner image if it has them, and retry the installation of anything coming from the Gallery.
+        $requiredAzModules = @('Az.Accounts', 'Az.Websites', 'Az.Storage', 'Az.Sql')
+
+        function Install-ModuleWithRetry
+        {
+          param([string] $Name, [string] $RequiredVersion)
+
+          $maxAttempts = 5
+          for ($attempt = 1; $attempt -le $maxAttempts; $attempt++)
+          {
+            try
+            {
+              $parameters = @{ Name = $Name; AllowClobber = $true; Force = $true; ErrorAction = 'Stop' }
+              if ($RequiredVersion) { $parameters.RequiredVersion = $RequiredVersion }
+              Install-Module @parameters
+              return
+            }
+            catch
+            {
+              if ($attempt -eq $maxAttempts) { throw }
+
+              Write-Warning "Installing the $Name module failed (attempt $attempt of $maxAttempts): $_"
+              Start-Sleep -Seconds (10 * $attempt)
+            }
+          }
+        }
+
+        # GitHub-hosted runners have the Az modules preinstalled under /usr/share/az_<version> (Linux) or
+        # C:\Modules\az_<version> (Windows), but that folder is only added to PSModulePath by "azure/login" with
+        # "enable-AzPSSession: true". Add the latest one here too, for this and the subsequent steps.
+        $preinstalledAzRoot = if ($IsWindows) { 'C:\Modules' } else { '/usr/share' }
+        $preinstalledAzPath = Get-ChildItem -Path $preinstalledAzRoot -Directory -Filter 'az_*' -ErrorAction SilentlyContinue |
+          Sort-Object { [version]($PSItem.Name -replace '^az_', '') } -Descending |
+          Select-Object -First 1 -ExpandProperty FullName
+
+        if ($preinstalledAzPath -and ($env:PSModulePath -split [IO.Path]::PathSeparator) -notcontains $preinstalledAzPath)
+        {
+          Write-Output "Using the preinstalled Az modules from $preinstalledAzPath."
+          $env:PSModulePath = $env:PSModulePath + [IO.Path]::PathSeparator + $preinstalledAzPath
+          "PSModulePath=$env:PSModulePath" >> $env:GITHUB_ENV
+        }
+
+        foreach ($azModule in $requiredAzModules)
+        {
+          if (-not (Get-Module -ListAvailable -Name $azModule))
+          {
+            Write-Output "The $azModule module is not available, installing it from the PowerShell Gallery."
+            Install-ModuleWithRetry -Name $azModule
+          }
+        }
+
+        Install-ModuleWithRetry -Name SqlServer -RequiredVersion 22.1.1
 
         foreach ($moduleName in (Get-ChildItem -Directory | select Name))
         {
