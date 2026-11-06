@@ -22,11 +22,7 @@
         }
         catch
         {
-            Write-Error 'Failed to reach UpTimeRobot API!'
-
-            Write-Error -Exception $PSItem.Exception
-
-            exit 1
+            throw "Failed to reach UpTimeRobot API:`n$PSItem"
         }
 
 

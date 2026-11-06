@@ -99,7 +99,7 @@ function Save-AzureWebAppSqlDatabaseToRepository
         }
         catch [Exception]
         {
-            throw ("Could not pull/update the repository at `"$RepositoryPath`"!")
+            throw "Could not pull/update the repository at `"$RepositoryPath`":`n$PSItem"
         }
 
 
@@ -137,7 +137,7 @@ function Save-AzureWebAppSqlDatabaseToRepository
         }
         catch [Exception]
         {
-            throw ("Could not commit/push to the repository at `"$RepositoryPath`"!")
+            throw "Could not commit/push to the repository at `"$RepositoryPath`":`n$PSItem"
         }
     }
 }

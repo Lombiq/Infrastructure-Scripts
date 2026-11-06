@@ -130,9 +130,7 @@ function Copy-AzureWebAppSqlDatabase
         }
         catch
         {
-            Write-Error ('Could not start copying the database!')
-
-            throw
+            throw "Could not start copying the database:`n$PSItem"
         }
     }
 }

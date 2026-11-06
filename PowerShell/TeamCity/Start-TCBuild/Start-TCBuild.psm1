@@ -39,7 +39,7 @@
             {
                 if ($retryCounter -ge $RetryCount)
                 {
-                    throw "Could not trigger `"$BuildId`"!"
+                    throw "Could not trigger `"$BuildId`":`n$PSItem"
                 }
 
                 $retryCounter++

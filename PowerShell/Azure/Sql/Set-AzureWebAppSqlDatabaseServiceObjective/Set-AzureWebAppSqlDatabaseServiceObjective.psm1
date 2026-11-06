@@ -106,10 +106,8 @@ function Set-AzureWebAppSqlDatabaseServiceObjective
         }
         catch
         {
-            Write-Error ('Changing the Service Objective failed - see the detailed error below. Did you define the ' +
-                "Edition of the target Service Objective? The current value is `"$Edition`".")
-
-            throw
+            throw ('Changing the Service Objective failed. Did you define the Edition of the target Service Objective? ' +
+                "The current value is `"$Edition`".`n$PSItem")
         }
     }
 }
