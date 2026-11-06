@@ -41,7 +41,7 @@ function Invoke-Maintenance
 
         [Parameter(Mandatory = $true,
             HelpMessage = 'The name of the user to authenticate. Make sure that the user is in a role that is permitted to start maintenances.')]
-        [string] $Username = $(throw 'You need to specify the username.'),
+        [string] $Username,
 
         [Parameter(Mandatory = $true, HelpMessage = 'The password of the user is mandatory.')]
         [string] $Password,
