@@ -482,8 +482,7 @@ function UpdateWebAppSlotAppSettingsAndConnectionStrings
             {
                 if ($retryCounter -ge $RetryCount)
                 {
-                    Write-Error "Could not update the `"$SlotName`" Slot of `"$WebAppName`"!"
-                    throw
+                    throw "Could not update the `"$SlotName`" Slot of `"$WebAppName`":`n$PSItem"
                 }
 
                 $retryCounter++

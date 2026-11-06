@@ -317,7 +317,7 @@ function Invoke-AzureWebAppStorageAzCopy
                     ExpiryTime = (Get-Date).AddMinutes($SasLifetimeMinutes)
                 }
                 $destinationAccessToken = New-AzStorageAccountSASToken @accessTokenCommonParameters @destinationAccessTokenParameters
-                if (-not $destinationAccessToken.StartsWith('?')) { $destinationAccessToken = "?$sourceAccessToken" }
+                if (-not $destinationAccessToken.StartsWith('?')) { $destinationAccessToken = "?$destinationAccessToken" }
                 $currentContainerDestination = "https://$($destinationStorageConnection.AccountName).blob.core.windows.net/$($destinationContainerName + $destinationAccessToken)"
             }
             # If the destination path is overridden and is a valid local path, then create the destination folder for the
@@ -359,6 +359,11 @@ function Invoke-AzureWebAppStorageAzCopy
             )
 
             azcopy sync @azCopyParameters
+
+            if ($LASTEXITCODE -ne 0)
+            {
+                throw "AzCopy failed to sync the container `"$($sourceContainer.Name)`" with exit code $LASTEXITCODE!"
+            }
         }
     }
 }

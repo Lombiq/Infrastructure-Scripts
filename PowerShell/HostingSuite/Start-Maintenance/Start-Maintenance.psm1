@@ -93,7 +93,7 @@ function Start-Maintenance
             {
                 if ($retryCounter -ge $RetryCount)
                 {
-                    throw "Could not start the maintenance `"$MaintenanceName`" at `"$Hostname`"!"
+                    throw "Could not start the maintenance `"$MaintenanceName`" at `"$Hostname`":`n$PSItem"
                 }
 
                 $retryCounter++

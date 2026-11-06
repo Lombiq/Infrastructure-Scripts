@@ -73,7 +73,7 @@ function Get-Maintenance
 
                 if ($retryCounter -ge $RetryCount)
                 {
-                    throw "Could not request the status of the maintenance `"$MaintenanceName`" at `"$Hostname`"!"
+                    throw "Could not request the status of the maintenance `"$MaintenanceName`" at `"$Hostname`":`n$PSItem"
                 }
 
                 Write-Warning "Requesting the status of the maintenance `"$MaintenanceName`" at `"$Hostname`" failed. Retrying..."
